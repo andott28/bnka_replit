@@ -28,14 +28,14 @@ export function NavHeader() {
                 <NavigationMenuItem>
                   <Link href="/dashboard">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Dashboard
+                      Oversikt
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href="/apply">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Apply for Loan
+                      Søk om lån
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -45,7 +45,7 @@ export function NavHeader() {
                       <NavigationMenuLink
                         className={navigationMenuTriggerStyle()}
                       >
-                        Admin
+                        Administrasjon
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
@@ -56,14 +56,14 @@ export function NavHeader() {
                     onClick={() => logoutMutation.mutate()}
                     disabled={logoutMutation.isPending}
                   >
-                    Logout
+                    Logg ut
                   </Button>
                 </NavigationMenuItem>
               </>
             ) : (
               <NavigationMenuItem>
                 <Link href="/auth">
-                  <Button>Login</Button>
+                  <Button>Logg inn</Button>
                 </Link>
               </NavigationMenuItem>
             )}

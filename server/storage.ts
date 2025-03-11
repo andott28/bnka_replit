@@ -1,9 +1,12 @@
-import { IStorage } from "./storage";
-import { User, InsertUser, LoanApplication, InsertLoanApplication } from "@shared/schema";
+import { User, InsertUser, LoanApplication, InsertLoanApplication, BankAccount, Card, Transaction } from "@shared/schema";
+import { users, loanApplications, bankAccounts, cards, transactions } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
 
-const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -13,73 +16,89 @@ export interface IStorage {
   getLoansByUserId(userId: number): Promise<LoanApplication[]>;
   getAllLoans(): Promise<LoanApplication[]>;
   updateLoanStatus(id: number, status: string): Promise<LoanApplication | undefined>;
+  // Nye metoder for bankkontoer og kort
+  createBankAccount(account: Partial<BankAccount>): Promise<BankAccount>;
+  getBankAccountsByUserId(userId: number): Promise<BankAccount[]>;
+  createCard(card: Partial<Card>): Promise<Card>;
+  getCardsByUserId(userId: number): Promise<Card[]>;
+  addTransaction(transaction: Partial<Transaction>): Promise<Transaction>;
+  getTransactionsByAccountId(accountId: number): Promise<Transaction[]>;
   sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private loans: Map<number, LoanApplication>;
+export class DatabaseStorage implements IStorage {
   public sessionStore: session.Store;
-  private currentUserId: number;
-  private currentLoanId: number;
 
   constructor() {
-    this.users = new Map();
-    this.loans = new Map();
-    this.currentUserId = 1;
-    this.currentLoanId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id, isAdmin: false };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
 
   async createLoanApplication(loan: InsertLoanApplication & { userId: number }): Promise<LoanApplication> {
-    const id = this.currentLoanId++;
-    const loanApplication: LoanApplication = {
-      ...loan,
-      id,
-      status: "pending",
-      submittedAt: new Date()
-    };
-    this.loans.set(id, loanApplication);
-    return loanApplication;
+    const [application] = await db.insert(loanApplications).values(loan).returning();
+    return application;
   }
 
   async getLoansByUserId(userId: number): Promise<LoanApplication[]> {
-    return Array.from(this.loans.values()).filter(
-      (loan) => loan.userId === userId
-    );
+    return db.select().from(loanApplications).where(eq(loanApplications.userId, userId));
   }
 
   async getAllLoans(): Promise<LoanApplication[]> {
-    return Array.from(this.loans.values());
+    return db.select().from(loanApplications);
   }
 
   async updateLoanStatus(id: number, status: string): Promise<LoanApplication | undefined> {
-    const loan = this.loans.get(id);
-    if (!loan) return undefined;
-    
-    const updatedLoan = { ...loan, status };
-    this.loans.set(id, updatedLoan);
-    return updatedLoan;
+    const [loan] = await db
+      .update(loanApplications)
+      .set({ status })
+      .where(eq(loanApplications.id, id))
+      .returning();
+    return loan;
+  }
+
+  async createBankAccount(account: Partial<BankAccount>): Promise<BankAccount> {
+    const [newAccount] = await db.insert(bankAccounts).values(account).returning();
+    return newAccount;
+  }
+
+  async getBankAccountsByUserId(userId: number): Promise<BankAccount[]> {
+    return db.select().from(bankAccounts).where(eq(bankAccounts.userId, userId));
+  }
+
+  async createCard(card: Partial<Card>): Promise<Card> {
+    const [newCard] = await db.insert(cards).values(card).returning();
+    return newCard;
+  }
+
+  async getCardsByUserId(userId: number): Promise<Card[]> {
+    return db.select().from(cards).where(eq(cards.userId, userId));
+  }
+
+  async addTransaction(transaction: Partial<Transaction>): Promise<Transaction> {
+    const [newTransaction] = await db.insert(transactions).values(transaction).returning();
+    return newTransaction;
+  }
+
+  async getTransactionsByAccountId(accountId: number): Promise<Transaction[]> {
+    return db.select().from(transactions).where(eq(transactions.bankAccountId, accountId));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

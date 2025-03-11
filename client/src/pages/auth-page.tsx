@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Building2, Lock, UserPlus } from "lucide-react";
+import { NavHeader } from "@/components/nav-header";
 
 export default function AuthPage() {
   const { loginMutation, registerMutation, user } = useAuth();
@@ -50,15 +51,16 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from" style={{ background: 'linear-gradient(to bottom right, hsl(216, 71%, 95%), white)' }}>
+      <NavHeader />
       <div className="flex-1 flex items-center justify-center p-8">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-2">
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="h-6 w-6 text-primary" />
-              <CardTitle className="text-2xl">Welcome to BNKA</CardTitle>
+              <CardTitle className="text-2xl">Velkommen til BNKA</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Your trusted digital banking partner
+              Din pålitelige partner for digital bankvirksomhet
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -66,11 +68,11 @@ export default function AuthPage() {
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login" className="flex items-center gap-2">
                   <Lock className="h-4 w-4" />
-                  Login
+                  Logg inn
                 </TabsTrigger>
                 <TabsTrigger value="register" className="flex items-center gap-2">
                   <UserPlus className="h-4 w-4" />
-                  Register
+                  Registrer
                 </TabsTrigger>
               </TabsList>
 
@@ -87,7 +89,7 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>E-post</FormLabel>
                           <FormControl>
                             <Input type="email" {...field} />
                           </FormControl>
@@ -100,7 +102,7 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>Passord</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -116,7 +118,7 @@ export default function AuthPage() {
                       {loginMutation.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Login
+                      Logg inn
                     </Button>
                   </form>
                 </Form>
@@ -135,7 +137,7 @@ export default function AuthPage() {
                       name="username"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>E-post</FormLabel>
                           <FormControl>
                             <Input type="email" {...field} />
                           </FormControl>
@@ -148,7 +150,7 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>Passord</FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -164,7 +166,7 @@ export default function AuthPage() {
                       {registerMutation.isPending && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      Create Account
+                      Opprett konto
                     </Button>
                   </form>
                 </Form>
@@ -175,23 +177,27 @@ export default function AuthPage() {
       </div>
       <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-8">
         <div className="max-w-lg text-white space-y-6">
-          <h1 className="text-4xl font-bold">Smart Banking for Tomorrow</h1>
+          <h1 className="text-4xl font-bold">Smart bank for fremtiden</h1>
           <div className="space-y-4">
             <p className="text-lg opacity-90">
-              Experience seamless digital banking with BNKA. We offer:
+              Opplev sømløs digital banking med BNKA. Vi tilbyr:
             </p>
             <ul className="space-y-3">
               <li className="flex items-center gap-2">
                 <div className="h-1 w-1 rounded-full bg-white"></div>
-                Quick and easy loan applications
+                Digitale bankkontoer med IBAN
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1 w-1 rounded-full bg-white"></div>
-                Secure online banking platform
+                Debet- og kredittkort
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1 w-1 rounded-full bg-white"></div>
-                24/7 digital assistance
+                Raske betalinger via SEPA
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-white"></div>
+                Sikker kundeidentifikasjon
               </li>
             </ul>
           </div>

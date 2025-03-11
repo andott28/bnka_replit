@@ -5,7 +5,6 @@ import {
   CreditCard, 
   Shield, 
   Clock,
-  CheckCircle,
   ArrowRight
 } from "lucide-react";
 
@@ -21,15 +20,15 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative">
             <div className="max-w-2xl">
               <h1 className="text-5xl font-bold mb-6 leading-tight bg-clip-text">
-                Smart Banking for a Better Future
+                Fremtidens bank i dag
               </h1>
               <p className="text-xl mb-8 opacity-90">
-                Experience seamless digital banking with quick loan approvals and
-                personalized financial solutions.
+                Opplev sømløs digital banking med rask lånesøknad og
+                personlige finansielle løsninger.
               </p>
               <Link href="/auth">
                 <Button size="lg" variant="secondary" className="group">
-                  Get Started
+                  Kom i gang
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -41,28 +40,28 @@ export default function HomePage() {
         <section className="py-24 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">
-              Why Choose BNKA?
+              Hvorfor velge BNKA?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-white p-8 rounded-lg shadow-sm transition-transform hover:-translate-y-1 duration-300">
                 <CreditCard className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-3">Easy Loan Application</h3>
+                <h3 className="text-xl font-semibold mb-3">Komplett banktjeneste</h3>
                 <p className="text-gray-600">
-                  Apply for loans online with our simple and secure application process
+                  Alt fra bankkontoer og kort til lån og betalinger i én plattform
                 </p>
               </div>
               <div className="bg-white p-8 rounded-lg shadow-sm transition-transform hover:-translate-y-1 duration-300">
                 <Clock className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-3">Quick Approval</h3>
+                <h3 className="text-xl font-semibold mb-3">Rask behandling</h3>
                 <p className="text-gray-600">
-                  Get loan decisions fast with our efficient evaluation system
+                  Få svar på lånesøknader og andre tjenester raskt og effektivt
                 </p>
               </div>
               <div className="bg-white p-8 rounded-lg shadow-sm transition-transform hover:-translate-y-1 duration-300">
                 <Shield className="h-12 w-12 mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-3">Secure Platform</h3>
+                <h3 className="text-xl font-semibold mb-3">Sikker plattform</h3>
                 <p className="text-gray-600">
-                  Your data is protected with industry-leading security measures
+                  Din sikkerhet er vår prioritet med moderne beskyttelsesmetoder
                 </p>
               </div>
             </div>
@@ -74,14 +73,14 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl font-bold mb-6">
-                Ready to Start Your Financial Journey?
+                Klar for å starte din finansielle reise?
               </h2>
               <p className="text-xl text-gray-600 mb-8">
-                Join thousands of satisfied customers who trust BNKA for their banking needs
+                Bli med tusenvis av fornøyde kunder som stoler på BNKA for sine banktjenester
               </p>
               <Link href="/auth">
                 <Button size="lg" className="group">
-                  Open Account Now
+                  Åpne konto nå
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
@@ -94,35 +93,35 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4">About BNKA</h3>
+              <h3 className="text-lg font-semibold mb-4">Om BNKA</h3>
               <p className="text-gray-400">
-                Your trusted partner in digital banking and financial solutions.
+                Din betrodde partner for digitale banktjenester og finansielle løsninger.
               </p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4">Hurtiglenker</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
                   <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Login</Button>
+                    <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
                   </Link>
                 </li>
                 <li>
                   <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Register</Button>
+                    <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4">Contact</h3>
+              <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
               <p className="text-gray-400">
-                Need help? Contact our support team.
+                Trenger du hjelp? Kontakt vårt supportteam.
               </p>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 BNKA. All rights reserved.</p>
+            <p>&copy; 2024 BNKA. Alle rettigheter reservert.</p>
           </div>
         </div>
       </footer>

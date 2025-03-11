@@ -1,0 +1,123 @@
+Hvorfor Solarisbank?
+Siden du har bestemt deg for å kun bruke Solarisbank, er det verdt å merke seg at deres plattform er ideell for din situasjon. Som en fullservicebank med tysk banklisens tilbyr de API-er som lar deg bygge finansielle tjenester direkte inn i din bank, med fleksibilitet til å foreslå egne risikomodeller for kredittvurdering. Dette passer perfekt til ditt mål om å gi lån til folk som ofte ikke får det, ved hjelp av din finansielle strategi.
+
+Gjennomgang av Solarisbank API
+Solarisbank API er RESTful og tilgjengelig via api.solarisbank.de, med dokumentasjon på docs.solarisgroup.com. Du trenger en tilgangstoken for autentisering, som fås ved å registrere deg hos Solarisbank. API-et støtter JSON og inkluderer endepunkter som:
+
+POST /accounts – Opprett en ny bankkonto.
+GET /accounts/{account_id} – Hent kontoinformasjon.
+POST /accounts/{account_id}/deposits – Sett inn penger.
+POST /accounts/{account_id}/withdrawals – Ta ut penger.
+Dette dekker grunnleggende behov for bankkontoer, og de har også støtte for kortutstedelse og lån, som du kan utforske i dokumentasjonen.
+
+Integrering i Rails-prosjektet
+Her er hvordan du kan integrere Solarisbank API i ditt Rails-prosjekt:
+
+Sett opp HTTParty:
+Legg til i Gemfile:
+
+ruby
+
+Collapse
+
+Wrap
+
+Copy
+gem 'httparty'
+Kjør bundle install.
+
+Lag en API-klasse:
+Opprett lib/solarisbank_api.rb:
+
+ruby
+
+Collapse
+
+Wrap
+
+Copy
+class SolarisbankAPI
+  include HTTParty
+  base_uri 'https://api.solarisbank.de'
+
+  def initialize(access_token)
+    @access_token = access_token
+  end
+
+  def create_account(params)
+    self.class.post('/accounts', headers: auth_headers, body: params.to_json)
+  end
+
+  def get_account(account_id)
+    self.class.get("/accounts/#{account_id}", headers: auth_headers)
+  end
+
+  def deposit(account_id, amount)
+    self.class.post("/accounts/#{account_id}/deposits", headers: auth_headers, body: { amount: amount }.to_json)
+  end
+
+  def withdraw(account_id, amount)
+    self.class.post("/accounts/#{account_id}/withdrawals", headers: auth_headers, body: { amount: amount }.to_json)
+  end
+
+  private
+
+  def auth_headers
+    {
+      'Authorization' => "Bearer #{@access_token}",
+      'Content-Type' => 'application/json'
+    }
+  end
+end
+Denne klassen bruker HTTParty for å forenkle API-kall og håndterer JSON-formatering automatisk.
+
+Bruk i en kontroller:
+I for eksempel app/controllers/accounts_controller.rb:
+
+ruby
+
+Collapse
+
+Wrap
+
+Copy
+class AccountsController < ApplicationController
+  def create
+    solaris = SolarisbankAPI.new('din_tilgangstoken_her')
+    params = { name: 'Ola Nordmann', initial_deposit: 500 }
+    response = solaris.create_account(params)
+    if response.success?
+      render json: response.parsed_response, status: :created
+    else
+      render json: { error: response.body }, status: response.code
+    end
+  end
+
+  def deposit
+    solaris = SolarisbankAPI.new('din_tilgangstoken_her')
+    account_id = params[:account_id]
+    amount = params[:amount].to_f
+    response = solaris.deposit(account_id, amount)
+    if response.success?
+      render json: response.parsed_response
+    else
+      render json: { error: response.body }, status: response.code
+    end
+  end
+end
+Her håndterer kontrolleren kontoopprettelse og innskudd, med enkel feilhåndtering.
+
+Konfigurer ruter:
+I config/routes.rb:
+
+ruby
+
+Collapse
+
+Wrap
+
+Copy
+Rails.application.routes.draw do
+  post '/accounts', to: 'accounts#create'
+  post '/accounts/:account_id/deposit', to: 'accounts#deposit'
+end
