@@ -1,0 +1,172 @@
+Nedenfor finner du en konkret, trinnvis guide for hvordan du kan bygge hele systemet – fra kundeopplevelse og autentisering til kredittvurdering, låneadministrasjon, partnerbankintegrasjon, dataplattform og infrastruktur. Guiden beskriver hvilke verktøy du bør bruke, hvor du kan hoste koden (f.eks. GitHub), hvilke programmeringsspråk og rammeverk du bør satse på (f.eks. Python med FastAPI, React for frontend) og hvordan de ulike modulene samhandler. Her bruker vi et eksempel der backend-tjenestene er skrevet i Python (med FastAPI), frontend i React (for web og eventuelt React Native for mobil), containerisering med Docker, orkestrering med Kubernetes, og koden hostes på GitHub. Vi inkluderer også bruk av Apache Kafka for sanntidsmeldinger og en data lake på en skytjeneste (f.eks. AWS S3).
+Trinn 1: Oppsett av Utviklingsmiljø og Repository
+	1.	Installer utviklingsverktøy:
+	•	VSCode: Last ned og installer Visual Studio Code for koding.
+	•	Python: Installer Python 3.9+ (anbefalt versjon) og konfigurer en virtuell miljømanager (f.eks. venv eller conda).
+	•	Node.js & npm: Installer Node.js (LTS-versjon) for frontend-utvikling.
+	•	Docker: Installer Docker Desktop for containerisering.
+	•	Kubernetes: Installer Minikube eller bruk en skybasert Kubernetes-tjeneste (f.eks. AWS EKS eller Google GKE).
+	•	Git: Installer Git for kildekontroll.
+	2.	Opprett GitHub-repositorier:
+	•	Lag et hovedrepository (eller flere microservice-repositories) under en organisasjon på GitHub, for eksempel “digital-bank-arkitektur”.
+	•	Organiser repoene for hver modul (f.eks. “frontend-bankapp”, “backend-loanesoknad”, “credit-risk-service”, “baaS-integration”, “data-analytics”, “devops-config”).
+Trinn 2: Kundeopplevelse (Frontend)
+	1.	Velg rammeverk:
+– Bruk React for web-appen og/eller React Native for mobil.
+	2.	Opprett prosjekt:
+– I VSCode, kjør:
+npx create-react-app frontend-bankapp
+	3.	Implementer Onboarding:
+	•	In-App BankID:
+– Integrer med BankID via en offisiell SDK (f.eks. via en REST API som returnerer en token).
+– Bruk native biometriske metoder (Touch ID/Face ID) via React Native sin innebygde støtte (f.eks. “react-native-touch-id”) for mobil.
+	•	Alternativ KYC for utenlandske kunder:
+– Implementer en in-app modul med integrasjon mot en tredjepartsløsning som Onfido.
+– Bruk kamera-APIet i appen til å fange pass-bilder og selfie, og send data direkte via Onfido sitt API slik at hele prosessen skjer i appen uten at brukeren bytter app.
+	4.	Publiser koden:
+– Pusha koden til GitHub-repoet “frontend-bankapp”.
+Trinn 3: Autentisering og Sikkerhet (IAM)
+	1.	Velg rammeverk:
+– Bruk Python med FastAPI for RESTful tjenester.
+	2.	Opprett prosjekt:
+– Opprett en mappe “iam-service” og initialiser et nytt Python-prosjekt.
+– Sett opp en virtuell miljø med:
+python -m venv venv
+source venv/bin/activate   # (eller venv\Scripts\activate på Windows)
+pip install fastapi uvicorn python-jose[cryptography]
+	3.	Implementer autentisering:
+	•	BankID-integrasjon:
+– Lag API-endepunkt som mottar BankID-token og verifiserer via BankID-leverandørens API.
+	•	Alternativ løsning:
+– Implementer en FIDO2-basert løsning ved hjelp av et bibliotek som “py_webauthn”.
+	•	Zero-Trust & MFA:
+– Konfigurer OAuth 2.0 og OpenID Connect for tilgangsstyring.
+	4.	Dokumenter API-en:
+– FastAPI genererer automatisk dokumentasjon (Swagger UI).
+	5.	Publiser koden:
+– Pusha til GitHub-repoet “iam-service”.
+Trinn 4: Lånesøknads- og Origineringssystem
+	1.	Opprett prosjekt med FastAPI:
+– Lag et nytt Python-prosjekt “loan-application-service”.
+– Installer nødvendige pakker:
+pip install fastapi uvicorn pydantic sqlalchemy psycopg2-binary
+	2.	Database:
+– Sett opp en PostgreSQL-database (lokalt med Docker eller i skyen) for å lagre søknadsdata.
+	3.	Implementasjon:
+	•	Lag REST API-endepunkter for:
+– Innsending av søknad (hvor data som inntekt, gjeld, kredittscore, appaktivitet og regningshistorikk (fra integrerte API-er) mottas).
+– Oppdatering og henting av søknadsstatus.
+	•	Bruk SQLAlchemy til ORM og Pydantic til datavalidering.
+	4.	Publiser:
+– Pusha koden til GitHub-repoet “loan-application-service”.
+Trinn 5: Kredittvurdering og Risikostyring (AI/ML-modul)
+	1.	Opprett et nytt Python-prosjekt:
+– Kall det “credit-risk-service”.
+– Installer pakker:
+pip install fastapi uvicorn scikit-learn pandas numpy joblib kafka-python
+	2.	Data Innhenting:
+	•	Tradisjonelle data: Hent kredittscore fra Experian/Bisnode (via API-integrasjon).
+	•	Alternative data: Hent mobil- og nettaktivitet (loggdata fra kundeapp), betalingshistorikk for regninger, og data fra offentlige registre (via åpne API-er).
+	3.	Bygg AI-modell:
+	•	Lag en prototype i en Jupyter Notebook.
+	•	Tren en modell med scikit-learn (f.eks. en Gradient Boosting-modell) som kombinerer de forskjellige datakildene.
+	•	Lagre modellen med joblib.
+	4.	Integrasjon i tjenesten:
+	•	Lag et FastAPI-endepunkt som laster inn den lagrede modellen og mottar kundeparametre for risikovurdering.
+	•	Bruk Kafka (via kafka-python) for å motta sanntidsdata og trigge oppdateringer.
+	5.	Publiser:
+– Pusha koden til GitHub-repoet “credit-risk-service”.
+Trinn 6: Låneadministrasjon og Servicemodul
+	1.	Opprett prosjekt:
+– Kall det “loan-management-service” med FastAPI.
+– Installer pakker som i trinn 4.
+	2.	Implementasjon:
+	•	Utbetalingsmodul: Opprett et API-endepunkt som, ved godkjent søknad, sender utbetalingsinstruksjoner til partnerbankintegrasjonen.
+	•	Tilbakebetalingsplan: Lag en modul som sporer betalinger, sender påminnelser, og kalkulerer rentejusteringer automatisk etter det første året.
+	3.	Publiser:
+– Pusha koden til GitHub-repoet “loan-management-service”.
+Trinn 7: Compliance- og AML/KYC Modul
+	1.	Opprett prosjekt:
+– Kall det “compliance-service” med FastAPI.
+– Installer nødvendige pakker:
+pip install fastapi uvicorn requests
+	2.	Integrasjon med tredjepart:
+	•	Integrer med Onfido eller Jumio for dokumentverifisering. Implementer API-kall som validerer kundeopplastede dokumenter.
+	•	Integrer med AML-løsninger som ComplyAdvantage for sanntidsvurdering av risikoprofiler.
+	3.	Automatiserte rapporter:
+	•	Lag et endepunkt som genererer rapporter basert på data lagret i Data Lake.
+	4.	Publiser:
+– Pusha til GitHub-repoet “compliance-service”.
+Trinn 8: Partnerbank Integrasjon (BaaS)
+	1.	Opprett prosjekt:
+– Kall det “baas-integration-service” med FastAPI.
+– Installer pakker:
+pip install fastapi uvicorn requests
+	2.	API Gateway:
+	•	Bygg en gateway-modul som sikrer kommunikasjonen med partnerbankens API ved bruk av RESTful API-er og OAuth2.0.
+	3.	Likviditetsstyring:
+	•	Implementer funksjoner som sender utbetalingsforespørsler og registrerer innbetalinger ved å bruke partnerbankens API.
+	4.	Publiser:
+– Pusha koden til GitHub-repoet “baas-integration-service”.
+Trinn 9: Dataplattform og Sanntidsanalyse
+	1.	Data Lake:
+– Bruk en skytjeneste som AWS S3 eller Azure Data Lake til lagring. Konfigurer bucket for prosjektet.
+	2.	Sanntidsdata:
+– Sett opp Apache Kafka for streaming av data fra de ulike tjenestene.
+– Installer Kafka lokalt eller bruk en skybasert løsning (f.eks. Confluent Cloud).
+	3.	Analysetjenester:
+– Bruk Apache Flink for sanntidsprosessering eller benytt AWS Kinesis for enkel oppsett.
+	4.	Dashboards:
+– Konfigurer Grafana (hostet lokalt eller i skyen) for visualisering av nøkkelindikatorer.
+	5.	Publiser Infrastructure as Code (IaC):
+– Lag Terraform- eller CloudFormation-skript og legg disse i et eget repo (“infrastructure-config”).
+Trinn 10: Infrastruktur og DevOps
+	1.	Containerisering:
+– Skriv Dockerfile for hver mikroservice (for eksempel i hver GitHub-repo).
+Eksempel (Dockerfile for en FastAPI-app):
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
+	2.	Orkestrering:
+– Opprett Kubernetes-manifester (YAML-filer) for deployering av tjenester.
+– Bruk Helm Charts for enklere pakkehåndtering.
+	3.	CI/CD Pipeline:
+– Bruk GitHub Actions til å bygge, teste og deployere hver tjeneste.
+Eksempel på en GitHub Actions workflow:
+name: CI/CD
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build Docker image
+        run: docker build -t my-service:${{ github.sha }} .
+      - name: Push Docker image
+        run: docker push my-service:${{ github.sha }}
+      - name: Deploy to Kubernetes
+        run: kubectl apply -f k8s/deployment.yaml
+	4.	Overvåking:
+– Sett opp Prometheus for metrics-samling og Grafana for visualisering.
+– Implementer logganalyse med ELK (Elasticsearch, Logstash, Kibana).
+Trinn 11: Sammenkobling og Testing
+	1.	Systemintegrasjon:
+– Sørg for at alle mikrotjenester kan kommunisere via de definerte API-ene.
+– Bruk Kafka til å sende meldinger mellom tjenester (for eksempel fra lånesøknadsmodulen til kredittvurderingsmodulen).
+	2.	End-to-End Testing:
+– Sett opp automatiserte tester med verktøy som Postman for API-testing og Selenium for brukergrensesnitt.
+– Kjør tester i CI/CD-pipelinen.
+	3.	Brukeraksepttesting (UAT):
+– Få testbrukere til å prøve appen og gi tilbakemelding på onboarding, lånesøknadsprosess og brukeropplevelse.
+Oppsummering
+Denne guiden gir deg en komplett, system-til-system plan for å bygge en moderne digital bank med:
+	•	Sømløs in-app onboarding med integrert BankID og helintegrert KYC for utenlandske kunder.
+	•	Avansert, AI-basert kredittvurdering med bruk av både tradisjonelle data (lønn, gjeld, kredittscore) og alternative data (digital aktivitetslogg, regningshistorikk, offentlige registre).
+	•	Låneadministrasjon med dynamisk rentejustering.
+	•	Sikker integrasjon med partnerbank via en API Gateway.
+	•	En dataplattform for sanntidsanalyse med Apache Kafka og en skybasert Data Lake.
+	•	Moderne infrastruktur med Docker, Kubernetes og en CI/CD pipeline via GitHub Actions.
+Ved å følge denne trinnvise guiden kan du bygge hvert system modul for modul, hoste koden på GitHub, utvikle i VSCode (med Python for backend, React for frontend) og bruke moderne skyteknologier for drift og skalering. Dette gir en robust, sikker og fleksibel arkitektur som møter dagens og fremtidens krav for en inkluderende digital bank.
