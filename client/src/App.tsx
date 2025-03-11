@@ -11,12 +11,16 @@ import NotFound from "@/pages/not-found";
 import Dashboard from "@/pages/dashboard";
 import LoanApplication from "@/pages/loan-application";
 import AdminDashboard from "@/pages/admin-dashboard";
+import HowItWorks from "@/pages/how-it-works";
+import Contact from "@/pages/contact";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/hvordan-det-fungerer" component={HowItWorks} />
+      <Route path="/kontakt" component={Contact} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/apply" component={LoanApplication} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />

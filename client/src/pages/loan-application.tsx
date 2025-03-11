@@ -34,9 +34,9 @@ export default function LoanApplication() {
   const form = useForm({
     resolver: zodResolver(
       insertLoanApplicationSchema.extend({
-        amount: insertLoanApplicationSchema.shape.amount.min(1000).max(100000),
-        purpose: insertLoanApplicationSchema.shape.purpose.min(3).max(100),
-        income: insertLoanApplicationSchema.shape.income.min(12000),
+        amount: insertLoanApplicationSchema.shape.amount.min(10000, "Minimum lånebeløp er 10 000 kr").max(1000000, "Maksimalt lånebeløp er 1 000 000 kr"),
+        purpose: insertLoanApplicationSchema.shape.purpose.min(3, "Vennligst beskriv formålet").max(200, "Maksimalt 200 tegn"),
+        income: insertLoanApplicationSchema.shape.income.min(200000, "Minimum årsinntekt er 200 000 kr"),
       })
     ),
     defaultValues: {
@@ -47,6 +47,10 @@ export default function LoanApplication() {
     },
   });
 
+  const formatNOK = (value: number) => {
+    return new Intl.NumberFormat('nb-NO').format(value);
+  };
+
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       const res = await apiRequest("POST", "/api/loans/apply", data);
@@ -55,14 +59,14 @@ export default function LoanApplication() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       toast({
-        title: "Application Submitted",
-        description: "Your loan application has been submitted successfully.",
+        title: "Søknad sendt",
+        description: "Din lånesøknad er mottatt og vil bli behandlet.",
       });
       setLocation("/dashboard");
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
+        title: "Feil",
         description: error.message,
         variant: "destructive",
       });
@@ -72,11 +76,11 @@ export default function LoanApplication() {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavHeader />
-      
+
       <main className="container mx-auto px-4 py-8">
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
-            <CardTitle>Loan Application</CardTitle>
+            <CardTitle>Lånesøknad</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -89,7 +93,7 @@ export default function LoanApplication() {
                   name="amount"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Amount ($)</FormLabel>
+                      <FormLabel>Lånebeløp (NOK)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -97,10 +101,11 @@ export default function LoanApplication() {
                           onChange={(e) =>
                             field.onChange(parseInt(e.target.value))
                           }
+                          placeholder="0"
                         />
                       </FormControl>
                       <FormDescription>
-                        Enter an amount between $1,000 and $100,000
+                        Beløp mellom 10 000 kr og 1 000 000 kr
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -112,9 +117,25 @@ export default function LoanApplication() {
                   name="purpose"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Loan Purpose</FormLabel>
+                      <FormLabel>Formål med lånet</FormLabel>
                       <FormControl>
-                        <Input {...field} />
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Velg formål" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="bolig">Boligkjøp</SelectItem>
+                            <SelectItem value="bil">Bilkjøp</SelectItem>
+                            <SelectItem value="renovering">Renovering</SelectItem>
+                            <SelectItem value="refinansiering">Refinansiering</SelectItem>
+                            <SelectItem value="annet">Annet</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -126,7 +147,7 @@ export default function LoanApplication() {
                   name="income"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Annual Income ($)</FormLabel>
+                      <FormLabel>Årsinntekt (NOK)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -134,8 +155,12 @@ export default function LoanApplication() {
                           onChange={(e) =>
                             field.onChange(parseInt(e.target.value))
                           }
+                          placeholder="0"
                         />
                       </FormControl>
+                      <FormDescription>
+                        Minimum årsinntekt: 200 000 kr
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -146,23 +171,23 @@ export default function LoanApplication() {
                   name="employmentStatus"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Employment Status</FormLabel>
+                      <FormLabel>Ansettelsesforhold</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select employment status" />
+                            <SelectValue placeholder="Velg ansettelsesforhold" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="full-time">Full-time</SelectItem>
-                          <SelectItem value="part-time">Part-time</SelectItem>
-                          <SelectItem value="self-employed">
-                            Self-employed
-                          </SelectItem>
-                          <SelectItem value="unemployed">Unemployed</SelectItem>
+                          <SelectItem value="fast">Fast ansatt</SelectItem>
+                          <SelectItem value="midlertidig">Midlertidig ansatt</SelectItem>
+                          <SelectItem value="selvstendig">Selvstendig næringsdrivende</SelectItem>
+                          <SelectItem value="pensjonist">Pensjonist</SelectItem>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="arbeidsledig">Arbeidsledig</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -178,7 +203,7 @@ export default function LoanApplication() {
                   {mutation.isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  Submit Application
+                  Send søknad
                 </Button>
               </form>
             </Form>

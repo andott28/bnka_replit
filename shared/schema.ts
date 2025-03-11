@@ -19,6 +19,9 @@ export const loanApplications = pgTable("loan_applications", {
   purpose: text("purpose").notNull(),
   income: integer("income").notNull(),
   employmentStatus: text("employment_status").notNull(),
+  monthlyExpenses: integer("monthly_expenses"),
+  existingLoans: integer("existing_loans"),
+  creditScore: integer("credit_score"),
   status: text("status").notNull().default("pending"),
   submittedAt: timestamp("submitted_at").notNull().defaultNow()
 });
@@ -43,6 +46,9 @@ export const cards = pgTable("cards", {
   status: text("status").notNull().default("pending"),
   lastFourDigits: text("last_four_digits"),
   expiryDate: text("expiry_date"),
+  creditLimit: integer("credit_limit"),
+  monthlyIncome: integer("monthly_income"),
+  employmentType: text("employment_type"),
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
@@ -57,7 +63,6 @@ export const transactions = pgTable("transactions", {
   createdAt: timestamp("created_at").notNull().defaultNow()
 });
 
-// Insert schemas
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true
@@ -67,7 +72,10 @@ export const insertLoanApplicationSchema = createInsertSchema(loanApplications).
   amount: true,
   purpose: true,
   income: true,
-  employmentStatus: true
+  employmentStatus: true,
+  monthlyExpenses: true,
+  existingLoans: true,
+  creditScore: true
 });
 
 export const insertBankAccountSchema = createInsertSchema(bankAccounts).pick({
@@ -80,10 +88,12 @@ export const insertCardSchema = createInsertSchema(cards).pick({
   userId: true,
   bankAccountId: true,
   solarisId: true,
-  type: true
+  type: true,
+  creditLimit: true,
+  monthlyIncome: true,
+  employmentType: true
 });
 
-// Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type LoanApplication = typeof loanApplications.$inferSelect;
