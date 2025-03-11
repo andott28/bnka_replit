@@ -13,8 +13,8 @@ export function NavHeader() {
   const { user, logoutMutation } = useAuth();
 
   return (
-    <header className="border-b">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/">
           <Button variant="link" className="text-2xl font-bold text-primary p-0">
             BNKA
