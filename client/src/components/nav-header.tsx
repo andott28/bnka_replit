@@ -16,7 +16,9 @@ export function NavHeader() {
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/">
-          <a className="text-2xl font-bold text-primary">BNKA</a>
+          <Button variant="link" className="text-2xl font-bold text-primary p-0">
+            BNKA
+          </Button>
         </Link>
 
         <NavigationMenu>

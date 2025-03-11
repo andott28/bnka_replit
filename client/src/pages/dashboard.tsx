@@ -26,7 +26,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavHeader />
-      
+
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">My Dashboard</h1>
@@ -53,7 +53,7 @@ export default function Dashboard() {
                     <Badge
                       variant={
                         loan.status === "approved"
-                          ? "success"
+                          ? "secondary"
                           : loan.status === "rejected"
                           ? "destructive"
                           : "default"

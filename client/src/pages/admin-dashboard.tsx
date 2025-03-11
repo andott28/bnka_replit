@@ -156,7 +156,7 @@ export default function AdminDashboard() {
                         <Badge
                           variant={
                             loan.status === "approved"
-                              ? "success"
+                              ? "secondary"
                               : loan.status === "rejected"
                               ? "destructive"
                               : "default"
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                         <div className="flex gap-2">
                           <Button
                             size="sm"
-                            variant="success"
+                            variant="secondary"
                             onClick={() =>
                               updateStatusMutation.mutate({
                                 loanId: loan.id,
