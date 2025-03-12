@@ -1,14 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { NavHeader } from "@/components/nav-header";
 import { Link } from "wouter";
-import { 
-  CreditCard, 
-  Shield, 
+import {
+  CreditCard,
+  Shield,
   Clock,
   ArrowRight
 } from "lucide-react";
 
 export default function HomePage() {
+  // Assuming 'user' is available from context or props.  Replace with your actual implementation.
+  const user = true; // Replace with your actual user authentication logic
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavHeader />
@@ -101,14 +104,36 @@ export default function HomePage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Hurtiglenker</h3>
               <ul className="space-y-2 text-gray-400">
+                {!user ? (
+                  <>
+                    <li>
+                      <Link href="/auth">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/auth">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link href="/dashboard">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Min konto</Button>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/apply">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Søk om lån</Button>
+                      </Link>
+                    </li>
+                  </>
+                )}
                 <li>
-                  <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
+                  <Link href="/kontakt">
+                    <Button variant="link" className="text-gray-400 p-0 h-auto">Kontakt oss</Button>
                   </Link>
                 </li>
               </ul>
@@ -116,7 +141,7 @@ export default function HomePage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
               <p className="text-gray-400">
-                Trenger du hjelp? Kontakt vårt supportteam.
+                Ta kontakt med vårt supportteam hvis du trenger hjelp.
               </p>
             </div>
           </div>
