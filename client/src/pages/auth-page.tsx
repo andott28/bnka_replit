@@ -1,200 +1,123 @@
-import { useAuth } from "@/hooks/use-auth";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { insertUserSchema } from "@shared/schema";
-import { useLocation } from "wouter";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useState } from "react";
+import { useLocation, useRoute, useRouter } from "wouter";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Building2, Lock, UserPlus } from "lucide-react";
-import { NavHeader } from "@/components/nav-header";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/use-auth";
+import { Link } from "wouter";
 
 export default function AuthPage() {
-  const { loginMutation, registerMutation, user } = useAuth();
+  const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const { login, register, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
+  const [match] = useRoute("/auth");
 
-  const loginForm = useForm({
-    resolver: zodResolver(insertUserSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
-
-  const registerForm = useForm({
-    resolver: zodResolver(insertUserSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
-
-  if (user) {
-    setLocation("/dashboard");
-    return null;
+  // If already authenticated and on auth page, redirect to dashboard
+  if (isAuthenticated && match) {
+    // Use a setTimeout to avoid state updates during render
+    setTimeout(() => {
+      setLocation("/dashboard");
+    }, 0);
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isLogin) {
+      await login({ username, password });
+    } else {
+      await register({ username, password, fullName });
+    }
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from" style={{ background: 'linear-gradient(to bottom right, hsl(216, 71%, 95%), white)' }}>
-      <NavHeader />
-      <div className="flex-1 flex">
-        <div className="flex-1 flex items-center justify-center p-8">
-          <Card className="w-full max-w-md">
-            <CardHeader className="space-y-2">
-              <div className="flex items-center gap-2 mb-2">
-                <Building2 className="h-6 w-6 text-primary" />
-                <CardTitle className="text-2xl">Velkommen til BNKA</CardTitle>
+    <div className="min-h-screen bg-gradient-to-br from-primary to-primary-foreground flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card className="lg:order-2 bg-background/95 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle>{isLogin ? "Logg inn" : "Opprett konto"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-post</Label>
+                <Input
+                  id="email"
+                  placeholder="din.epost@eksempel.no"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </div>
-              <CardDescription className="text-base">
-                Din pålitelige partner for digital bankvirksomhet
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="login" className="space-y-4">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="login" className="flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Logg inn
-                  </TabsTrigger>
-                  <TabsTrigger value="register" className="flex items-center gap-2">
-                    <UserPlus className="h-4 w-4" />
-                    Registrer
-                  </TabsTrigger>
-                </TabsList>
 
-                <TabsContent value="login">
-                  <Form {...loginForm}>
-                    <form
-                      onSubmit={loginForm.handleSubmit((data) =>
-                        loginMutation.mutate(data)
-                      )}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={loginForm.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>E-post</FormLabel>
-                            <FormControl>
-                              <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={loginForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Passord</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={loginMutation.isPending}
-                      >
-                        {loginMutation.isPending && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Logg inn
-                      </Button>
-                    </form>
-                  </Form>
-                </TabsContent>
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="name">Fullt navn</Label>
+                  <Input
+                    id="name"
+                    placeholder="Ola Nordmann"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+              )}
 
-                <TabsContent value="register">
-                  <Form {...registerForm}>
-                    <form
-                      onSubmit={registerForm.handleSubmit((data) =>
-                        registerMutation.mutate(data)
-                      )}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={registerForm.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>E-post</FormLabel>
-                            <FormControl>
-                              <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={registerForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Passord</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={registerMutation.isPending}
-                      >
-                        {registerMutation.isPending && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
-                        Opprett konto
-                      </Button>
-                    </form>
-                  </Form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-8">
-          <div className="max-w-lg text-white space-y-6">
-            <h1 className="text-4xl font-bold">Smart bank for fremtiden</h1>
-            <div className="space-y-4">
-              <p className="text-lg opacity-90">
-                Opplev sømløs digital banking med BNKA. Vi tilbyr:
+              <div className="space-y-2">
+                <Label htmlFor="password">Passord</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <Button className="w-full" type="submit">
+                {isLogin ? "Logg inn" : "Opprett konto"}
+              </Button>
+
+              <div className="text-center">
+                <span className="text-sm">
+                  {isLogin ? "Har ikke konto? " : "Har allerede konto? "}
+                </span>
+                <Button
+                  variant="link"
+                  className="p-0 h-auto"
+                  onClick={() => setIsLogin(!isLogin)}
+                  type="button"
+                >
+                  {isLogin ? "Registrer deg" : "Logg inn"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        <div className="hidden lg:block p-8">
+          <div className="h-full flex flex-col justify-between text-white">
+            <div>
+              <h1 className="text-4xl font-bold mb-4">Bankrevolusjon</h1>
+              <p className="text-xl">
+                Din trygge, enkle og moderne bankløsning
               </p>
-              <ul className="space-y-3">
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold mb-3">
+                Hvorfor velge oss?
+              </h2>
+              <ul className="space-y-2">
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Digitale bankkontoer med IBAN
+                  Ingen skjulte gebyrer
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Debet- og kredittkort
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Raske betalinger via SEPA
+                  Mobil- og nettbank med topp sikkerhet
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
