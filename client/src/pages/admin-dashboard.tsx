@@ -359,3 +359,418 @@ export default function AdminDashboard() {
     </div>
   );
 }
+import React, { useState, useEffect } from 'react';
+import { NavHeader } from '@/components/nav-header';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { CreditCard, Users, Loader2 } from 'lucide-react';
+import axios from 'axios';
+
+export default function AdminDashboard() {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [loans, setLoans] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loansLoading, setLoansLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const response = await axios.get('/api/loans/all');
+        setLoans(response.data);
+        setLoansLoading(false);
+      } catch (error) {
+        console.error('Error fetching loans:', error);
+        setLoansLoading(false);
+      }
+    };
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/users');
+        setUsers(response.data);
+        setUsersLoading(false);
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        setUsersLoading(false);
+      }
+    };
+
+    fetchLoans();
+    fetchUsers();
+  }, []);
+
+  if (loansLoading || usersLoading) {
+    return (
+      <div className="min-h-screen">
+        <NavHeader />
+        <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <NavHeader />
+
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">Administrasjonspanel</h1>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Totalt antall lånesøknader
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{loans.length}</div>
+              <p className="text-xs text-muted-foreground">
+                {loans.filter(l => l.status === "pending").length} under behandling
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Registrerte brukere
+              </CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{users.length}</div>
+              <p className="text-xs text-muted-foreground">
+                {users.filter(u => u.kycStatus === "pending").length} venter på KYC
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total lånebeløp
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {loans.reduce((total, loan) => total + loan.amount, 0).toLocaleString()} NOK
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Fordelt på {loans.length} søknader
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-4">
+            <TabsTrigger value="overview">Oversikt</TabsTrigger>
+            <TabsTrigger value="loans">Lånesøknader</TabsTrigger>
+            <TabsTrigger value="users">Brukere</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Nye lånesøknader</CardTitle>
+                  <CardDescription>Nyeste søknader som krever behandling</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>ID</TableHead>
+                          <TableHead>Beløp</TableHead>
+                          <TableHead>Formål</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {loans.slice(0, 5).map((loan) => (
+                          <TableRow key={loan.id}>
+                            <TableCell>#{loan.id}</TableCell>
+                            <TableCell>{loan.amount.toLocaleString()} NOK</TableCell>
+                            <TableCell>{loan.purpose}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  loan.status === "approved"
+                                    ? "secondary"
+                                    : loan.status === "rejected"
+                                    ? "destructive"
+                                    : "default"
+                                }
+                              >
+                                {loan.status === "approved" ? "GODKJENT" :
+                                 loan.status === "rejected" ? "AVSLÅTT" :
+                                 loan.status === "pending" ? "VENTER" :
+                                 loan.status?.toUpperCase()}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Nye brukere</CardTitle>
+                  <CardDescription>Nylig registrerte brukere</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>ID</TableHead>
+                          <TableHead>E-post</TableHead>
+                          <TableHead>Navn</TableHead>
+                          <TableHead>Registrert</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {users.slice(0, 5).map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell>#{user.id}</TableCell>
+                            <TableCell>{user.username}</TableCell>
+                            <TableCell>
+                              {user.firstName} {user.lastName}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(user.createdAt).toLocaleDateString('nb-NO')}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="loans">
+            <Card>
+              <CardHeader>
+                <CardTitle>Lånesøknader</CardTitle>
+                <CardDescription>
+                  Administrer lånesøknader og endre status
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>BrukerID</TableHead>
+                        <TableHead>Beløp</TableHead>
+                        <TableHead>Formål</TableHead>
+                        <TableHead>Inntekt</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Søknadsdato</TableHead>
+                        <TableHead>Handling</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {loans.map((loan) => (
+                        <TableRow key={loan.id}>
+                          <TableCell>#{loan.id}</TableCell>
+                          <TableCell>#{loan.userId}</TableCell>
+                          <TableCell>{loan.amount.toLocaleString()} NOK</TableCell>
+                          <TableCell>{loan.purpose}</TableCell>
+                          <TableCell>{loan.income.toLocaleString()} NOK</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                loan.status === "approved"
+                                  ? "secondary"
+                                  : loan.status === "rejected"
+                                  ? "destructive"
+                                  : "default"
+                              }
+                            >
+                              {loan.status === "approved" ? "GODKJENT" :
+                               loan.status === "rejected" ? "AVSLÅTT" :
+                               loan.status === "pending" ? "VENTER" :
+                               loan.status?.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(loan.submittedAt).toLocaleDateString('nb-NO')}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => {
+                                  // Update status to approved
+                                  axios.patch(`/api/loans/${loan.id}/status`, { status: 'approved' })
+                                    .then(() => {
+                                      setLoans(loans.map(l => 
+                                        l.id === loan.id ? { ...l, status: 'approved' } : l
+                                      ));
+                                    });
+                                }}
+                              >
+                                Godkjenn
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  // Update status to rejected
+                                  axios.patch(`/api/loans/${loan.id}/status`, { status: 'rejected' })
+                                    .then(() => {
+                                      setLoans(loans.map(l => 
+                                        l.id === loan.id ? { ...l, status: 'rejected' } : l
+                                      ));
+                                    });
+                                }}
+                              >
+                                Avslå
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>Brukeroversikt</CardTitle>
+                <CardDescription>
+                  Administrer brukere og se deres status
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>E-post</TableHead>
+                        <TableHead>Navn</TableHead>
+                        <TableHead>Telefon</TableHead>
+                        <TableHead>KYC Status</TableHead>
+                        <TableHead>Kryptert Passord</TableHead>
+                        <TableHead>Registrert</TableHead>
+                        <TableHead>Handling</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>#{user.id}</TableCell>
+                          <TableCell>{user.username}</TableCell>
+                          <TableCell>
+                            {user.firstName} {user.lastName}
+                          </TableCell>
+                          <TableCell>{user.phoneNumber}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                user.kycStatus === "approved"
+                                  ? "secondary"
+                                  : user.kycStatus === "rejected"
+                                  ? "destructive"
+                                  : "default"
+                              }
+                            >
+                              {user.kycStatus === "approved" ? "GODKJENT" :
+                               user.kycStatus === "rejected" ? "AVSLÅTT" :
+                               user.kycStatus === "pending" ? "VENTER" :
+                               user.kycStatus?.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <code className="text-xs break-all bg-gray-100 p-1 rounded">
+                              {user.password}
+                            </code>
+                          </TableCell>
+                          <TableCell>
+                            {new Date(user.createdAt).toLocaleDateString('nb-NO')}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => {
+                                  // Update KYC status to approved
+                                  axios.patch(`/api/users/${user.id}/kyc`, { status: 'approved' })
+                                    .then(() => {
+                                      setUsers(users.map(u => 
+                                        u.id === user.id ? { ...u, kycStatus: 'approved' } : u
+                                      ));
+                                    })
+                                    .catch(err => {
+                                      console.error("Failed to update KYC status:", err);
+                                    });
+                                }}
+                              >
+                                Godkjenn KYC
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  // Update KYC status to rejected
+                                  axios.patch(`/api/users/${user.id}/kyc`, { status: 'rejected' })
+                                    .then(() => {
+                                      setUsers(users.map(u => 
+                                        u.id === user.id ? { ...u, kycStatus: 'rejected' } : u
+                                      ));
+                                    })
+                                    .catch(err => {
+                                      console.error("Failed to update KYC status:", err);
+                                    });
+                                }}
+                              >
+                                Avslå KYC
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+}

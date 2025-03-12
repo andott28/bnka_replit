@@ -38,6 +38,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const loans = await storage.getAllLoans();
     res.json(loans);
   });
+  
+  app.get("/api/users", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+    
+    const users = await storage.getAllUsers();
+    res.json(users);
+  });
 
   app.patch("/api/loans/:id/status", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isAdmin) {
@@ -53,6 +62,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const updated = await storage.updateLoanStatus(loanId, status);
     if (!updated) {
       return res.status(404).json({ error: "Loan application not found" });
+    }
+    res.json(updated);
+  });
+  
+  app.patch("/api/users/:id/kyc", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+
+    const { status } = req.body;
+    if (!["approved", "rejected", "pending"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    const userId = parseInt(req.params.id);
+    const updated = await storage.updateUserKycStatus(userId, status);
+    if (!updated) {
+      return res.status(404).json({ error: "User not found" });
     }
     res.json(updated);
   });

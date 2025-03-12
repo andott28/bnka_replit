@@ -23,6 +23,8 @@ export interface IStorage {
   getCardsByUserId(userId: number): Promise<Card[]>;
   addTransaction(transaction: Partial<Transaction>): Promise<Transaction>;
   getTransactionsByAccountId(accountId: number): Promise<Transaction[]>;
+  getAllUsers(): Promise<User[]>; // Added method to get all users
+  updateUserKycStatus(userId: number, kycStatus: string): Promise<User | undefined>; // Added method to update KYC status
   sessionStore: session.Store;
 }
 
@@ -98,6 +100,19 @@ export class DatabaseStorage implements IStorage {
 
   async getTransactionsByAccountId(accountId: number): Promise<Transaction[]> {
     return db.select().from(transactions).where(eq(transactions.bankAccountId, accountId));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users);
+  }
+
+  async updateUserKycStatus(userId: number, kycStatus: string): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ kycStatus })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
   }
 }
 
