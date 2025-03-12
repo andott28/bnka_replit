@@ -34,8 +34,8 @@ export default function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  // Redirect non-admin users
-  if (!user?.isAdmin) {
+  // Redirect non-admin users and non-authorized users
+  if (!user?.isAdmin || user.username !== "andreas.ottem@icloud.com") {
     return <Redirect to="/dashboard" />;
   }
 
@@ -309,6 +309,7 @@ export default function AdminDashboard() {
                         <TableHead>Navn</TableHead>
                         <TableHead>Telefon</TableHead>
                         <TableHead>KYC Status</TableHead>
+                        <TableHead>Kryptert Passord</TableHead>
                         <TableHead>Registrert</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -336,6 +337,11 @@ export default function AdminDashboard() {
                                user.kycStatus === "pending" ? "VENTER" :
                                user.kycStatus?.toUpperCase()}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <code className="text-xs break-all bg-gray-100 p-1 rounded">
+                              {user.password}
+                            </code>
                           </TableCell>
                           <TableCell>
                             {new Date(user.createdAt).toLocaleDateString('nb-NO')}
