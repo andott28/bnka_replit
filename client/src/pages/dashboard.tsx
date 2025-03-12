@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { NavHeader } from "@/components/nav-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Loader2, CreditCard, Settings, User, Lock, Trash2, Sun, Moon } from "lu
 import { Link } from "wouter";
 import type { LoanApplication } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +16,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useTheme } from "@/hooks/use-theme";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export default function Dashboard() {
   const { data: loans, isLoading } = useQuery<LoanApplication[]>({
@@ -23,7 +26,52 @@ export default function Dashboard() {
   });
   const { logoutMutation, user } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
   const [selectedLoan, setSelectedLoan] = useState<LoanApplication | null>(null);
+  const [userInfo, setUserInfo] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    phoneNumber: user?.phoneNumber || '',
+  });
+  const [hasChanges, setHasChanges] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setUserInfo({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        phoneNumber: user.phoneNumber || '',
+      });
+    }
+  }, [user]);
+
+  const updateUserMutation = useMutation({
+    mutationFn: async (data: typeof userInfo) => {
+      const res = await apiRequest("PATCH", `/api/users/${user?.id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      toast({
+        title: "Profil oppdatert",
+        description: "Din brukerinformasjon har blitt oppdatert",
+      });
+      setHasChanges(false);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Feil",
+        description: "Kunne ikke oppdatere brukerinformasjon",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserInfo(prev => ({ ...prev, [name]: value }));
+    setHasChanges(true);
+  };
 
   const formatNOK = (value: number) => {
     return new Intl.NumberFormat('nb-NO').format(value) + " NOK";
@@ -47,9 +95,9 @@ export default function Dashboard() {
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Min Side</h1>
 
-        <div className="grid gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Kontooversikt */}
-          <Card>
+          <Card className="md:col-span-2 lg:col-span-3">
             <CardHeader>
               <CardTitle>Kontooversikt</CardTitle>
             </CardHeader>
@@ -72,7 +120,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Mine Lån */}
-          <Card>
+          <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Mine Lån</CardTitle>
             </CardHeader>
@@ -114,8 +162,65 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Min Kredittvurdering */}
+          {/* Konto-informasjon */}
           <Card>
+            <CardHeader>
+              <CardTitle>Konto-informasjon</CardTitle>
+              <CardDescription>Rediger din personlige informasjon</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">E-post</label>
+                  <Input
+                    value={user?.username}
+                    disabled
+                    className="bg-gray-50"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Fornavn</label>
+                  <Input
+                    name="firstName"
+                    value={userInfo.firstName}
+                    onChange={handleInputChange}
+                    placeholder="Ditt fornavn"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Etternavn</label>
+                  <Input
+                    name="lastName"
+                    value={userInfo.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Ditt etternavn"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Telefonnummer</label>
+                  <Input
+                    name="phoneNumber"
+                    value={userInfo.phoneNumber}
+                    onChange={handleInputChange}
+                    placeholder="Ditt telefonnummer"
+                  />
+                </div>
+                <Button 
+                  onClick={() => updateUserMutation.mutate(userInfo)}
+                  disabled={!hasChanges || updateUserMutation.isPending}
+                  className="w-full"
+                >
+                  {updateUserMutation.isPending && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Oppdater informasjon
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Min Kredittvurdering */}
+          <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Min Kredittvurdering</CardTitle>
               <CardDescription>Kommer snart</CardDescription>
@@ -128,7 +233,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Kredittkort */}
-          <Card>
+          <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Mine Kredittkort</CardTitle>
             </CardHeader>
@@ -144,7 +249,7 @@ export default function Dashboard() {
           </Card>
 
           {/* Transaksjoner */}
-          <Card>
+          <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Transaksjonslogg</CardTitle>
             </CardHeader>
