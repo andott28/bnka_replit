@@ -57,7 +57,7 @@ app.use((req, res, next) => {
   }
 
   // Use the PORT environment variable or fall back to 5000
-  const port = process.env.PORT || 5000;
+  const port = parseInt(process.env.PORT || "5000", 10);
   server.listen({
     port,
     host: "0.0.0.0",
