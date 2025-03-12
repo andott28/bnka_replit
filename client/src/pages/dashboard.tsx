@@ -12,6 +12,32 @@ export default function Dashboard() {
     queryKey: ["/api/loans"],
   });
 
+  const formatNOK = (amount: number) => {
+    return new Intl.NumberFormat('nb-NO', {
+      style: 'currency',
+      currency: 'NOK',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case "approved": return "GODKJENT";
+      case "rejected": return "AVSLÅTT";
+      case "pending": return "UNDER BEHANDLING";
+      default: return status.toUpperCase();
+    }
+  };
+
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case "approved": return "success";
+      case "rejected": return "destructive";
+      default: return "default";
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen">
@@ -29,9 +55,9 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">My Dashboard</h1>
+          <h1 className="text-3xl font-bold">Min Konto</h1>
           <Link href="/apply">
-            <Button>Apply for New Loan</Button>
+            <Button>Søk om nytt lån</Button>
           </Link>
         </div>
 
@@ -40,7 +66,7 @@ export default function Dashboard() {
             <Card>
               <CardContent className="pt-6">
                 <p className="text-center text-gray-600">
-                  You haven't applied for any loans yet.
+                  Du har ikke søkt om noen lån ennå.
                 </p>
               </CardContent>
             </Card>
@@ -49,36 +75,30 @@ export default function Dashboard() {
               <Card key={loan.id}>
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <CardTitle>Loan Application #{loan.id}</CardTitle>
+                    <CardTitle>Lånesøknad #{loan.id}</CardTitle>
                     <Badge
-                      variant={
-                        loan.status === "approved"
-                          ? "secondary"
-                          : loan.status === "rejected"
-                          ? "destructive"
-                          : "default"
-                      }
+                      variant={getStatusVariant(loan.status)}
                     >
-                      {loan.status.toUpperCase()}
+                      {getStatusText(loan.status)}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-2">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Amount:</span>
+                      <span className="text-gray-600">Lånebeløp:</span>
                       <span className="font-medium">
-                        ${loan.amount.toLocaleString()}
+                        {formatNOK(loan.amount)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Purpose:</span>
+                      <span className="text-gray-600">Formål:</span>
                       <span className="font-medium">{loan.purpose}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Submitted:</span>
+                      <span className="text-gray-600">Søknadsdato:</span>
                       <span className="font-medium">
-                        {new Date(loan.submittedAt).toLocaleDateString()}
+                        {new Date(loan.submittedAt).toLocaleDateString('nb-NO')}
                       </span>
                     </div>
                   </div>
