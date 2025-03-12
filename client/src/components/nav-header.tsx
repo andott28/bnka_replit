@@ -33,6 +33,13 @@ export function NavHeader() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/kontakt">
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Kontakt Oss
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -84,24 +91,5 @@ export function NavHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-//Assumed import and function definition to fix login error.  Requires context-specific adjustment.
-import { useMutation } from '@tanstack/react-query';
-import { loginUser } from '@/services/auth-service';
-
-const useLoginMutation = () => useMutation(loginUser);
-
-// ... rest of the code (other components, etc.) ...
-
-
-// Example footer component where "Kontakt Oss" is moved.  Requires appropriate styling.
-
-function Footer() {
-  return (
-    <footer>
-      <Link href="/kontakt">Kontakt Oss</Link>
-    </footer>
   );
 }
