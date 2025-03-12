@@ -14,72 +14,75 @@ export function NavHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 h-14 flex items-center">
-        {/* Logo */}
-        <Link href="/" className="flex-shrink-0 mr-8">
-          <div className="h-8">
-            <img src="/attached_assets/bnkaLogo1.png" alt="BNKA Logo" className="h-full" />
-          </div>
+      <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+        <Link href="/">
+          <Button variant="link" className="text-2xl font-bold text-primary p-0">
+            BNKA
+          </Button>
         </Link>
 
-        {/* Hovedmeny */}
-        <div className="flex-grow flex justify-center">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <Link href="/hvordan-det-fungerer">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Produkter og Tjenester
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-
-        {/* CTA og Brukermeny */}
-        <div className="flex-shrink-0 flex items-center space-x-4">
-          {user ? (
-            <>
-              <Link href="/apply">
-                <Button variant="default">Søk om nytt lån</Button>
+        <NavigationMenu>
+          <NavigationMenuList>
+            <NavigationMenuItem>
+              <Link href="/hvordan-det-fungerer">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Hvordan det fungerer
+                </NavigationMenuLink>
               </Link>
-              <NavigationMenu>
-                <NavigationMenuList className="space-x-2">
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/kontakt">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Kontakt
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            {user ? (
+              <>
+                <NavigationMenuItem>
+                  <Link href="/dashboard">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Oversikt
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/apply">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Søk om lån
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                {user.isAdmin && (
                   <NavigationMenuItem>
-                    <Link href="/dashboard">
-                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Min Konto
+                    <Link href="/admin">
+                      <NavigationMenuLink
+                        className={navigationMenuTriggerStyle()}
+                      >
+                        Administrasjon
                       </NavigationMenuLink>
                     </Link>
                   </NavigationMenuItem>
-                  {user.isAdmin && (
-                    <NavigationMenuItem>
-                      <Link href="/admin">
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                          Administrasjon
-                        </NavigationMenuLink>
-                      </Link>
-                    </NavigationMenuItem>
-                  )}
-                  <NavigationMenuItem>
-                    <Button
-                      variant="outline"
-                      onClick={() => logoutMutation.mutate()}
-                      disabled={logoutMutation.isPending}
-                    >
-                      Logg ut
-                    </Button>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-            </>
-          ) : (
-            <Link href="/auth">
-              <Button>Logg inn</Button>
-            </Link>
-          )}
-        </div>
+                )}
+                <NavigationMenuItem>
+                  <Button
+                    variant="outline"
+                    onClick={() => logoutMutation.mutate()}
+                    disabled={logoutMutation.isPending}
+                  >
+                    Logg ut
+                  </Button>
+                </NavigationMenuItem>
+              </>
+            ) : (
+              <NavigationMenuItem>
+                <Link href="/auth">
+                  <Button>Logg inn</Button>
+                </Link>
+              </NavigationMenuItem>
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
       </div>
     </header>
   );
