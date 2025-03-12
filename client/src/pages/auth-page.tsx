@@ -12,12 +12,12 @@ export default function AuthPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const { login, register, isAuthenticated } = useAuth();
+  const { loginMutation, registerMutation, user } = useAuth();
   const [, setLocation] = useLocation();
   const [match] = useRoute("/auth");
 
   // If already authenticated and on auth page, redirect to dashboard
-  if (isAuthenticated && match) {
+  if (user && match) {
     // Use a setTimeout to avoid state updates during render
     setTimeout(() => {
       setLocation("/dashboard");
@@ -27,9 +27,9 @@ export default function AuthPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLogin) {
-      await login({ username, password });
+      await loginMutation.mutateAsync({ username, password });
     } else {
-      await register({ username, password, fullName });
+      await registerMutation.mutateAsync({ username, password, fullName });
     }
   };
 
