@@ -10,12 +10,19 @@
     "popover": "hsl(0, 0%, 9%)",
     "border": "hsl(0, 0%, 15%)",
     "input": "hsl(0, 0%, 12%)",
-    "primary": "hsl(216, 71%, 23%)",
+    "primary": "hsl(216, 71%, 33%)",
     "secondary": "hsl(0, 0%, 13%)",
     "accent": "hsl(216, 71%, 33%)",
     "muted": "hsl(0, 0%, 13%)",
     "muted-foreground": "hsl(0, 0%, 60%)",
     "destructive": "hsl(0, 84%, 60%)",
-    "destructive-foreground": "hsl(0, 0%, 98%)"
+    "destructive-foreground": "hsl(0, 0%, 98%)",
+    "ring": "hsl(216, 71%, 33%)",
+    "background-elevated-1": "hsl(0, 0%, 11%)",
+    "background-elevated-2": "hsl(0, 0%, 13%)",
+    "text-primary": "hsl(0, 0%, 98%)",
+    "text-secondary": "hsl(0, 0%, 87%)",
+    "text-muted": "hsl(0, 0%, 60%)",
+    "text-disabled": "hsl(0, 0%, 38%)"
   }
 }

@@ -11,3 +11,38 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+/* Dark theme specific styles */
+.dark {
+  /* Elevated surfaces get progressively lighter */
+  .bg-elevated-1 {
+    @apply bg-background-elevated-1;
+  }
+
+  .bg-elevated-2 {
+    @apply bg-background-elevated-2;
+  }
+
+  /* Text hierarchy */
+  .text-high-emphasis {
+    @apply text-text-primary;
+  }
+
+  .text-medium-emphasis {
+    @apply text-text-secondary;
+  }
+
+  .text-disabled {
+    @apply text-text-disabled;
+  }
+
+  /* Card and container elevation */
+  .card {
+    @apply bg-card text-text-primary shadow-md;
+  }
+
+  /* Input fields */
+  .input {
+    @apply bg-input text-text-primary border-border;
+  }
+}
