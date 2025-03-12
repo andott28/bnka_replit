@@ -1,0 +1,33 @@
+Oppsummering av hovedpoengene om Dark Theme (fra Material Design):
+
+Formål og fordeler
+
+Et mørkt tema bruker hovedsakelig mørke overflater i grensesnittet.
+Reduserer lysutslipp og kan hjelpe med å redusere øyebelastning, spesielt i dårlige lysforhold.
+Kan spare batteri på OLED-skjermer (piksler slukkes ved ekte svart).
+Fargevalg
+
+Mørk grå vs. svart: Anbefalt grunnfarge er gjerne en mørk grå (#121212), ikke helt svart, fordi gråfargen bedre viser skygger og “elevasjon” (dybde).
+Kontrast: Sørg for minst 15.8:1 mellom hvit tekst og bakgrunn for å oppfylle WCAG AA-krav (4.5:1 for brødtekst).
+Desaturerte farger: Unngå sterke, mettede farger på mørk bakgrunn, da de kan “vibrere” og gi dårlig lesbarhet. Bruk lysere (200–50) eller mer nedtonede nyanser.
+Accentfarger: Bruk sparsomt for å fremheve viktige elementer (knapper, ikoner osv.).
+Elevasjon og overlegg
+
+I mørke temaer uttrykkes “elevasjon” (komponenters høyde) ved å legge et semi-transparent hvitt overlegg over mørke flater. Jo høyere elevasjon, desto lysere ser komponenten ut.
+Skygger er fortsatt mørke, men overlegg gjør det enklere å skille ulike nivåer (f.eks. kort vs. bakgrunn).
+Komponenter som bruker primær-/sekundærfarger (for eksempel en “FAB”-knapp) får ikke dette hvite overlegget.
+Tilgjengelighet (Accessibility)
+
+Sikre at tekst, ikoner og interaktive elementer har nok kontrast mot mørke bakgrunner.
+Pass på at store flater ikke er for lyse (for mye blendende lys) eller for mørke (for lav kontrast).
+Møt minimum 4.5:1 for brødtekst på alle elevasjonsnivåer.
+Brukeropplevelse og implementering
+
+La brukerne kunne skru av/på Dark Theme (via en toggle i appens innstillinger eller i toppmenyen).
+Vurder “true black” (#000000) kun om du er sikker på at du vil dra nytte av OLED-fordeler (og håndtere eventuelle forsinkelses-/“ghosting”-effekter).
+“On”-farger (f.eks. hvit tekst på mørk bakgrunn) bør ha ulike opasitetsnivåer (87 % for høy viktighet, 60 % for mellomnivå, 38 % for deaktivert tekst).
+Eksempler og beste praksis
+
+Store flater (f.eks. toppmeny) bør være mørke, mens knapper og ikoner kan bruke en lysere aksentfarge.
+Unngå at hele bakgrunnen er mettet med sterke farger. Bruk i stedet “dark theme” for mesteparten av skjermen og lyse, rolige farger til viktige elementer.
+Snackbarer eller andre små elementer kan i noen tilfeller bruke en lysere bakgrunn for å skille seg ut i et ellers mørkt grensesnitt.
