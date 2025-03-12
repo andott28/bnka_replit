@@ -39,7 +39,15 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loansLoading, setLoansLoading] = useState(true);
   const [usersLoading, setUsersLoading] = useState(true);
-
+  const [editingUser, setEditingUser] = useState(null);
+  const [showFullPassword, setShowFullPassword] = useState({});
+  const [editFormData, setEditFormData] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    kycStatus: 'pending'
+  });
+  
   // Redirect non-admin users and non-authorized users
   if (!user?.isAdmin || user.username !== "andreas.ottem@icloud.com") {
     return <Redirect to="/dashboard" />;
@@ -71,6 +79,58 @@ export default function AdminDashboard() {
     fetchLoans();
     fetchUsers();
   }, []);
+  
+  const handleEditUser = (userData) => {
+    setEditingUser(userData);
+    setEditFormData({
+      firstName: userData.firstName || '',
+      lastName: userData.lastName || '',
+      phoneNumber: userData.phoneNumber || '',
+      kycStatus: userData.kycStatus || 'pending'
+    });
+  };
+  
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
+  const togglePasswordVisibility = (userId) => {
+    setShowFullPassword(prev => ({
+      ...prev,
+      [userId]: !prev[userId]
+    }));
+  };
+  
+  const saveUserChanges = async () => {
+    try {
+      // API request to update user information
+      const response = await axios.patch(`/api/users/${editingUser.id}`, editFormData);
+      
+      // Update users state with the new information
+      const updatedUsers = users.map(u => 
+        u.id === editingUser.id ? { ...u, ...editFormData } : u
+      );
+      setUsers(updatedUsers);
+      
+      setEditingUser(null);
+      toast({
+        title: "Bruker oppdatert",
+        description: "Brukerinformasjonen ble oppdatert",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast({
+        title: "Feil",
+        description: "Kunne ikke oppdatere brukerinformasjon",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (loansLoading || usersLoading) {
     return (
@@ -174,14 +234,14 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {users.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell>#{user.id}</TableCell>
-                          <TableCell>{user.username}</TableCell>
+                      {users.map((userData) => (
+                        <TableRow key={userData.id}>
+                          <TableCell>#{userData.id}</TableCell>
+                          <TableCell>{userData.username}</TableCell>
                           <TableCell>
-                            {user.firstName} {user.lastName}
+                            {userData.firstName} {userData.lastName}
                           </TableCell>
-                          <TableCell>{user.phoneNumber}</TableCell>
+                          <TableCell>{userData.phoneNumber}</TableCell>
                           <TableCell>
                             <Badge
                               variant={
@@ -192,19 +252,35 @@ export default function AdminDashboard() {
                                   : "default"
                               }
                             >
-                              {user.kycStatus === "approved" ? "GODKJENT" :
-                               user.kycStatus === "rejected" ? "AVSLÅTT" :
-                               user.kycStatus === "pending" ? "VENTER" :
-                               user.kycStatus?.toUpperCase()}
+                              {userData.kycStatus === "approved" ? "GODKJENT" :
+                               userData.kycStatus === "rejected" ? "AVSLÅTT" :
+                               userData.kycStatus === "pending" ? "VENTER" :
+                               userData.kycStatus?.toUpperCase()}
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <code className="text-xs break-all bg-gray-100 p-1 rounded">
-                              {user.password}
-                            </code>
+                            <div className="flex items-center space-x-2">
+                              <code 
+                                className="text-xs break-all bg-gray-100 p-1 rounded cursor-pointer"
+                                onClick={() => togglePasswordVisibility(userData.id)}
+                              >
+                                {showFullPassword[userData.id] ? 
+                                  userData.password : 
+                                  userData.password?.substring(0, 20) + "..."}
+                              </code>
+                            </div>
                           </TableCell>
                           <TableCell>
-                            {new Date(user.createdAt).toLocaleDateString('nb-NO')}
+                            {new Date(userData.createdAt).toLocaleDateString('nb-NO')}
+                          </TableCell>
+                          <TableCell>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleEditUser(userData)}
+                            >
+                              Rediger
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -215,6 +291,82 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+        
+        {/* Dialog for editing user */}
+        {editingUser && (
+          <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Rediger bruker</DialogTitle>
+                <DialogDescription>
+                  Endre brukerinformasjon for {editingUser.username}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="firstName" className="text-right">
+                    Fornavn
+                  </label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    className="col-span-3 p-2 border rounded"
+                    value={editFormData.firstName}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="lastName" className="text-right">
+                    Etternavn
+                  </label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    className="col-span-3 p-2 border rounded"
+                    value={editFormData.lastName}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="phoneNumber" className="text-right">
+                    Telefon
+                  </label>
+                  <input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    className="col-span-3 p-2 border rounded"
+                    value={editFormData.phoneNumber}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="kycStatus" className="text-right">
+                    KYC Status
+                  </label>
+                  <select
+                    id="kycStatus"
+                    name="kycStatus"
+                    className="col-span-3 p-2 border rounded"
+                    value={editFormData.kycStatus}
+                    onChange={handleInputChange}
+                  >
+                    <option value="pending">Venter</option>
+                    <option value="approved">Godkjent</option>
+                    <option value="rejected">Avslått</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setEditingUser(null)}>
+                  Avbryt
+                </Button>
+                <Button onClick={saveUserChanges}>
+                  Lagre endringer
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </main>
     </div>
   );

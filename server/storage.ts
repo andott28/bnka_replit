@@ -25,6 +25,7 @@ export interface IStorage {
   getTransactionsByAccountId(accountId: number): Promise<Transaction[]>;
   getAllUsers(): Promise<User[]>; // Added method to get all users
   updateUserKycStatus(userId: number, kycStatus: string): Promise<User | undefined>; // Added method to update KYC status
+  updateUserInfo(userId: number, userData: { firstName?: string; lastName?: string; phoneNumber?: string; kycStatus?: string }): Promise<User | undefined>; //Added method to update user info
   sessionStore: session.Store;
 }
 
@@ -107,12 +108,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserKycStatus(userId: number, kycStatus: string): Promise<User | undefined> {
-    const [updatedUser] = await db
-      .update(users)
-      .set({ kycStatus })
-      .where(eq(users.id, userId))
-      .returning();
-    return updatedUser;
+    try {
+      const [updatedUser] = await db
+        .update(users)
+        .set({ kycStatus })
+        .where(eq(users.id, userId))
+        .returning();
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating user KYC status:", error);
+      return null;
+    }
+  }
+
+  async updateUserInfo(userId: number, userData: { 
+    firstName?: string, 
+    lastName?: string, 
+    phoneNumber?: string, 
+    kycStatus?: string 
+  }): Promise<User | undefined> {
+    try {
+      const [updatedUser] = await db
+        .update(users)
+        .set(userData)
+        .where(eq(users.id, userId))
+        .returning();
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating user information:", error);
+      return null;
+    }
   }
 }
 

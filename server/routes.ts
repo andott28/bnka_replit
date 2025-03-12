@@ -83,6 +83,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     res.json(updated);
   });
+  
+  // Endpoint for updating user information
+  app.patch("/api/users/:id", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+
+    const userId = parseInt(req.params.id);
+    const { firstName, lastName, phoneNumber, kycStatus } = req.body;
+    
+    try {
+      // Update user information
+      const updatedUser = await storage.updateUserInfo(userId, {
+        firstName,
+        lastName,
+        phoneNumber,
+        kycStatus
+      });
+      
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: "Failed to update user information" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
