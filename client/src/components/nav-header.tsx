@@ -33,12 +33,6 @@ export function NavHeader() {
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Produkter og tjenester
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
             <Link href="/apply">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Søk om nytt lån
@@ -97,6 +91,58 @@ export function NavHeader() {
     </>
   );
 
+  const MobileNavItems = () => (
+    <>
+      {user ? (
+        <>
+          <Link href="/">
+            <Button variant="ghost" className="w-full justify-start">
+              Hjem
+            </Button>
+          </Link>
+          <Link href="/apply">
+            <Button variant="ghost" className="w-full justify-start">
+              Søk om nytt lån
+            </Button>
+          </Link>
+          <Link href="/dashboard">
+            <Button variant="ghost" className="w-full justify-start">
+              Min side
+            </Button>
+          </Link>
+          {user.isAdmin && (
+            <Link href="/admin">
+              <Button variant="ghost" className="w-full justify-start">
+                Administrasjon
+              </Button>
+            </Link>
+          )}
+        </>
+      ) : (
+        <>
+          <Link href="/">
+            <Button variant="ghost" className="w-full justify-start">
+              Hjem
+            </Button>
+          </Link>
+          <Link href="/hvordan-det-fungerer">
+            <Button variant="ghost" className="w-full justify-start">
+              Hvordan Det Fungerer
+            </Button>
+          </Link>
+          <Link href="/kontakt">
+            <Button variant="ghost" className="w-full justify-start">
+              Kontakt
+            </Button>
+          </Link>
+          <Link href="/auth">
+            <Button className="w-full">Logg inn</Button>
+          </Link>
+        </>
+      )}
+    </>
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
@@ -126,7 +172,7 @@ export function NavHeader() {
               <SheetTitle>Meny</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-4 mt-4">
-              <NavItems />
+              <MobileNavItems />
             </nav>
           </SheetContent>
         </Sheet>
