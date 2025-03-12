@@ -16,9 +16,9 @@ export function NavHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/">
-          <Button variant="link" className="text-2xl font-bold text-primary p-0">
-            BNKA
-          </Button>
+          <div className="h-8">
+            <img src="/attached_assets/bnkaLogo1.png" alt="BNKA Logo" className="h-full" />
+          </div>
         </Link>
 
         <NavigationMenu>
@@ -26,14 +26,14 @@ export function NavHeader() {
             <NavigationMenuItem>
               <Link href="/hvordan-det-fungerer">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Hvordan det fungerer
+                  Produkter og Tjenester
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <Link href="/kontakt">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Kontakt
+                  Kontakt Oss
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -42,14 +42,14 @@ export function NavHeader() {
                 <NavigationMenuItem>
                   <Link href="/dashboard">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Oversikt
+                      Min Konto
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <Link href="/apply">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Søk om lån
+                      Søk Lån
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>

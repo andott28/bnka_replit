@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { NavHeader } from "@/components/nav-header";
 import { Link } from "wouter";
-import { 
-  CreditCard, 
-  Shield, 
+import {
+  CreditCard,
+  Shield,
   Clock,
   ArrowRight
 } from "lucide-react";
 
 export default function HomePage() {
+  const user = true; // Replace with actual user authentication state
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavHeader />
@@ -101,22 +103,40 @@ export default function HomePage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Hurtiglenker</h3>
               <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
-                  </Link>
-                </li>
+                {user ? (
+                  <>
+                    <li>
+                      <Link href="/dashboard">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Min Konto</Button>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/apply">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Søk Lån</Button>
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link href="/auth">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/auth">
+                        <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
+                      </Link>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
               <p className="text-gray-400">
-                Trenger du hjelp? Kontakt vårt supportteam.
+                Trenger du hjelp?<br />
+                Ta kontakt med vårt supportteam.
               </p>
             </div>
           </div>
