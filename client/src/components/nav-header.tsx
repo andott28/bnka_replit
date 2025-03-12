@@ -13,7 +13,7 @@ export function NavHeader() {
   const { user, logoutMutation } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link href="/">
@@ -70,15 +70,6 @@ export function NavHeader() {
                     </Link>
                   </NavigationMenuItem>
                 )}
-                <NavigationMenuItem>
-                  <Button
-                    variant="outline"
-                    onClick={() => logoutMutation.mutate()}
-                    disabled={logoutMutation.isPending}
-                  >
-                    Logg ut
-                  </Button>
-                </NavigationMenuItem>
               </>
             ) : (
               <>

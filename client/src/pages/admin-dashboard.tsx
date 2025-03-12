@@ -58,13 +58,13 @@ export default function AdminDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans/all"] });
       toast({
-        title: "Status Updated",
-        description: "The loan application status has been updated successfully.",
+        title: "Status oppdatert",
+        description: "Lånesøknadens status er oppdatert.",
       });
     },
     onError: (error: Error) => {
       toast({
-        title: "Error",
+        title: "Feil",
         description: error.message,
         variant: "destructive",
       });
@@ -101,14 +101,14 @@ export default function AdminDashboard() {
       <main className="container mx-auto px-4 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Loan Applications Management</CardTitle>
+            <CardTitle>Administrasjon av lånesøknader</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 mb-6">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Search by ID or purpose..."
+                  placeholder="Søk på ID eller formål..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-9"
@@ -119,13 +119,13 @@ export default function AdminDashboard() {
                 onValueChange={setStatusFilter}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder="Filtrer på status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="all">Alle statuser</SelectItem>
+                  <SelectItem value="pending">Under behandling</SelectItem>
+                  <SelectItem value="approved">Godkjent</SelectItem>
+                  <SelectItem value="rejected">Avslått</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -135,22 +135,22 @@ export default function AdminDashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Purpose</TableHead>
-                    <TableHead>Income</TableHead>
-                    <TableHead>Employment</TableHead>
+                    <TableHead>Beløp</TableHead>
+                    <TableHead>Formål</TableHead>
+                    <TableHead>Inntekt</TableHead>
+                    <TableHead>Ansettelse</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>Innsendt</TableHead>
+                    <TableHead>Handlinger</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredLoans?.map((loan) => (
                     <TableRow key={loan.id}>
                       <TableCell>#{loan.id}</TableCell>
-                      <TableCell>${loan.amount.toLocaleString()}</TableCell>
+                      <TableCell>{new Intl.NumberFormat('nb-NO').format(loan.amount)} NOK</TableCell>
                       <TableCell>{loan.purpose}</TableCell>
-                      <TableCell>${loan.income.toLocaleString()}</TableCell>
+                      <TableCell>{new Intl.NumberFormat('nb-NO').format(loan.income)} NOK</TableCell>
                       <TableCell>{loan.employmentStatus}</TableCell>
                       <TableCell>
                         <Badge
@@ -162,11 +162,14 @@ export default function AdminDashboard() {
                               : "default"
                           }
                         >
-                          {loan.status.toUpperCase()}
+                          {loan.status === "approved" ? "GODKJENT" : 
+                           loan.status === "rejected" ? "AVSLÅTT" : 
+                           loan.status === "pending" ? "UNDER BEHANDLING" : 
+                           loan.status.toUpperCase()}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {new Date(loan.submittedAt).toLocaleDateString()}
+                        {new Date(loan.submittedAt).toLocaleDateString('nb-NO')}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -184,7 +187,7 @@ export default function AdminDashboard() {
                               updateStatusMutation.isPending
                             }
                           >
-                            Approve
+                            Godkjenn
                           </Button>
                           <Button
                             size="sm"
@@ -200,7 +203,7 @@ export default function AdminDashboard() {
                               updateStatusMutation.isPending
                             }
                           >
-                            Reject
+                            Avslå
                           </Button>
                         </div>
                       </TableCell>
@@ -212,7 +215,7 @@ export default function AdminDashboard() {
                         colSpan={8}
                         className="h-24 text-center text-gray-500"
                       >
-                        No loan applications found
+                        Ingen lånesøknader funnet
                       </TableCell>
                     </TableRow>
                   )}

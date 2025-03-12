@@ -23,10 +23,20 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Building2, Lock, UserPlus } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function AuthPage() {
   const { loginMutation, registerMutation, user } = useAuth();
   const [, setLocation] = useLocation();
+  const [showForeignDialog, setShowForeignDialog] = useState(false);
 
   const loginForm = useForm({
     resolver: zodResolver(insertUserSchema),
@@ -41,6 +51,9 @@ export default function AuthPage() {
     defaultValues: {
       username: "",
       password: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
     },
   });
 
@@ -135,12 +148,51 @@ export default function AuthPage() {
                     >
                       <FormField
                         control={registerForm.control}
+                        name="firstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Fornavn</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
+                        name="lastName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Etternavn</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
                         name="username"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>E-post</FormLabel>
                             <FormControl>
                               <Input type="email" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={registerForm.control}
+                        name="phoneNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Telefonnummer</FormLabel>
+                            <FormControl>
+                              <Input type="tel" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -168,6 +220,14 @@ export default function AuthPage() {
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         )}
                         Opprett konto
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="link"
+                        className="w-full text-gray-500"
+                        onClick={() => setShowForeignDialog(true)}
+                      >
+                        Har du ikke et norsk telefonnummer? Klikk her
                       </Button>
                     </form>
                   </Form>
@@ -205,6 +265,24 @@ export default function AuthPage() {
           </div>
         </div>
       </div>
+
+      {/* Dialog for foreign users */}
+      <Dialog open={showForeignDialog} onOpenChange={setShowForeignDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Alternativ registrering</DialogTitle>
+            <DialogDescription>
+              Denne funksjonen er under utvikling og vil være tilgjengelig snart. 
+              Vi jobber med å gjøre det mulig for kunder uten norsk telefonnummer å registrere seg.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setShowForeignDialog(false)}>
+              Tilbake til registrering
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

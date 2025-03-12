@@ -6,6 +6,9 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  phoneNumber: text("phone_number"),
   isAdmin: boolean("is_admin").notNull().default(false),
   bankAccountId: text("bank_account_id"),
   kycStatus: text("kyc_status").default("pending"),
@@ -65,7 +68,10 @@ export const transactions = pgTable("transactions", {
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
-  password: true
+  password: true,
+  firstName: true,
+  lastName: true,
+  phoneNumber: true
 });
 
 export const insertLoanApplicationSchema = createInsertSchema(loanApplications).pick({
