@@ -27,6 +27,15 @@ export function NavHeader() {
           <NavigationMenuList className="gap-2">
             {user ? (
               <>
+                {/* Hjem */}
+                <NavigationMenuItem>
+                  <Link href="/">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Hjem
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+
                 {/* Produkter og tjenester */}
                 <NavigationMenuItem>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -37,9 +46,9 @@ export function NavHeader() {
                 {/* CTA - Søk om lån */}
                 <NavigationMenuItem>
                   <Link href="/apply">
-                    <Button variant="default" className="font-semibold">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                       Søk om nytt lån
-                    </Button>
+                    </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
 
@@ -47,7 +56,7 @@ export function NavHeader() {
                 <NavigationMenuItem>
                   <Link href="/dashboard">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Min konto
+                      Min side
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>
@@ -61,7 +70,6 @@ export function NavHeader() {
                     </Link>
                   </NavigationMenuItem>
                 )}
-
                 <NavigationMenuItem>
                   <Button
                     variant="outline"
@@ -75,9 +83,16 @@ export function NavHeader() {
             ) : (
               <>
                 <NavigationMenuItem>
+                  <Link href="/">
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Hjem
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
                   <Link href="/hvordan-det-fungerer">
                     <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Slik fungerer det
+                      Hvordan Det Fungerer
                     </NavigationMenuLink>
                   </Link>
                 </NavigationMenuItem>

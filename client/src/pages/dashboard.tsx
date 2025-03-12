@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import type { LoanApplication } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Dashboard() {
   const { data: loans, isLoading } = useQuery<LoanApplication[]>({
     queryKey: ["/api/loans"],
   });
+  const { logoutMutation } = useAuth();
 
   const formatNOK = (value: number) => {
     return new Intl.NumberFormat('nb-NO').format(value) + " NOK";
@@ -32,67 +34,97 @@ export default function Dashboard() {
       <NavHeader />
 
       <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Min Konto</h1>
-          <Link href="/apply">
-            <Button>Søk om nytt lån</Button>
-          </Link>
-        </div>
+        <h1 className="text-3xl font-bold mb-8">Min Side</h1>
 
+        {/* Kontooversikt */}
         <div className="grid gap-6">
-          {loans?.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6">
-                <p className="text-center text-gray-600">
-                  Du har ingen lånesøknader ennå.
+          <Card>
+            <CardHeader>
+              <CardTitle>Kontooversikt</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <h3 className="text-sm text-gray-500">Total Saldo</h3>
+                  <p className="text-2xl font-semibold text-green-600">0 NOK</p>
+                </div>
+                <div>
+                  <h3 className="text-sm text-gray-500">Tilgjengelig Kreditt</h3>
+                  <p className="text-2xl font-semibold">0 NOK</p>
+                </div>
+                <div>
+                  <h3 className="text-sm text-gray-500">Neste Forfallsdato</h3>
+                  <p className="text-2xl font-semibold">Ingen</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Transaksjonslogg */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Transaksjonslogg</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p className="text-gray-500 text-center py-4">
+                  Ingen transaksjoner å vise
                 </p>
-              </CardContent>
-            </Card>
-          ) : (
-            loans?.map((loan) => (
-              <Card key={loan.id}>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <CardTitle>Lånesøknad #{loan.id}</CardTitle>
-                    <Badge
-                      variant={
-                        loan.status === "approved"
-                          ? "secondary"
-                          : loan.status === "rejected"
-                          ? "destructive"
-                          : "default"
-                      }
-                    >
-                      {loan.status === "approved" ? "GODKJENT" : 
-                       loan.status === "rejected" ? "AVSLÅTT" : 
-                       loan.status === "pending" ? "UNDER BEHANDLING" : 
-                       loan.status.toUpperCase()}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Beløp:</span>
-                      <span className="font-medium">
-                        {formatNOK(loan.amount)}
-                      </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Lånesøknader */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Mine Lånesøknader</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loans?.length === 0 ? (
+                <p className="text-gray-500 text-center">
+                  Du har ingen lånesøknader ennå
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {loans?.map((loan) => (
+                    <div key={loan.id} className="flex justify-between items-center border-b pb-4">
+                      <div>
+                        <p className="font-medium">Lånesøknad #{loan.id}</p>
+                        <p className="text-sm text-gray-500">{formatNOK(loan.amount)}</p>
+                      </div>
+                      <Badge
+                        variant={
+                          loan.status === "approved"
+                            ? "secondary"
+                            : loan.status === "rejected"
+                            ? "destructive"
+                            : "default"
+                        }
+                      >
+                        {loan.status === "approved" ? "GODKJENT" : 
+                         loan.status === "rejected" ? "AVSLÅTT" : 
+                         loan.status === "pending" ? "UNDER BEHANDLING" : 
+                         loan.status.toUpperCase()}
+                      </Badge>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Formål:</span>
-                      <span className="font-medium">{loan.purpose}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Innsendt:</span>
-                      <span className="font-medium">
-                        {new Date(loan.submittedAt).toLocaleDateString('nb-NO')}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Logg ut knapp */}
+          <Button
+            variant="outline"
+            onClick={() => logoutMutation.mutate()}
+            disabled={logoutMutation.isPending}
+            className="mt-4"
+          >
+            {logoutMutation.isPending && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Logg ut
+          </Button>
         </div>
       </main>
     </div>
