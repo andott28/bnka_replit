@@ -28,6 +28,14 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import axios from 'axios';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -47,7 +55,7 @@ export default function AdminDashboard() {
     phoneNumber: '',
     kycStatus: 'pending'
   });
-  
+
   // Redirect non-admin users and non-authorized users
   if (!user?.isAdmin || user.username !== "andreas.ottem@icloud.com") {
     return <Redirect to="/dashboard" />;
@@ -79,7 +87,7 @@ export default function AdminDashboard() {
     fetchLoans();
     fetchUsers();
   }, []);
-  
+
   const handleEditUser = (userData) => {
     setEditingUser(userData);
     setEditFormData({
@@ -89,7 +97,7 @@ export default function AdminDashboard() {
       kycStatus: userData.kycStatus || 'pending'
     });
   };
-  
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditFormData(prev => ({
@@ -97,25 +105,25 @@ export default function AdminDashboard() {
       [name]: value
     }));
   };
-  
+
   const togglePasswordVisibility = (userId) => {
     setShowFullPassword(prev => ({
       ...prev,
       [userId]: !prev[userId]
     }));
   };
-  
+
   const saveUserChanges = async () => {
     try {
       // API request to update user information
       const response = await axios.patch(`/api/users/${editingUser.id}`, editFormData);
-      
+
       // Update users state with the new information
       const updatedUsers = users.map(u => 
         u.id === editingUser.id ? { ...u, ...editFormData } : u
       );
       setUsers(updatedUsers);
-      
+
       setEditingUser(null);
       toast({
         title: "Bruker oppdatert",
@@ -291,7 +299,7 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
-        
+
         {/* Dialog for editing user */}
         {editingUser && (
           <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
