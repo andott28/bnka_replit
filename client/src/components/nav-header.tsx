@@ -33,28 +33,19 @@ export function NavHeader() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/kontakt">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Kontakt Oss
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
 
         {/* CTA og Brukermeny */}
-        <div className="flex-shrink-0 flex items-center gap-4">
+        <div className="flex-shrink-0 flex items-center space-x-4">
           {user ? (
             <>
               <Link href="/apply">
-                <Button variant="default">
-                  Søk om nytt lån
-                </Button>
+                <Button variant="default">Søk om nytt lån</Button>
               </Link>
               <NavigationMenu>
-                <NavigationMenuList>
+                <NavigationMenuList className="space-x-2">
                   <NavigationMenuItem>
                     <Link href="/dashboard">
                       <NavigationMenuLink className={navigationMenuTriggerStyle()}>
