@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -22,9 +22,14 @@ export const loanApplications = pgTable("loan_applications", {
   purpose: text("purpose").notNull(),
   income: integer("income").notNull(),
   employmentStatus: text("employment_status").notNull(),
-  monthlyExpenses: integer("monthly_expenses"),
-  existingLoans: integer("existing_loans"),
-  creditScore: integer("credit_score"),
+  birthDate: date("birth_date").notNull(),
+  address: text("address").notNull(),
+  monthlyExpenses: integer("monthly_expenses").notNull(),
+  outstandingDebt: integer("outstanding_debt").notNull(),
+  assets: text("assets").notNull(),
+  additionalInfo: text("additional_info"),
+  hasConsented: boolean("has_consented").notNull().default(false),
+  idVerified: boolean("id_verified").notNull().default(false),
   status: text("status").notNull().default("pending"),
   submittedAt: timestamp("submitted_at").notNull().defaultNow()
 });
@@ -79,9 +84,13 @@ export const insertLoanApplicationSchema = createInsertSchema(loanApplications).
   purpose: true,
   income: true,
   employmentStatus: true,
+  birthDate: true,
+  address: true,
   monthlyExpenses: true,
-  existingLoans: true,
-  creditScore: true
+  outstandingDebt: true,
+  assets: true,
+  additionalInfo: true,
+  hasConsented: true
 });
 
 export const insertBankAccountSchema = createInsertSchema(bankAccounts).pick({
