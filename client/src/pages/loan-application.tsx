@@ -28,17 +28,32 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import * as z from 'zod'; // Added import for z.boolean()
+import * as z from 'zod';
+import { DatePicker } from "@/components/ui/date-picker";
+import { addYears, format, isAfter, isBefore, parseISO } from "date-fns";
+import { nb } from "date-fns/locale";
+import { useState } from "react";
+import { BankIDDialog } from "@/components/bankid-dialog";
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showBankID, setShowBankID] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(
       insertLoanApplicationSchema.extend({
         birthDate: insertLoanApplicationSchema.shape.birthDate
-          .refine((date) => new Date(date) < new Date(), "Fødselsdato må være i fortiden"),
+          .refine(
+            (date) => {
+              const parsedDate = parseISO(date);
+              const eighteenYearsAgo = addYears(new Date(), -18);
+              return isBefore(parsedDate, eighteenYearsAgo);
+            },
+            "Du må være minst 18 år for å søke om lån"
+          ),
         address: insertLoanApplicationSchema.shape.address
           .min(5, "Vennligst oppgi en gyldig adresse"),
         amount: insertLoanApplicationSchema.shape.amount
@@ -94,6 +109,50 @@ export default function LoanApplication() {
     return new Intl.NumberFormat('nb-NO').format(value);
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Feil",
+          description: "Filen er for stor. Maksimal størrelse er 10MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+      if (!validTypes.includes(file.type)) {
+        toast({
+          title: "Feil",
+          description: "Ugyldig filformat. Kun PNG, JPG og PDF er tillatt.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedFile(file);
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUrl(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setPreviewUrl(null);
+      }
+    }
+  };
+
+  const handleBankIDSuccess = (data: { personalNumber: string; name: string }) => {
+    toast({
+      title: "Identitet bekreftet",
+      description: `Velkommen ${data.name}`,
+    });
+    // Here you would typically update the form with the verified information
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NavHeader />
@@ -104,7 +163,7 @@ export default function LoanApplication() {
             <CardTitle>Kredittvurdering</CardTitle>
             <CardDescription className="space-y-4 mt-4">
               <p>
-                Takk for at du søker om lån hos oss. For å behandle søknaden din, trenger vi informasjon om din økonomiske situasjon. 
+                Takk for at du søker om lån hos oss. For å behandle søknaden din, trenger vi informasjon om din økonomiske situasjon.
                 Vennligst oppgi nøyaktig og fullstendig informasjon etter beste evne.
               </p>
               <p className="text-sm text-muted-foreground">
@@ -125,11 +184,22 @@ export default function LoanApplication() {
                     control={form.control}
                     name="birthDate"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Fødselsdato *</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <DatePicker
+                            selected={field.value ? parseISO(field.value) : undefined}
+                            onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+                            disabled={(date) => isAfter(date, addYears(new Date(), -18))}
+                            locale={nb}
+                            captionLayout="dropdown"
+                            fromYear={1940}
+                            toYear={addYears(new Date(), -18).getFullYear()}
+                          />
                         </FormControl>
+                        <FormDescription>
+                          Du må være minst 18 år for å søke om lån
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -332,16 +402,96 @@ export default function LoanApplication() {
 
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium">Verifisering</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    For å sikre en trygg og effektiv behandling av din søknad, trenger vi å verifisere din identitet.
+                    Du kan velge mellom å laste opp legitimasjon eller logge inn med BankID.
+                  </p>
 
                   <div className="space-y-4">
-                    <Button type="button" className="w-full" variant="outline">
-                      <Upload className="mr-2 h-4 w-4" />
-                      Last opp legitimasjon
-                    </Button>
+                    <FormField
+                      control={form.control}
+                      name="idDocument"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Last opp legitimasjon</FormLabel>
+                          <FormControl>
+                            <div className="space-y-4">
+                              <div className="flex items-center gap-4">
+                                <Input
+                                  type="file"
+                                  accept="image/*,.pdf"
+                                  onChange={handleFileSelect}
+                                  className="hidden"
+                                  id="id-upload"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  className="w-full"
+                                  onClick={() => document.getElementById('id-upload')?.click()}
+                                >
+                                  <Upload className="mr-2 h-4 w-4" />
+                                  {selectedFile ? selectedFile.name : "Last opp legitimasjon"}
+                                </Button>
+                              </div>
 
-                    <Button type="button" className="w-full" variant="outline">
+                              {previewUrl && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-medium mb-2">Forhåndsvisning:</p>
+                                  <div className="relative aspect-video w-full max-w-sm mx-auto border rounded-lg overflow-hidden">
+                                    <img
+                                      src={previewUrl}
+                                      alt="Forhåndsvisning"
+                                      className="object-contain w-full h-full"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+
+                              {selectedFile?.type === 'application/pdf' && (
+                                <p className="text-sm text-muted-foreground">
+                                  PDF valgt: {selectedFile.name}
+                                </p>
+                              )}
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            Aksepterte formater: PNG, JPG, PDF. Maks størrelse: 10MB
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                          eller
+                        </span>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setShowBankID(true)}
+                    >
+                      <img
+                        src="/attached_assets/bankid-logo.svg"
+                        alt="BankID"
+                        className="mr-2 h-4"
+                      />
                       Logg inn med BankID
                     </Button>
+                    <BankIDDialog
+                      open={showBankID}
+                      onOpenChange={setShowBankID}
+                      onSuccess={handleBankIDSuccess}
+                    />
                   </div>
                 </div>
 
