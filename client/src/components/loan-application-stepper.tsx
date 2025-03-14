@@ -44,8 +44,11 @@ export function LoanApplicationStepper({
 }: LoanApplicationStepperProps) {
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto', p: 2 }}>
-      <Typography variant="h4" sx={{ mb: 4, textAlign: 'center' }}>
-        Søk om nytt lån
+      <Typography variant="h4" sx={{ mb: 2, textAlign: 'center', fontWeight: 'bold', color: 'primary.main' }}>
+        Personlig lånefinansiering
+      </Typography>
+      <Typography variant="subtitle1" sx={{ mb: 4, textAlign: 'center', color: 'text.secondary' }}>
+        Enkelt, trygt og tilpasset dine behov
       </Typography>
 
       <Stepper 

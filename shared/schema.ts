@@ -22,7 +22,7 @@ export const loanApplications = pgTable("loan_applications", {
   purpose: text("purpose").notNull(),
   income: integer("income").notNull(),
   employmentStatus: text("employment_status").notNull(),
-  birthDate: date("birth_date").notNull(),
+  birthDate: date("birth_date"), // Gjort frivillig
   street: text("street").notNull(),
   postalCode: text("postal_code").notNull(),
   city: text("city").notNull(),

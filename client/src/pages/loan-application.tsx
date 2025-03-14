@@ -37,15 +37,7 @@ export default function LoanApplication() {
   const form = useForm({
     resolver: zodResolver(
       insertLoanApplicationSchema.extend({
-        birthDate: insertLoanApplicationSchema.shape.birthDate
-          .refine(
-            (date) => {
-              const parsedDate = parseISO(date);
-              const eighteenYearsAgo = addYears(new Date(), -18);
-              return isBefore(parsedDate, eighteenYearsAgo);
-            },
-            "Du må være minst 18 år for å søke om lån"
-          ),
+        // Fjernet birthDate validering
         street: z.string().min(5, "Vennligst oppgi en gyldig gateadresse"),
         postalCode: z.string().length(4, "Postnummer må være 4 siffer"),
         city: z.string().min(2, "Vennligst oppgi en gyldig by"),
@@ -66,7 +58,7 @@ export default function LoanApplication() {
       purpose: "",
       income: undefined,
       employmentStatus: "",
-      birthDate: "",
+      birthDate: undefined, // Fjernet default verdi
       street: "",
       postalCode: "",
       city: "",
@@ -162,24 +154,8 @@ export default function LoanApplication() {
 
   const PersonalInfoStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <FormControl fullWidth>
-        <DatePicker
-          date={form.watch("birthDate") ? parseISO(form.watch("birthDate")) : undefined}
-          onSelect={(date) => form.setValue("birthDate", date ? format(date, 'yyyy-MM-dd') : '')}
-          disabled={(date) => isAfter(date, addYears(new Date(), -18))}
-          locale={nb}
-          captionLayout="dropdown"
-          fromYear={1940}
-          toYear={addYears(new Date(), -18).getFullYear()}
-          label="Fødselsdato *"
-          error={!!form.formState.errors.birthDate}
-          helperText={form.formState.errors.birthDate?.message?.toString()}
-        />
-        <FormHelperText>
-          Du må være minst 18 år for å søke om lån
-        </FormHelperText>
-      </FormControl>
-
+      {/* Fødselsdatofeltet er fjernet */}
+      
       <TextField
         fullWidth
         label="Gateadresse *"
@@ -187,33 +163,68 @@ export default function LoanApplication() {
         error={!!form.formState.errors.street}
         helperText={form.formState.errors.street?.message}
         {...form.register("street")}
+        variant="outlined"
+        InputProps={{
+          sx: { 
+            borderRadius: 2,
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'primary.main',
+            },
+          }
+        }}
       />
 
-      <TextField
-        fullWidth
-        label="Postnummer *"
-        placeholder="1234"
-        error={!!form.formState.errors.postalCode}
-        helperText={form.formState.errors.postalCode?.message}
-        {...form.register("postalCode")}
-      />
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <TextField
+          fullWidth
+          label="Postnummer *"
+          placeholder="1234"
+          error={!!form.formState.errors.postalCode}
+          helperText={form.formState.errors.postalCode?.message}
+          {...form.register("postalCode")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
 
-      <TextField
-        fullWidth
-        label="Poststed *"
-        placeholder="F.eks. Oslo"
-        error={!!form.formState.errors.city}
-        helperText={form.formState.errors.city?.message}
-        {...form.register("city")}
-      />
+        <TextField
+          fullWidth
+          label="Poststed *"
+          placeholder="F.eks. Oslo"
+          error={!!form.formState.errors.city}
+          helperText={form.formState.errors.city?.message}
+          {...form.register("city")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </Box>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth variant="outlined">
         <InputLabel id="employment-status-label">Ansettelsesforhold *</InputLabel>
         <Select
           labelId="employment-status-label"
           label="Ansettelsesforhold *"
           error={!!form.formState.errors.employmentStatus}
           {...form.register("employmentStatus")}
+          sx={{ 
+            borderRadius: 2,
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'primary.main',
+            },
+          }}
         >
           <MenuItem value="fast">Fast ansatt</MenuItem>
           <MenuItem value="midlertidig">Midlertidig ansatt</MenuItem>
@@ -233,63 +244,99 @@ export default function LoanApplication() {
 
   const FinancialInfoStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <TextField
-        fullWidth
-        label="Årsinntekt (NOK) *"
-        type="number"
-        error={!!form.formState.errors.income}
-        helperText={form.formState.errors.income?.message}
-        {...form.register("income")}
-      />
-      <FormHelperText>Minimum årsinntekt: 200 000 kr</FormHelperText>
-
-      <TextField
-        fullWidth
-        label="Månedlige utgifter (NOK) *"
-        type="number"
-        error={!!form.formState.errors.monthlyExpenses}
-        helperText={form.formState.errors.monthlyExpenses?.message}
-        {...form.register("monthlyExpenses")}
-      />
-
-      <TextField
-        fullWidth
-        label="Utestående gjeld (NOK) *"
-        type="number"
-        error={!!form.formState.errors.outstandingDebt}
-        helperText={form.formState.errors.outstandingDebt?.message}
-        {...form.register("outstandingDebt")}
-      />
-      <FormHelperText>Inkluder alle lån og kreditt</FormHelperText>
-
-      <TextField
-        fullWidth
-        label="Eiendeler *"
-        multiline
-        rows={4}
-        placeholder="Beskriv dine eiendeler (eiendom, sparepenger, investeringer, etc.)"
-        error={!!form.formState.errors.assets}
-        helperText={form.formState.errors.assets?.message}
-        {...form.register("assets")}
-      />
-
-      <TextField
-        fullWidth
-        label="Ønsket lånebeløp (NOK) *"
-        type="number"
-        error={!!form.formState.errors.amount}
-        helperText={form.formState.errors.amount?.message}
-        {...form.register("amount")}
-      />
-      <FormHelperText>Beløp mellom 10 000 kr og 1 000 000 kr</FormHelperText>
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Årsinntekt (NOK) *"
+          type="number"
+          error={!!form.formState.errors.income}
+          helperText={form.formState.errors.income?.message || "Minimum årsinntekt: 200 000 kr"}
+          {...form.register("income")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </FormControl>
 
       <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Månedlige utgifter (NOK) *"
+          type="number"
+          error={!!form.formState.errors.monthlyExpenses}
+          helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
+          {...form.register("monthlyExpenses")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Utestående gjeld (NOK) *"
+          type="number"
+          error={!!form.formState.errors.outstandingDebt}
+          helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
+          {...form.register("outstandingDebt")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Ønsket lånebeløp (NOK) *"
+          type="number"
+          error={!!form.formState.errors.amount}
+          helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
+          {...form.register("amount")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </FormControl>
+
+      <FormControl fullWidth variant="outlined">
         <InputLabel id="purpose-label">Formål med lånet *</InputLabel>
         <Select
           labelId="purpose-label"
           label="Formål med lånet *"
           error={!!form.formState.errors.purpose}
           {...form.register("purpose")}
+          sx={{ 
+            borderRadius: 2,
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'primary.main',
+            },
+          }}
         >
           <MenuItem value="bolig">Boligkjøp</MenuItem>
           <MenuItem value="bil">Bilkjøp</MenuItem>
@@ -297,76 +344,99 @@ export default function LoanApplication() {
           <MenuItem value="refinansiering">Refinansiering</MenuItem>
           <MenuItem value="annet">Annet</MenuItem>
         </Select>
-        {form.formState.errors.purpose && (
+        {form.formState.errors.purpose ? (
           <FormHelperText error>
             {form.formState.errors.purpose.message}
+          </FormHelperText>
+        ) : (
+          <FormHelperText>
+            Velg hovedformålet med lånet
           </FormHelperText>
         )}
       </FormControl>
 
-      <TextField
-        fullWidth
-        label="Tilleggsinformasjon"
-        multiline
-        rows={4}
-        placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon"
-        {...form.register("additionalInfo")}
-      />
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Eiendeler *"
+          multiline
+          rows={3}
+          placeholder="Beskriv dine eiendeler (eiendom, sparepenger, investeringer, etc.)"
+          error={!!form.formState.errors.assets}
+          helperText={form.formState.errors.assets?.message || "Beskriv din finansielle situasjon med eiendeler som kan være relevant for lånesøknaden"}
+          {...form.register("assets")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+        />
+      </FormControl>
+
+      <FormControl fullWidth>
+        <TextField
+          fullWidth
+          label="Tilleggsinformasjon"
+          multiline
+          rows={3}
+          placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon som kan være relevant for søknaden"
+          {...form.register("additionalInfo")}
+          variant="outlined"
+          InputProps={{
+            sx: { 
+              borderRadius: 2,
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'primary.main',
+              },
+            }
+          }}
+          helperText="Annen informasjon du mener er relevant for vurdering av din søknad (f.eks. planlagte endringer i inntekt/utgifter, særlige behov, osv.)"
+        />
+      </FormControl>
     </Box>
   );
 
   const VerificationStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: 'medium', mb: 1 }}>
+        Bekreft din identitet ved hjelp av en av følgende metoder:
+      </Typography>
+
+      {/* BankID-knappen først */}
       <Box sx={{ mb: 2 }}>
-        <input
-          type="file"
-          accept="image/*,.pdf"
-          onChange={handleFileSelect}
-          className="hidden"
-          id="id-upload"
-        />
         <Button
-          variant="outlined"
+          variant="contained"
           fullWidth
-          onClick={() => document.getElementById('id-upload')?.click()}
-          startIcon={<Upload />}
+          onClick={() => setShowBankID(true)}
           sx={{
             textTransform: 'none',
             borderRadius: '8px',
-            height: '48px'
+            height: '54px',
+            fontSize: '1rem',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'medium'
           }}
         >
-          {selectedFile ? selectedFile.name : "Last opp legitimasjon"}
+          <img
+            src="/attached_assets/bankid-logo.svg"
+            alt="BankID"
+            className="mr-3 h-5"
+          />
+          Verifiser med BankID
         </Button>
-        <FormHelperText>
-          Aksepterte formater: PNG, JPG, PDF. Maks størrelse: 10MB
+        <FormHelperText sx={{ textAlign: 'center', mt: 1, color: 'primary.main' }}>
+          <strong>Anbefalt:</strong> Raskere søknadsprosess og umiddelbar verifisering
         </FormHelperText>
       </Box>
-
-      {previewUrl && (
-        <Box sx={{ mt: 2 }}>
-          <Box sx={{ 
-            aspectRatio: '16/9',
-            maxWidth: 'sm',
-            mx: 'auto',
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1,
-            overflow: 'hidden'
-          }}>
-            <img
-              src={previewUrl}
-              alt="Forhåndsvisning"
-              style={{ objectFit: 'contain', width: '100%', height: '100%' }}
-            />
-          </Box>
-        </Box>
-      )}
 
       <Box sx={{ 
         position: 'relative',
         textAlign: 'center',
-        my: 2
+        my: 1.5
       }}>
         <Box sx={{ 
           borderBottom: '1px solid',
@@ -386,31 +456,57 @@ export default function LoanApplication() {
         </Box>
       </Box>
 
-      <Button
-        variant="outlined"
-        fullWidth
-        onClick={() => setShowBankID(true)}
-        sx={{
-          textTransform: 'none',
-          borderRadius: '8px',
-          height: '48px',
-          borderWidth: '2px',
-          borderColor: 'primary.main',
-          color: 'primary.main',
-          '&:hover': {
-            borderWidth: '2px',
-            backgroundColor: 'primary.main',
-            color: 'white'
-          }
-        }}
-      >
-        <img
-          src="/attached_assets/bankid-logo.svg"
-          alt="BankID"
-          className="mr-2 h-4"
+      {/* Legitimasjonopplasting som alternativ */}
+      <Box sx={{ mt: 1 }}>
+        <input
+          type="file"
+          accept="image/*,.pdf"
+          onChange={handleFileSelect}
+          className="hidden"
+          id="id-upload"
         />
-        Logg inn med BankID
-      </Button>
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() => document.getElementById('id-upload')?.click()}
+          startIcon={<Upload />}
+          sx={{
+            textTransform: 'none',
+            borderRadius: '8px',
+            height: '48px',
+            borderColor: 'divider',
+            color: 'text.primary'
+          }}
+        >
+          {selectedFile ? selectedFile.name : "Last opp legitimasjon"}
+        </Button>
+        <FormHelperText sx={{ mt: 0.5 }}>
+          Aksepterte formater: PNG, JPG, PDF. Maks størrelse: 10MB.
+          <br />Manuell behandling kan ta lengre tid.
+        </FormHelperText>
+      </Box>
+
+      {previewUrl && (
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ 
+            aspectRatio: '16/9',
+            maxWidth: 'sm',
+            mx: 'auto',
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 2,
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+          }}>
+            <img
+              src={previewUrl}
+              alt="Forhåndsvisning"
+              style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+            />
+          </Box>
+        </Box>
+      )}
+      
       <BankIDDialog
         open={showBankID}
         onOpenChange={setShowBankID}
