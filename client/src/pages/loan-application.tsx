@@ -188,7 +188,7 @@ export default function LoanApplication() {
                         <FormLabel>Fødselsdato *</FormLabel>
                         <FormControl>
                           <DatePicker
-                            selected={field.value ? parseISO(field.value) : undefined}
+                            date={field.value ? parseISO(field.value) : undefined}
                             onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
                             disabled={(date) => isAfter(date, addYears(new Date(), -18))}
                             locale={nb}
