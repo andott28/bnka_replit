@@ -23,7 +23,6 @@ interface DatePickerProps {
   fromYear?: number;
   toYear?: number;
   captionLayout?: "buttons" | "dropdown";
-  selected?: Date;
 }
 
 export function DatePicker({
@@ -34,7 +33,6 @@ export function DatePicker({
   fromYear,
   toYear,
   captionLayout = "dropdown",
-  selected,
 }: DatePickerProps) {
   return (
     <Popover>
@@ -53,7 +51,7 @@ export function DatePicker({
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={selected || date}
+          selected={date}
           onSelect={onSelect}
           disabled={disabled}
           locale={locale}

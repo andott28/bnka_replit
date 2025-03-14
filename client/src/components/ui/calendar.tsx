@@ -53,9 +53,9 @@ function Calendar({
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         vhidden: "sr-only",
-        dropdown: "p-1 bg-background border rounded-md shadow-md text-sm",
-        dropdown_month: "p-2 bg-background hover:bg-accent rounded-md cursor-pointer",
-        dropdown_year: "p-2 bg-background hover:bg-accent rounded-md cursor-pointer",
+        dropdown: "p-2 bg-background border rounded-md shadow-md text-sm min-w-[8rem]",
+        dropdown_month: "p-2 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-center",
+        dropdown_year: "p-2 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-center",
         ...classNames,
       }}
       components={{
