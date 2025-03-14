@@ -33,7 +33,7 @@ export function DatePicker({
   locale = nb,
   fromYear,
   toYear,
-  captionLayout = "buttons",
+  captionLayout = "dropdown",
   selected,
 }: DatePickerProps) {
   return (
@@ -60,6 +60,8 @@ export function DatePicker({
           fromYear={fromYear}
           toYear={toYear}
           captionLayout={captionLayout}
+          showOutsideDays={true}
+          fixedWeeks={true}
           initialFocus
         />
       </PopoverContent>
