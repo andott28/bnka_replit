@@ -94,35 +94,75 @@ export function LoanApplicationStepper({
       <StyledPaper elevation={3}>
         {children}
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-          <Button
-            variant="outlined"
-            onClick={handleBack}
-            disabled={activeStep === 0}
-            sx={{
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 3
-            }}
-          >
-            Tilbake
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleNext}
-            disabled={!isFormValid}
-            sx={{
-              textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              backgroundColor: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.dark',
-              }
-            }}
-          >
-            {isLastStep ? 'Send søknad' : 'Neste'}
-          </Button>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
+          {!isFormValid && (
+            <Box 
+              sx={{ 
+                bgcolor: 'error.light', 
+                color: 'error.main', 
+                borderRadius: 2, 
+                p: 2, 
+                fontSize: '0.875rem',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Box component="span" sx={{ mr: 1 }}>⚠️</Box>
+              <Typography variant="body2">
+                {activeStep === 0 && "Vennligst fyll ut alle feltene i personlig informasjon."}
+                {activeStep === 1 && "Vennligst fyll ut alle feltene i økonomisk informasjon."}
+                {activeStep === 2 && "BankID-verifisering er nødvendig for å fortsette."}
+              </Typography>
+            </Box>
+          )}
+          
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              variant="outlined"
+              onClick={handleBack}
+              disabled={activeStep === 0}
+              sx={{
+                textTransform: 'none',
+                borderRadius: '8px',
+                px: 3
+              }}
+            >
+              Tilbake
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={!isFormValid}
+              sx={{
+                textTransform: 'none',
+                borderRadius: '8px',
+                px: 4,
+                backgroundColor: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.dark',
+                },
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.3s ease-in-out',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                  animation: isFormValid ? 'shine 1.5s infinite' : 'none'
+                },
+                '@keyframes shine': {
+                  '0%': { left: '-100%' },
+                  '100%': { left: '100%' }
+                }
+              }}
+            >
+              {isLastStep ? 'Send søknad' : 'Neste'}
+            </Button>
+          </Box>
         </Box>
       </StyledPaper>
     </Box>

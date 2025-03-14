@@ -35,6 +35,8 @@ export default function LoanApplication() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showBankID, setShowBankID] = useState(false);
+  const [isBankIDVerified, setIsBankIDVerified] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
 
   const form = useForm({
@@ -171,17 +173,57 @@ export default function LoanApplication() {
       }
     }
     
+    // Set verification state
+    setIsBankIDVerified(true);
+    setIsVerifying(false);
+    
     toast({
       title: "Identitet bekreftet",
       description: `Velkommen ${data.name}`,
     });
   };
 
-  const handleNext = () => {
+  // Validering av skjemafelt for hvert steg
+  const validateStep = async (step: number) => {
+    let valid = false;
+    
+    switch (step) {
+      case 0: // PersonalInfoStep
+        valid = await form.trigger(['birthDate', 'street', 'postalCode', 'city', 'employmentStatus']);
+        break;
+      case 1: // FinancialInfoStep
+        valid = await form.trigger(['income', 'monthlyExpenses', 'outstandingDebt', 'amount', 'purpose', 'assets']);
+        break;
+      case 2: // VerificationStep
+        valid = await form.trigger(['hasConsented', 'idVerified']);
+        valid = valid && isBankIDVerified; // Må ha bekreftet BankID
+        break;
+      default:
+        valid = true;
+    }
+    
+    return valid;
+  };
+
+  const handleNext = async () => {
+    // Siste steg - send inn søknaden
     if (activeStep === steps.length - 1) {
       form.handleSubmit((data) => mutation.mutate(data))();
-    } else {
+      return;
+    }
+    
+    // Valider gjeldende steg før man kan gå videre
+    const isStepValid = await validateStep(activeStep);
+    
+    if (isStepValid) {
       setActiveStep((prev) => prev + 1);
+    } else {
+      // Vis en toast-melding om at det er feil i skjemaet
+      toast({
+        title: 'Manglende informasjon',
+        description: 'Vennligst fyll ut alle påkrevde felt før du fortsetter.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -197,7 +239,7 @@ export default function LoanApplication() {
           date={form.watch("birthDate") ? new Date(form.watch("birthDate") as unknown as string) : undefined}
           onSelect={(date) => {
             if (date) {
-              form.setValue("birthDate", date, { shouldValidate: true });
+              form.setValue("birthDate", date as any, { shouldValidate: true });
             }
           }}
           disabled={(date) => {
@@ -477,27 +519,63 @@ export default function LoanApplication() {
       {/* BankID-knappen først */}
       <Box sx={{ mb: 2 }}>
         <Button
-          variant="contained"
+          variant={isBankIDVerified ? "outlined" : "contained"}
           fullWidth
-          onClick={() => setShowBankID(true)}
+          onClick={() => {
+            if (!isBankIDVerified && !isVerifying) {
+              setIsVerifying(true);
+              setShowBankID(true);
+            }
+          }}
+          disabled={isVerifying || isBankIDVerified}
           sx={{
             textTransform: 'none',
             borderRadius: '8px',
             height: '54px',
             fontSize: '1rem',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            fontWeight: 'medium'
+            boxShadow: isBankIDVerified ? 'none' : '0 4px 6px rgba(0, 0, 0, 0.1)',
+            fontWeight: 'medium',
+            transition: 'all 0.3s ease-in-out',
+            bgcolor: isBankIDVerified ? 'success.light' : undefined,
+            borderColor: isBankIDVerified ? 'success.main' : undefined,
+            color: isBankIDVerified ? 'success.main' : undefined,
+            '&:hover': {
+              bgcolor: isBankIDVerified ? 'success.light' : undefined,
+              borderColor: isBankIDVerified ? 'success.main' : undefined,
+            },
+            position: 'relative',
+            overflow: 'hidden'
           }}
         >
-          <img
-            src="/attached_assets/bankid-logo.svg"
-            alt="BankID"
-            className="mr-3 h-5"
-          />
-          Verifiser med BankID
+          {isVerifying ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin mr-2 h-5 w-5 border-t-2 border-b-2 border-white rounded-full"></div>
+              <span>Verifiserer...</span>
+            </div>
+          ) : isBankIDVerified ? (
+            <div className="flex items-center justify-center text-green-700">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 animate-[bounce_0.5s_ease-in-out]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Identitet bekreftet</span>
+            </div>
+          ) : (
+            <>
+              <img
+                src="/attached_assets/bankid-logo.svg"
+                alt="BankID"
+                className="mr-3 h-5"
+              />
+              Verifiser med BankID
+            </>
+          )}
         </Button>
-        <FormHelperText sx={{ textAlign: 'center', mt: 1, color: 'primary.main' }}>
-          <strong>Anbefalt:</strong> Raskere søknadsprosess og umiddelbar verifisering
+        <FormHelperText sx={{ textAlign: 'center', mt: 1, color: isBankIDVerified ? 'success.main' : 'primary.main' }}>
+          {isBankIDVerified ? (
+            <span><strong>Verifisert:</strong> Din identitet er bekreftet via BankID</span>
+          ) : (
+            <span><strong>Anbefalt:</strong> Raskere søknadsprosess og umiddelbar verifisering</span>
+          )}
         </FormHelperText>
       </Box>
 
@@ -584,9 +662,38 @@ export default function LoanApplication() {
   );
 
   const steps = [
-    { component: PersonalInfoStep, isValid: true }, 
-    { component: FinancialInfoStep, isValid: true },
-    { component: VerificationStep, isValid: form.getValues("hasConsented") },
+    { 
+      component: PersonalInfoStep, 
+      isValid: !form.formState.errors.birthDate && 
+               !form.formState.errors.street && 
+               !form.formState.errors.postalCode && 
+               !form.formState.errors.city && 
+               !form.formState.errors.employmentStatus &&
+               form.getValues("birthDate") && 
+               form.getValues("street") && 
+               form.getValues("postalCode") && 
+               form.getValues("city") && 
+               form.getValues("employmentStatus")
+    }, 
+    { 
+      component: FinancialInfoStep, 
+      isValid: !form.formState.errors.income && 
+               !form.formState.errors.monthlyExpenses && 
+               !form.formState.errors.outstandingDebt && 
+               !form.formState.errors.amount && 
+               !form.formState.errors.purpose && 
+               !form.formState.errors.assets &&
+               form.getValues("income") && 
+               form.getValues("monthlyExpenses") && 
+               form.getValues("outstandingDebt") && 
+               form.getValues("amount") && 
+               form.getValues("purpose") && 
+               form.getValues("assets") 
+    },
+    { 
+      component: VerificationStep, 
+      isValid: form.getValues("hasConsented") && isBankIDVerified && form.getValues("idVerified")
+    },
   ];
 
   return (
@@ -599,7 +706,7 @@ export default function LoanApplication() {
             handleNext={handleNext}
             handleBack={handleBack}
             isLastStep={activeStep === steps.length - 1}
-            isFormValid={steps[activeStep].isValid}
+            isFormValid={!!steps[activeStep].isValid}
           >
             {steps[activeStep].component()}
           </LoanApplicationStepper>
