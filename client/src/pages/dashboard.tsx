@@ -96,6 +96,37 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold mb-8">Min Side</h1>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {/* Verifiseringsstatus */}
+          <Card className="md:col-span-2 lg:col-span-3">
+            <CardHeader className="pb-2">
+              <CardTitle>Identitetsverifisering</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-3">
+                {user?.kycStatus === 'verified' ? (
+                  <>
+                    <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-800">
+                      Verifisert med BankID
+                    </Badge>
+                    <p className="text-sm text-gray-500">Din identitet er bekreftet via BankID</p>
+                  </>
+                ) : (
+                  <>
+                    <Badge variant="outline">Ikke verifisert</Badge>
+                    <p className="text-sm text-gray-500">
+                      Du kan verifisere din identitet ved å søke om lån eller gå til kontoinnstillinger
+                    </p>
+                    <Link to="/loan-application">
+                      <Button variant="outline" size="sm">
+                        Verifiser nå
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          
           {/* Kontooversikt */}
           <Card className="md:col-span-2 lg:col-span-3">
             <CardHeader>
@@ -123,18 +154,27 @@ export default function Dashboard() {
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Mine Lån</CardTitle>
+              {loans?.length === 0 && <CardDescription>Du har ingen aktive lån</CardDescription>}
+              {loans && loans.length > 0 && <CardDescription>Dine lånesøknader ({loans.length})</CardDescription>}
             </CardHeader>
-            <CardContent>
+            <CardContent className={loans && loans.length > 0 ? "max-h-[400px] overflow-y-auto" : ""}>
               {loans?.length === 0 ? (
-                <p className="text-gray-500 text-center">
-                  Du har ingen lånesøknader ennå
-                </p>
+                <div className="flex flex-col items-center justify-center py-6 space-y-3">
+                  <p className="text-gray-500 text-center">
+                    Du har ingen lånesøknader ennå
+                  </p>
+                  <Link to="/loan-application">
+                    <Button>
+                      Søk om lån
+                    </Button>
+                  </Link>
+                </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {loans?.map((loan) => (
                     <div 
                       key={loan.id} 
-                      className="flex justify-between items-center border-b pb-4 cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors"
+                      className="flex justify-between items-center border-b pb-3 cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
                       onClick={() => setSelectedLoan(loan)}
                     >
                       <div>

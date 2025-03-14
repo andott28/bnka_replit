@@ -4,6 +4,7 @@ import { insertLoanApplicationSchema } from "@shared/schema";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { NavHeader } from "@/components/nav-header";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@mui/material";
 import {
   TextField,
@@ -30,6 +31,7 @@ import { LoanApplicationStepper } from "@/components/loan-application-stepper";
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showBankID, setShowBankID] = useState(false);
@@ -82,6 +84,7 @@ export default function LoanApplication() {
       assets: "",
       additionalInfo: "",
       hasConsented: false,
+      idVerified: false,
     },
   });
 
@@ -148,7 +151,26 @@ export default function LoanApplication() {
     }
   };
 
-  const handleBankIDSuccess = (data: { personalNumber: string; name: string }) => {
+  const handleBankIDSuccess = async (data: { personalNumber: string; name: string }) => {
+    // Set the hasConsented value to true to enable the submit button
+    form.setValue("hasConsented", true, { shouldValidate: true });
+    
+    // Set idVerified in the form
+    form.setValue("idVerified", true, { shouldValidate: true });
+    
+    // Update user's KYC status in the backend
+    if (user?.id) {
+      try {
+        await apiRequest("PATCH", `/api/users/${user.id}`, {
+          kycStatus: "verified"
+        });
+        // Update the query cache
+        queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+      } catch (error) {
+        console.error("Failed to update KYC status:", error);
+      }
+    }
+    
     toast({
       title: "Identitet bekreftet",
       description: `Velkommen ${data.name}`,

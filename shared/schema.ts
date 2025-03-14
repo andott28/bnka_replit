@@ -96,7 +96,8 @@ export const insertLoanApplicationSchema = createInsertSchema(loanApplications).
   outstandingDebt: true,
   assets: true,
   additionalInfo: true,
-  hasConsented: true
+  hasConsented: true,
+  idVerified: true
 });
 
 export const insertBankAccountSchema = createInsertSchema(bankAccounts).pick({
