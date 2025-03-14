@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { Button } from "@mui/material";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -148,9 +148,15 @@ export function NavHeader() {
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link href="/">
-          <Button variant="link" className="p-0 h-auto">
-            <img src="/attached_assets/bnkaLogo1.png" alt="BNKA" className="h-8" />
-          </Button>
+          <img 
+            src="/images/logo.png" 
+            alt="BNKA" 
+            className="h-8" 
+            style={{ 
+              objectFit: 'contain',
+              maxWidth: '140px'
+            }} 
+          />
         </Link>
 
         {/* Desktop Navigation */}

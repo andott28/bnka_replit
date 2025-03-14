@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -23,8 +22,7 @@ function Calendar({
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center h-14",
-        caption_dropdowns: "flex justify-center gap-2",
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium hidden", // Hide the default caption
         nav: "flex items-center",
         nav_button: cn(
           "h-9 w-9 bg-transparent p-0 hover:bg-accent transition-colors rounded-full flex items-center justify-center",
@@ -45,7 +43,6 @@ function Calendar({
           "hover:bg-accent transition-colors",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         ),
-        day_range_end: "day-range-end",
         day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
         day_today: "bg-accent text-accent-foreground",
         day_outside: "text-muted-foreground opacity-50",
@@ -53,9 +50,9 @@ function Calendar({
         day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         vhidden: "sr-only",
-        dropdown: "p-2 bg-white rounded-lg shadow-lg border min-w-[8rem] z-50",
-        dropdown_month: "py-2 px-4 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-center transition-colors",
-        dropdown_year: "py-2 px-4 hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer text-center transition-colors",
+        dropdown: "absolute mt-1 bg-white rounded-lg shadow-lg border py-1 z-50",
+        dropdown_month: "py-2 px-3 text-sm hover:bg-accent transition-colors cursor-pointer",
+        dropdown_year: "py-2 px-3 text-sm hover:bg-accent transition-colors cursor-pointer",
         ...classNames,
       }}
       components={{
