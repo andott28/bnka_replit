@@ -16,6 +16,7 @@ export interface IStorage {
   getLoansByUserId(userId: number): Promise<LoanApplication[]>;
   getAllLoans(): Promise<LoanApplication[]>;
   updateLoanStatus(id: number, status: string): Promise<LoanApplication | undefined>;
+  updateLoanApplicationCreditScore(id: number, score: string, details: any): Promise<LoanApplication | undefined>; // Legg til metoden for kredittscoreberegning
   // Nye metoder for bankkontoer og kort
   createBankAccount(account: Partial<BankAccount>): Promise<BankAccount>;
   getBankAccountsByUserId(userId: number): Promise<BankAccount[]>;
@@ -71,6 +72,18 @@ export class DatabaseStorage implements IStorage {
     const [loan] = await db
       .update(loanApplications)
       .set({ status })
+      .where(eq(loanApplications.id, id))
+      .returning();
+    return loan;
+  }
+
+  async updateLoanApplicationCreditScore(id: number, score: string, details: any): Promise<LoanApplication | undefined> {
+    const [loan] = await db
+      .update(loanApplications)
+      .set({ 
+        creditScore: score, 
+        creditScoreDetails: details 
+      })
       .where(eq(loanApplications.id, id))
       .returning();
     return loan;
