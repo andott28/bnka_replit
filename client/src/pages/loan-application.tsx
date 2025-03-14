@@ -169,11 +169,15 @@ export default function LoanApplication() {
 
   const PersonalInfoStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <FormControl fullWidth>
+      <div style={{ position: "relative" }}>
         <DatePicker
           label="Fødselsdato *"
-          date={form.watch("birthDate") ? new Date(form.watch("birthDate") as string) : undefined}
-          onSelect={(date) => form.setValue("birthDate", date as Date, { shouldValidate: true })}
+          date={form.watch("birthDate") ? new Date(form.watch("birthDate") as unknown as string) : undefined}
+          onSelect={(date) => {
+            if (date) {
+              form.setValue("birthDate", date, { shouldValidate: true });
+            }
+          }}
           disabled={(date) => {
             // Må være minst 18 år gammel
             const min18Years = addYears(new Date(), -18);
@@ -183,11 +187,20 @@ export default function LoanApplication() {
           }}
           fromYear={1923}
           toYear={2005}
-          error={!!form.formState.errors.birthDate}
-          helperText={form.formState.errors.birthDate?.message?.toString() || "Du må være minst 18 år gammel"}
           locale={nb}
+          error={!!form.formState.errors.birthDate}
         />
-      </FormControl>
+        {form.formState.errors.birthDate && (
+          <p className="text-red-500 text-sm mt-1">
+            {form.formState.errors.birthDate.message?.toString() || "Du må være minst 18 år gammel"}
+          </p>
+        )}
+        {!form.formState.errors.birthDate && (
+          <p className="text-gray-500 text-sm mt-1">
+            Du må være minst 18 år gammel
+          </p>
+        )}
+      </div>
       
       <TextField
         fullWidth

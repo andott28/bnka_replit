@@ -145,9 +145,9 @@ export function NavHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container mx-auto px-4 h-14 flex items-center">
+      <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo - Til venstre */}
-        <div className="flex-shrink-0 mr-auto">
+        <div className="flex-shrink-0">
           <Link href="/">
             <img 
               src="/images/logo.png" 
@@ -161,29 +161,33 @@ export function NavHeader() {
           </Link>
         </div>
 
-        {/* Desktop Navigation - Til høyre */}
-        <NavigationMenu className="hidden md:flex">
-          <NavigationMenuList className="gap-2">
-            <NavItems />
-          </NavigationMenuList>
-        </NavigationMenu>
+        {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}
+        <div className="hidden md:block">
+          <NavigationMenu>
+            <NavigationMenuList className="gap-2">
+              <NavItems />
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
 
-        {/* Mobile Navigation - Kun synlig på mobil/nettbrett */}
-        <Sheet>
-          <SheetTrigger asChild className="md:hidden ml-auto">
-            <Button variant="text" sx={{ minWidth: 'auto' }}>
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right">
-            <SheetHeader>
-              <SheetTitle>Meny</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-4 mt-4">
-              <MobileNavItems />
-            </nav>
-          </SheetContent>
-        </Sheet>
+        {/* Mobile Navigation - KUN synlig på mobil/nettbrett */}
+        <div className="block md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="text" sx={{ minWidth: 'auto' }}>
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>Meny</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-4 mt-4">
+                <MobileNavItems />
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

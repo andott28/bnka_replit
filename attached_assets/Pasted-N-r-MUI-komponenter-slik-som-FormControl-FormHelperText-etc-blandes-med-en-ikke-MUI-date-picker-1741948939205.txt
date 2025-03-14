@@ -1,0 +1,122 @@
+Når MUI-komponenter (slik som FormControl, FormHelperText, etc.) blandes med en ikke-MUI date picker-komponent, er det fort gjort at CSS-stilene “kolliderer” og at dropdownen/kalenderen blir “klumpet sammen” eller feilplassert. Ofte skyldes dette:
+
+At date-picker-komponenten rendres inni en container med overflow: hidden (eller tilsvarende)
+At date-pickerens popup trenger en egen “portal” (dvs. å rendres i <body> fremfor nede i komponent-treet)
+At MUI-styling for FormControl og TextField ikke er kompatibel med date-pickerens layout
+Nedenfor er noen konkrete grep du kan prøve for å få kalender- og år/​måned-velgeren til å dukke opp riktig:
+
+1. Fjern MUI-FormControl rundt DatePicker
+Hvis @/components/ui/date-picker ikke er laget for MUI, er det best å ikke pakke den inn i FormControl. MUI-varianten forventer at du bruker deres egne date pickers (@mui/x-date-pickers), mens du her bruker en annen komponent. Du kan heller gjøre noe á la:
+
+tsx
+Kopier
+Rediger
+<div style={{ position: "relative" }}>
+  <DatePicker
+    label="Fødselsdato *"
+    date={form.watch("birthDate") 
+      ? new Date(form.watch("birthDate") as string) 
+      : undefined
+    }
+    onSelect={(date) => 
+      form.setValue("birthDate", date as Date, { shouldValidate: true })
+    }
+    disabled={(date) => {
+      const min18Years = addYears(new Date(), -18);
+      const max100Years = addYears(new Date(), -100);
+      return isAfter(date, min18Years) || isBefore(date, max100Years);
+    }}
+    fromYear={1923}
+    toYear={2005}
+    locale={nb}
+    // Ikke send error/helperText inn her om DatePicker ikke støtter det
+  />
+  {form.formState.errors.birthDate && (
+    <p style={{ color: "red", marginTop: 4 }}>
+      {form.formState.errors.birthDate.message?.toString()}
+    </p>
+  )}
+</div>
+Her tar du deg av feilmeldingen selv i en enkel <p>-tag (eller FormHelperText hvis du vil, men da uten FormControl), i stedet for å overlate alt til en MUI-FormControl.
+
+2. Sjekk om DatePicker har “portal”/“appendToBody”-innstilling
+Mange date pickers (spesielt basert på React, Radix UI, shadcn/ui, etc.) har en prop som lar deg rendre selve popup-en i en egen “portal”, slik at den ikke klippes av overordnede containere. Se om @/components/ui/date-picker har en prop ala:
+
+portal
+appendTo
+appendToBody
+usePortal
+container
+Om den har det, kan du prøve noe som:
+
+tsx
+Kopier
+Rediger
+<DatePicker
+  ...
+  portal={true}
+  // eller appendTo="body"
+  // eller hva som finnes i den komponenten
+/>
+Da rendres kalenderen helt øverst i DOM-treet, og unngår å bli klippet av foreldre med overflow: hidden.
+
+3. Unngå overflow: hidden på overordnede containere
+Om du har en CSS-regel (enten i Tailwind, i en global stil, eller i MUI-temaet) som gir en container overflow: hidden eller overflow: auto med begrenset høyde, kan popupen bli “klemt”. Sjekk:
+
+css
+Kopier
+Rediger
+.parent-container {
+  /* Sjekk om du har noe sånt: */
+  overflow: hidden;
+  /* ... */
+}
+Hvis ja, kan du vurdere å fjerne dette eller endre til overflow: visible hvis layouten tillater det.
+
+4. Bruk MUI sin egen DatePicker (om du vil ha MUI-stil)
+Dersom du ønsker at alt skal være “ren MUI”, kan du bytte til MUI sin offisielle date picker fra @mui/x-date-pickers. Eksempel:
+
+bash
+Kopier
+Rediger
+npm install @mui/x-date-pickers
+tsx
+Kopier
+Rediger
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { nb } from 'date-fns/locale';
+
+// ...
+<LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={nb}>
+  <DesktopDatePicker
+    label="Fødselsdato *"
+    value={form.watch("birthDate") || null}
+    onChange={(newDate) => {
+      if (newDate) form.setValue("birthDate", newDate, { shouldValidate: true });
+    }}
+    // Legg inn validering/feilmelding i formState eller ved props
+    renderInput={(params) => (
+      <TextField 
+        {...params}
+        error={!!form.formState.errors.birthDate}
+        helperText={form.formState.errors.birthDate?.message || "Du må være minst 18 år gammel"}
+      />
+    )}
+  />
+</LocalizationProvider>
+Da unngår du blanding av to ulike date-picker-løsninger.
+
+Oppsummert
+Fjern MUI-FormControl/TextField-rammeverk rundt en custom date picker som ikke er laget for MUI.
+Sjekk om date pickeren har en “portal”-innstilling for å unngå at popup klippes.
+Unngå overflow: hidden i containerne rundt.
+Eventuelt bytt til MUI sin egen DatePicker for sømløs integrasjon.
+Følger du disse tipsene, vil du typisk bli kvitt “klumping” og feildisplay av dato-popupen. Lykke til!
+
+
+
+
+
+
+
