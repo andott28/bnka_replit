@@ -38,7 +38,21 @@ export default function LoanApplication() {
   const form = useForm({
     resolver: zodResolver(
       insertLoanApplicationSchema.extend({
-        // Fjernet birthDate validering
+        birthDate: z.coerce.date()
+          .refine(
+            (date) => {
+              const min18Years = addYears(new Date(), -18);
+              return isBefore(date, min18Years);
+            },
+            { message: "Du må være minst 18 år gammel" }
+          )
+          .refine(
+            (date) => {
+              const max100Years = addYears(new Date(), -100);
+              return isAfter(date, max100Years);
+            },
+            { message: "Ugyldig fødselsdato" }
+          ),
         street: z.string().min(5, "Vennligst oppgi en gyldig gateadresse"),
         postalCode: z.string().length(4, "Postnummer må være 4 siffer"),
         city: z.string().min(2, "Vennligst oppgi en gyldig by"),
@@ -155,7 +169,25 @@ export default function LoanApplication() {
 
   const PersonalInfoStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      {/* Fødselsdatofeltet er fjernet */}
+      <FormControl fullWidth>
+        <DatePicker
+          label="Fødselsdato *"
+          date={form.watch("birthDate") ? new Date(form.watch("birthDate") as string) : undefined}
+          onSelect={(date) => form.setValue("birthDate", date as Date, { shouldValidate: true })}
+          disabled={(date) => {
+            // Må være minst 18 år gammel
+            const min18Years = addYears(new Date(), -18);
+            // Ikke eldre enn 100 år
+            const max100Years = addYears(new Date(), -100);
+            return isAfter(date, min18Years) || isBefore(date, max100Years);
+          }}
+          fromYear={1923}
+          toYear={2005}
+          error={!!form.formState.errors.birthDate}
+          helperText={form.formState.errors.birthDate?.message?.toString() || "Du må være minst 18 år gammel"}
+          locale={nb}
+        />
+      </FormControl>
       
       <TextField
         fullWidth

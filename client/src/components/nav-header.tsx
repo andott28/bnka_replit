@@ -145,30 +145,32 @@ export function NavHeader() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/">
-          <img 
-            src="/images/logo.png" 
-            alt="BNKA" 
-            className="h-8" 
-            style={{ 
-              objectFit: 'contain',
-              maxWidth: '140px'
-            }} 
-          />
-        </Link>
+      <div className="container mx-auto px-4 h-14 flex items-center">
+        {/* Logo - Til venstre */}
+        <div className="flex-shrink-0 mr-auto">
+          <Link href="/">
+            <img 
+              src="/images/logo.png" 
+              alt="BNKA" 
+              className="h-8" 
+              style={{ 
+                objectFit: 'contain',
+                maxWidth: '140px'
+              }} 
+            />
+          </Link>
+        </div>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Navigation - Til høyre */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-2">
             <NavItems />
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Kun synlig på mobil/nettbrett */}
         <Sheet>
-          <SheetTrigger asChild className="md:hidden">
+          <SheetTrigger asChild className="md:hidden ml-auto">
             <Button variant="text" sx={{ minWidth: 'auto' }}>
               <Menu className="h-6 w-6" />
             </Button>
