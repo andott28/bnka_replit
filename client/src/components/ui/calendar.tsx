@@ -21,9 +21,9 @@ function Calendar({
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
-        caption: "flex justify-center pt-1 relative items-center h-14",
-        caption_label: "text-sm font-medium hidden", // Hide the default caption
-        nav: "flex items-center",
+        caption: "flex justify-center pt-1 relative items-center",
+        caption_label: "hidden", // Hide the built-in caption
+        nav: "space-x-1 flex items-center",
         nav_button: cn(
           "h-9 w-9 bg-transparent p-0 hover:bg-accent transition-colors rounded-full flex items-center justify-center",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
@@ -50,9 +50,9 @@ function Calendar({
         day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         vhidden: "sr-only",
-        dropdown: "absolute mt-1 bg-white rounded-lg shadow-lg border py-1 z-50",
-        dropdown_month: "py-2 px-3 text-sm hover:bg-accent transition-colors cursor-pointer",
-        dropdown_year: "py-2 px-3 text-sm hover:bg-accent transition-colors cursor-pointer",
+        dropdown: "absolute bg-white rounded-lg shadow-md py-2 mt-1 z-50 min-w-[120px] border border-gray-200",
+        dropdown_month: "py-1.5 px-4 hover:bg-gray-100 cursor-pointer text-sm transition-colors",
+        dropdown_year: "py-1.5 px-4 hover:bg-gray-100 cursor-pointer text-sm transition-colors",
         ...classNames,
       }}
       components={{

@@ -45,7 +45,7 @@ export function LoanApplicationStepper({
   return (
     <Box sx={{ maxWidth: 'md', mx: 'auto', p: 2 }}>
       <Typography variant="h4" sx={{ mb: 4, textAlign: 'center' }}>
-        Søk lån
+        Søk om nytt lån
       </Typography>
 
       <Stepper 

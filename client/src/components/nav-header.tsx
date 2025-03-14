@@ -35,7 +35,7 @@ export function NavHeader() {
           <NavigationMenuItem>
             <Link href="/apply">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Søk om nytt lån
+                Søk Lån
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -83,7 +83,7 @@ export function NavHeader() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/auth">
-              <Button>Logg inn</Button>
+              <Button variant="contained" color="primary">Logg inn</Button>
             </Link>
           </NavigationMenuItem>
         </>
@@ -96,23 +96,23 @@ export function NavHeader() {
       {user ? (
         <>
           <Link href="/">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Hjem
             </Button>
           </Link>
           <Link href="/apply">
-            <Button variant="ghost" className="w-full justify-start">
-              Søk om nytt lån
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
+              Søk Lån
             </Button>
           </Link>
           <Link href="/dashboard">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Min side
             </Button>
           </Link>
           {user.isAdmin && (
             <Link href="/admin">
-              <Button variant="ghost" className="w-full justify-start">
+              <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
                 Administrasjon
               </Button>
             </Link>
@@ -121,22 +121,22 @@ export function NavHeader() {
       ) : (
         <>
           <Link href="/">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Hjem
             </Button>
           </Link>
           <Link href="/hvordan-det-fungerer">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Hvordan Det Fungerer
             </Button>
           </Link>
           <Link href="/kontakt">
-            <Button variant="ghost" className="w-full justify-start">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Kontakt
             </Button>
           </Link>
           <Link href="/auth">
-            <Button className="w-full">Logg inn</Button>
+            <Button fullWidth variant="contained" color="primary">Logg inn</Button>
           </Link>
         </>
       )}
@@ -169,7 +169,7 @@ export function NavHeader() {
         {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
+            <Button variant="text" sx={{ minWidth: 'auto' }}>
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
