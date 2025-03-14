@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { insertLoanApplicationSchema } from "@shared/schema";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
@@ -36,6 +38,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Kunne ikke hente BankID-status" });
     }
   });
+
+  // Add the credit scoring endpoint
+  app.post("/api/loans/credit-score", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+
+    try {
+      const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+      const {
+        income,
+        employmentStatus,
+        monthlyExpenses,
+        outstandingDebt,
+        assets,
+        loanApplicationId
+      } = req.body;
+
+      // Calculate debt-to-income ratio
+      const monthlyIncome = income / 12;
+      const dti = (monthlyExpenses + outstandingDebt) / monthlyIncome;
+
+      const prompt = `
+        Analyze the following financial data and provide a credit score grade (A, B, C, D, E, or F) with detailed explanation:
+
+        Monthly Income: ${monthlyIncome} NOK
+        Employment Status: ${employmentStatus}
+        Monthly Expenses: ${monthlyExpenses} NOK
+        Outstanding Debt: ${outstandingDebt} NOK
+        Debt-to-Income Ratio: ${dti.toFixed(2)}
+        Assets: ${assets}
+
+        Please format the response as JSON with the following structure:
+        {
+          "grade": "A-F",
+          "explanation": "Detailed explanation of the grade",
+          "strengths": ["List of financial strengths"],
+          "weaknesses": ["List of areas for improvement"],
+          "recommendations": ["Specific recommendations"]
+        }
+      `;
+
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const creditAssessment = JSON.parse(response.text());
+
+      // Store the credit score in the database
+      await storage.updateLoanApplicationCreditScore(
+        loanApplicationId,
+        creditAssessment.grade,
+        creditAssessment
+      );
+
+      res.json(creditAssessment);
+    } catch (error) {
+      console.error("Error generating credit score:", error);
+      res.status(500).json({ error: "Could not generate credit score" });
+    }
+  });
+
 
   // Existing routes
   app.post("/api/loans/apply", async (req, res) => {

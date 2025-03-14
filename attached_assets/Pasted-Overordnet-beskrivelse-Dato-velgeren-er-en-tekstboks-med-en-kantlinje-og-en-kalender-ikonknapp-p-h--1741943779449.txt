@@ -1,0 +1,54 @@
+Overordnet beskrivelse
+Dato-velgeren er en tekstboks med en kantlinje og en kalender-ikonknapp på høyre side.
+Når brukeren trykker på feltet, vises en dato-velger i tre forskjellige stadier:
+Kalendervisning (dag-til-dag)
+Månedvelger
+Årsvelger
+Fargepaletten i den originale designen er mørk (mørk bakgrunn, lilla konturer og hvit tekst), men skal oversettes til et lyst tema.
+Stil og visuelle elementer for lyst tema
+Bakgrunn: Hvit (#FFFFFF) eller en veldig lys gråtone.
+Tekst: Mørkegrå eller svart for god lesbarhet.
+Kantlinjer og interaktive elementer: Lysegrå (#CCCCCC) eller en subtil blå aksentfarge.
+Valgte elementer: En lys blå eller pastellfarge for å markere valgte datoer, måneder og år.
+Skygger: Myke skygger for å gi dybde til popups.
+Detaljert beskrivelse av hver tilstand
+1. Standard tilstand (Inputfelt med datovelger-ikon)
+En tekstboks med plassholdertekst "MM/DD/YYYY."
+Har en tynn kantlinje med en subtil blå aksent.
+Til høyre i tekstboksen er det et ikon av en kalender.
+Når brukeren klikker, åpnes kalenderen.
+2. Dag-til-dag kalendervisning
+En popup åpner seg med en kalender.
+Øverst er det en overskrift som viser måneden og året.
+To navigasjonsknapper (venstre/høyre piler) for å bla mellom måneder.
+Under overskriften vises en 7-kolonne uketabell med dager:
+Søndag til lørdag (S M T W T F S).
+Tallene er i en lett lesbar skrift.
+Den valgte datoen er uthevet i en lyseblå sirkel.
+Nederst finnes to knapper: "Cancel" og "OK."
+"OK" bekrefter valget.
+"Cancel" lukker kalenderen uten endringer.
+3. Månedvelger
+Vises når brukeren trykker på månedsnavnet.
+En dropdown-liste med alle månedene i året.
+Den valgte måneden har en markering (lys bakgrunn, blå tekst).
+Klikk på en måned oppdaterer kalenderen.
+4. Årsvelger
+Vises når brukeren trykker på årstallet.
+En dropdown-liste med år i stigende rekkefølge.
+Den valgte årgangen har en markering (lys bakgrunn, blå tekst).
+Klikk på et år oppdaterer kalenderen.
+Interaksjoner og animasjoner
+Myke fade-in/fade-out-effekter for popup-komponenter.
+En lett skygge rundt popup-en for å skape dybde.
+Knappene "Cancel" og "OK" endrer farge når de hovres over.
+Sammendrag av endringer for lyst tema
+Element	Originalt (mørkt tema)	Lyst tema
+Bakgrunn	Svart/mørk grå	Hvit/lys grå
+Tekst	Hvit	Svart/mørk grå
+Kantlinjer	Lilla	Lys grå eller subtil blå
+Valgt dato/måned/år	Lilla bakgrunn, hvit tekst	Lys blå bakgrunn, svart tekst
+Kalender-ikon	Hvit	Mørk grå
+Skygger	Subtil lilla glød	Myk grå skygge
+Oppsummering
+Dette designet består av et rent, minimalistisk brukergrensesnitt med en sømløs overgang mellom dagsvisning, månedsvelger og årsvelger. Når det konverteres til et lyst tema, må kontrastene tilpasses for lesbarhet, og interaktive elementer bør ha klare visuelle tilbakemeldinger.

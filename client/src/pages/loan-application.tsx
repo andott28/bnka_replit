@@ -34,6 +34,8 @@ import { addYears, format, isAfter, isBefore, parseISO } from "date-fns";
 import { nb } from "date-fns/locale";
 import { useState } from "react";
 import { BankIDDialog } from "@/components/bankid-dialog";
+import { LoanApplicationStepper } from "@/components/loan-application-stepper";
+import { TextField } from "@mui/material";
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
@@ -41,6 +43,7 @@ export default function LoanApplication() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showBankID, setShowBankID] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
 
   const form = useForm({
     resolver: zodResolver(
@@ -54,8 +57,9 @@ export default function LoanApplication() {
             },
             "Du må være minst 18 år for å søke om lån"
           ),
-        address: insertLoanApplicationSchema.shape.address
-          .min(5, "Vennligst oppgi en gyldig adresse"),
+        street: z.string().min(5, "Vennligst oppgi en gyldig gateadresse"),
+        postalCode: z.string().length(4, "Postnummer må være 4 siffer"),
+        city: z.string().min(2, "Vennligst oppgi en gyldig by"),
         amount: insertLoanApplicationSchema.shape.amount
           .min(10000, "Minimum lånebeløp er 10 000 kr")
           .max(1000000, "Maksimalt lånebeløp er 1 000 000 kr"),
@@ -74,7 +78,9 @@ export default function LoanApplication() {
       income: 0,
       employmentStatus: "",
       birthDate: "",
-      address: "",
+      street: "",
+      postalCode: "",
+      city: "",
       monthlyExpenses: 0,
       outstandingDebt: 0,
       assets: "",
@@ -85,16 +91,21 @@ export default function LoanApplication() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const res = await apiRequest("POST", "/api/loans/apply", data);
-      return res.json();
+      const loanRes = await apiRequest("POST", "/api/loans/apply", data);
+      const loanData = await loanRes.json();
+      const creditRes = await apiRequest("POST", "/api/loans/credit-score", {
+        ...data,
+        loanApplicationId: loanData.id
+      });
+      return creditRes.json();
     },
-    onSuccess: () => {
+    onSuccess: (creditScore) => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       toast({
         title: "Søknad sendt",
         description: "Din lånesøknad er mottatt og vil bli behandlet.",
       });
-      setLocation("/dashboard");
+      setLocation("/credit-score-result");
     },
     onError: (error: Error) => {
       toast({
@@ -104,10 +115,6 @@ export default function LoanApplication() {
       });
     },
   });
-
-  const formatNOK = (value: number) => {
-    return new Intl.NumberFormat('nb-NO').format(value);
-  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -150,397 +157,399 @@ export default function LoanApplication() {
       title: "Identitet bekreftet",
       description: `Velkommen ${data.name}`,
     });
-    // Here you would typically update the form with the verified information
   };
+
+  const handleNext = () => {
+    if (activeStep === steps.length - 1) {
+      form.handleSubmit((data) => mutation.mutate(data))();
+    } else {
+      setActiveStep((prev) => prev + 1);
+    }
+  };
+
+  const handleBack = () => {
+    setActiveStep((prev) => prev - 1);
+  };
+
+  const PersonalInfoStep = () => (
+    <div className="space-y-4">
+      <FormField
+        control={form.control}
+        name="birthDate"
+        render={({ field }) => (
+          <FormItem className="flex flex-col">
+            <FormLabel>Fødselsdato *</FormLabel>
+            <FormControl>
+              <DatePicker
+                date={field.value ? parseISO(field.value) : undefined}
+                onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+                disabled={(date) => isAfter(date, addYears(new Date(), -18))}
+                locale={nb}
+                captionLayout="dropdown"
+                fromYear={1940}
+                toYear={addYears(new Date(), -18).getFullYear()}
+              />
+            </FormControl>
+            <FormDescription>
+              Du må være minst 18 år for å søke om lån
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="street"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Gateadresse *</FormLabel>
+            <FormControl>
+              <TextField
+                {...field}
+                fullWidth
+                placeholder="F.eks. Storgata 1"
+                error={!!form.formState.errors.street}
+                helperText={form.formState.errors.street?.message}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="postalCode"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Postnummer *</FormLabel>
+            <FormControl>
+              <TextField
+                {...field}
+                fullWidth
+                placeholder="1234"
+                error={!!form.formState.errors.postalCode}
+                helperText={form.formState.errors.postalCode?.message}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="city"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Poststed *</FormLabel>
+            <FormControl>
+              <TextField
+                {...field}
+                fullWidth
+                placeholder="F.eks. Oslo"
+                error={!!form.formState.errors.city}
+                helperText={form.formState.errors.city?.message}
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="employmentStatus"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ansettelsesforhold *</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Velg ansettelsesforhold" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="fast">Fast ansatt</SelectItem>
+                <SelectItem value="midlertidig">Midlertidig ansatt</SelectItem>
+                <SelectItem value="selvstendig">Selvstendig næringsdrivende</SelectItem>
+                <SelectItem value="pensjonist">Pensjonist</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="arbeidsledig">Arbeidsledig</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+
+  const FinancialInfoStep = () => (
+    <div className="space-y-4">
+      <FormField
+        control={form.control}
+        name="income"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Årsinntekt (NOK) *</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                placeholder="0"
+              />
+            </FormControl>
+            <FormDescription>
+              Minimum årsinntekt: 200 000 kr
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="monthlyExpenses"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Månedlige utgifter (NOK) *</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                placeholder="0"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="outstandingDebt"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Utestående gjeld (NOK) *</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                placeholder="0"
+              />
+            </FormControl>
+            <FormDescription>
+              Inkluder alle lån og kreditt
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="assets"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Eiendeler *</FormLabel>
+            <FormControl>
+              <Textarea
+                {...field}
+                placeholder="Beskriv dine eiendeler (eiendom, sparepenger, investeringer, etc.)"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="amount"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Ønsket lånebeløp (NOK) *</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                {...field}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                placeholder="0"
+              />
+            </FormControl>
+            <FormDescription>
+              Beløp mellom 10 000 kr og 1 000 000 kr
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="purpose"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Formål med lånet *</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Velg formål" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="bolig">Boligkjøp</SelectItem>
+                <SelectItem value="bil">Bilkjøp</SelectItem>
+                <SelectItem value="renovering">Renovering</SelectItem>
+                <SelectItem value="refinansiering">Refinansiering</SelectItem>
+                <SelectItem value="annet">Annet</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="additionalInfo"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tilleggsinformasjon</FormLabel>
+            <FormControl>
+              <Textarea
+                {...field}
+                placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
+  );
+
+  const VerificationStep = () => (
+    <div className="space-y-4">
+      <FormField
+        control={form.control}
+        name="idDocument"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Last opp legitimasjon</FormLabel>
+            <FormControl>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Input
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    id="id-upload"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => document.getElementById('id-upload')?.click()}
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {selectedFile ? selectedFile.name : "Last opp legitimasjon"}
+                  </Button>
+                </div>
+
+                {previewUrl && (
+                  <div className="mt-4">
+                    <p className="text-sm font-medium mb-2">Forhåndsvisning:</p>
+                    <div className="relative aspect-video w-full max-w-sm mx-auto border rounded-lg overflow-hidden">
+                      <img
+                        src={previewUrl}
+                        alt="Forhåndsvisning"
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {selectedFile?.type === 'application/pdf' && (
+                  <p className="text-sm text-muted-foreground">
+                    PDF valgt: {selectedFile.name}
+                  </p>
+                )}
+              </div>
+            </FormControl>
+            <FormDescription>
+              Aksepterte formater: PNG, JPG, PDF. Maks størrelse: 10MB
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            eller
+          </span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={() => setShowBankID(true)}
+      >
+        <img
+          src="/attached_assets/bankid-logo.svg"
+          alt="BankID"
+          className="mr-2 h-4"
+        />
+        Logg inn med BankID
+      </Button>
+      <BankIDDialog
+        open={showBankID}
+        onOpenChange={setShowBankID}
+        onSuccess={handleBankIDSuccess}
+      />
+    </div>
+  );
+
+  const steps = [
+    { component: PersonalInfoStep, isValid: true }, 
+    { component: FinancialInfoStep, isValid: true },
+    { component: VerificationStep, isValid: form.getValues("hasConsented") },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
       <NavHeader />
 
       <main className="container mx-auto px-4 py-8">
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>Kredittvurdering</CardTitle>
-            <CardDescription className="space-y-4 mt-4">
-              <p>
-                Takk for at du søker om lån hos oss. For å behandle søknaden din, trenger vi informasjon om din økonomiske situasjon.
-                Vennligst oppgi nøyaktig og fullstendig informasjon etter beste evne.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Alle felt markert med * er obligatoriske
-              </p>
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
-                className="space-y-6"
-              >
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Personlig informasjon</h3>
-
-                  <FormField
-                    control={form.control}
-                    name="birthDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Fødselsdato *</FormLabel>
-                        <FormControl>
-                          <DatePicker
-                            date={field.value ? parseISO(field.value) : undefined}
-                            onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
-                            disabled={(date) => isAfter(date, addYears(new Date(), -18))}
-                            locale={nb}
-                            captionLayout="dropdown"
-                            fromYear={1940}
-                            toYear={addYears(new Date(), -18).getFullYear()}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Du må være minst 18 år for å søke om lån
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Adresse *</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Gate, postnummer og sted" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="employmentStatus"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ansettelsesforhold *</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Velg ansettelsesforhold" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="fast">Fast ansatt</SelectItem>
-                            <SelectItem value="midlertidig">Midlertidig ansatt</SelectItem>
-                            <SelectItem value="selvstendig">Selvstendig næringsdrivende</SelectItem>
-                            <SelectItem value="pensjonist">Pensjonist</SelectItem>
-                            <SelectItem value="student">Student</SelectItem>
-                            <SelectItem value="arbeidsledig">Arbeidsledig</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Økonomisk informasjon</h3>
-
-                  <FormField
-                    control={form.control}
-                    name="income"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Årsinntekt (NOK) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            placeholder="0"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Minimum årsinntekt: 200 000 kr
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="monthlyExpenses"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Månedlige utgifter (NOK) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            placeholder="0"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="outstandingDebt"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Utestående gjeld (NOK) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            placeholder="0"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Inkluder alle lån og kreditt
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="assets"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Eiendeler *</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            placeholder="Beskriv dine eiendeler (eiendom, sparepenger, investeringer, etc.)"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ønsket lånebeløp (NOK) *</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                            placeholder="0"
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Beløp mellom 10 000 kr og 1 000 000 kr
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="purpose"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Formål med lånet *</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Velg formål" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="bolig">Boligkjøp</SelectItem>
-                            <SelectItem value="bil">Bilkjøp</SelectItem>
-                            <SelectItem value="renovering">Renovering</SelectItem>
-                            <SelectItem value="refinansiering">Refinansiering</SelectItem>
-                            <SelectItem value="annet">Annet</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="additionalInfo"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tilleggsinformasjon</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Verifisering</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    For å sikre en trygg og effektiv behandling av din søknad, trenger vi å verifisere din identitet.
-                    Du kan velge mellom å laste opp legitimasjon eller logge inn med BankID.
-                  </p>
-
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="idDocument"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Last opp legitimasjon</FormLabel>
-                          <FormControl>
-                            <div className="space-y-4">
-                              <div className="flex items-center gap-4">
-                                <Input
-                                  type="file"
-                                  accept="image/*,.pdf"
-                                  onChange={handleFileSelect}
-                                  className="hidden"
-                                  id="id-upload"
-                                />
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  className="w-full"
-                                  onClick={() => document.getElementById('id-upload')?.click()}
-                                >
-                                  <Upload className="mr-2 h-4 w-4" />
-                                  {selectedFile ? selectedFile.name : "Last opp legitimasjon"}
-                                </Button>
-                              </div>
-
-                              {previewUrl && (
-                                <div className="mt-4">
-                                  <p className="text-sm font-medium mb-2">Forhåndsvisning:</p>
-                                  <div className="relative aspect-video w-full max-w-sm mx-auto border rounded-lg overflow-hidden">
-                                    <img
-                                      src={previewUrl}
-                                      alt="Forhåndsvisning"
-                                      className="object-contain w-full h-full"
-                                    />
-                                  </div>
-                                </div>
-                              )}
-
-                              {selectedFile?.type === 'application/pdf' && (
-                                <p className="text-sm text-muted-foreground">
-                                  PDF valgt: {selectedFile.name}
-                                </p>
-                              )}
-                            </div>
-                          </FormControl>
-                          <FormDescription>
-                            Aksepterte formater: PNG, JPG, PDF. Maks størrelse: 10MB
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <div className="relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t" />
-                      </div>
-                      <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-background px-2 text-muted-foreground">
-                          eller
-                        </span>
-                      </div>
-                    </div>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => setShowBankID(true)}
-                    >
-                      <img
-                        src="/attached_assets/bankid-logo.svg"
-                        alt="BankID"
-                        className="mr-2 h-4"
-                      />
-                      Logg inn med BankID
-                    </Button>
-                    <BankIDDialog
-                      open={showBankID}
-                      onOpenChange={setShowBankID}
-                      onSuccess={handleBankIDSuccess}
-                    />
-                  </div>
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="hasConsented"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Jeg bekrefter at informasjonen jeg har oppgitt er korrekt *
-                        </FormLabel>
-                        <FormDescription>
-                          Ved å huke av denne boksen bekrefter jeg at all informasjon jeg har oppgitt er korrekt og fullstendig.
-                          Jeg forstår at å oppgi feilaktig informasjon kan føre til at søknaden blir avvist.
-                        </FormDescription>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="space-y-2">
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={mutation.isPending}
-                  >
-                    {mutation.isPending && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    Send søknad
-                  </Button>
-
-                  <p className="text-xs text-muted-foreground text-center">
-                    Ved å sende inn søknaden godtar du våre vilkår og personvernserklæring.
-                    Dine data vil kun bli brukt til å behandle søknaden din.
-                  </p>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
+            <LoanApplicationStepper
+              activeStep={activeStep}
+              handleNext={handleNext}
+              handleBack={handleBack}
+              isLastStep={activeStep === steps.length - 1}
+              isFormValid={steps[activeStep].isValid}
+            >
+              {steps[activeStep].component()}
+            </LoanApplicationStepper>
+          </form>
+        </Form>
       </main>
     </div>
   );
