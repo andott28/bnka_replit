@@ -64,7 +64,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
       // Calculate debt-to-income ratio
       const monthlyIncome = income / 12;

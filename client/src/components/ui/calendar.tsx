@@ -17,9 +17,9 @@ function Calendar({
   onMonthChange,
   ...props
 }: CalendarProps) {
-  // Create a state to control the month internally, default to current date
+  // Create a state to control the month internally, always use today as initial date
   const today = new Date();
-  const [currentMonth, setCurrentMonth] = React.useState<Date>(month || defaultMonth || today);
+  const [currentMonth, setCurrentMonth] = React.useState<Date>(month || defaultMonth || new Date());
   
   // Sync with external month prop if provided
   React.useEffect(() => {

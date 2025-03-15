@@ -41,10 +41,10 @@ export function DatePicker({
   label,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  // Default to today or use the provided date
-  const defaultDate = date || new Date();
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(defaultDate);
-  const [inputValue, setInputValue] = React.useState(defaultDate ? format(defaultDate, "dd/MM/yyyy") : "");
+  // Initialize with current date as default
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(date);
+  const [inputValue, setInputValue] = React.useState(date ? format(date, "dd/MM/yyyy") : "");
   
   // Keep selectedDate in sync with external date prop
   React.useEffect(() => {
