@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { usePostHog } from '@/lib/posthog-provider';
+import { usePostHog, AnalyticsEvents } from '@/lib/posthog-provider';
 import { Box, Button, Typography, Paper } from '@mui/material';
 import { X } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 export function ConsentDialog() {
-  const { consentStatus, acceptConsent, rejectConsent } = usePostHog();
+  const { consentStatus, acceptConsent, rejectConsent, trackEvent } = usePostHog();
   const [open, setOpen] = useState(false);
   const [, setLocation] = useLocation();
 
@@ -44,7 +44,13 @@ export function ConsentDialog() {
         }}
       >
         <Button
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            trackEvent(AnalyticsEvents.CLOSE_MODAL, {
+              modal_type: 'consent_dialog',
+              timestamp: new Date().toISOString()
+            });
+          }}
           aria-label="Lukk"
           sx={{
             position: 'absolute',
@@ -74,6 +80,11 @@ export function ConsentDialog() {
             onClick={() => {
               setOpen(false);
               setLocation('/privacy-policy');
+              trackEvent(AnalyticsEvents.LINK_CLICK, {
+                link_type: 'privacy_policy',
+                from_page: window.location.pathname,
+                timestamp: new Date().toISOString()
+              });
             }}
           >
             personvernerklæring
@@ -86,6 +97,10 @@ export function ConsentDialog() {
             variant="outlined"
             onClick={() => {
               rejectConsent();
+              trackEvent(AnalyticsEvents.CONSENT_REJECT, {
+                timestamp: new Date().toISOString(),
+                page: window.location.pathname
+              });
               setOpen(false);
             }}
             sx={{ borderRadius: '8px' }}
@@ -96,6 +111,10 @@ export function ConsentDialog() {
             variant="contained"
             onClick={() => {
               acceptConsent();
+              trackEvent(AnalyticsEvents.CONSENT_ACCEPT, {
+                timestamp: new Date().toISOString(),
+                page: window.location.pathname
+              });
               setOpen(false);
             }}
             sx={{ borderRadius: '8px' }}

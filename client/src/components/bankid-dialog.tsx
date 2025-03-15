@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { usePostHog, AnalyticsEvents } from "@/lib/posthog-provider";
 
 interface BankIDDialogProps {
   open: boolean;
@@ -20,6 +21,7 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
   const [status, setStatus] = useState<"idle" | "pending" | "completed" | "error">("idle");
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const { toast } = useToast();
+  const { trackEvent } = usePostHog();
 
   useEffect(() => {
     let statusInterval: NodeJS.Timeout;
@@ -64,6 +66,13 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
 
   const handleInitiateBankID = async () => {
     setStatus("pending");
+    
+    // Spor BankID-oppstart
+    trackEvent(AnalyticsEvents.BANKID_START, {
+      timestamp: new Date().toISOString(),
+      page: window.location.pathname
+    });
+    
     try {
       const response = await fetch("/api/mock-bankid/init", {
         method: "POST",
@@ -73,6 +82,13 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
     } catch (error) {
       console.error("Error initiating BankID:", error);
       setStatus("error");
+      
+      // Spor BankID-feil
+      trackEvent(AnalyticsEvents.BANKID_FAILURE, {
+        error_type: 'initialization_error',
+        timestamp: new Date().toISOString()
+      });
+      
       toast({
         title: "Feil",
         description: "Kunne ikke starte BankID-pålogging",
