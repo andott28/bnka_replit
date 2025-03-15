@@ -48,7 +48,10 @@ export function NavHeader() {
         <>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")} 
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )} 
               onClick={() => setLocation("/")}
             >
               Hjem
@@ -57,7 +60,10 @@ export function NavHeader() {
           
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={() => setLocation("/tjenester")}
             >
               Tjenester
@@ -66,7 +72,10 @@ export function NavHeader() {
 
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={() => setLocation("/apply")}
             >
               Søk Lån
@@ -75,7 +84,10 @@ export function NavHeader() {
 
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={() => setLocation("/dashboard")}
             >
               Min side
@@ -85,7 +97,10 @@ export function NavHeader() {
           {user.isAdmin && (
             <NavigationMenuItem>
               <NavigationMenuLink 
-                className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
+                className={cn(
+                  navigationMenuTriggerStyle(), 
+                  "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+                )}
                 onClick={() => setLocation("/admin")}
               >
                 Administrasjon
@@ -97,78 +112,33 @@ export function NavHeader() {
         <>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={() => setLocation("/")}
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                background: 'transparent',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'rgba(0, 0, 0, 0.05)';
-                target.style.transform = 'translateY(-2px)';
-                target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'transparent';
-                target.style.transform = 'translateY(0)';
-                target.style.boxShadow = 'none';
-              }}
             >
               Hjem
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={() => setLocation("/tjenester")}
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                background: 'transparent',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'rgba(0, 0, 0, 0.05)';
-                target.style.transform = 'translateY(-2px)';
-                target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'transparent';
-                target.style.transform = 'translateY(0)';
-                target.style.boxShadow = 'none';
-              }}
             >
               Tjenester
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline")}
+              className={cn(
+                navigationMenuTriggerStyle(), 
+                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+              )}
               onClick={handleLoanApplicationClick}
-              style={{
-                position: 'relative',
-                overflow: 'hidden',
-                background: 'transparent',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'rgba(0, 0, 0, 0.05)';
-                target.style.transform = 'translateY(-2px)';
-                target.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-              }}
-              onMouseLeave={(e) => {
-                const target = e.currentTarget;
-                target.style.background = 'transparent';
-                target.style.transform = 'translateY(0)';
-                target.style.boxShadow = 'none';
-              }}
             >
               Søk Lån
             </NavigationMenuLink>
