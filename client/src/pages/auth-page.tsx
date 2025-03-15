@@ -151,13 +151,6 @@ export default function AuthPage() {
                               fullWidth
                               error={!!loginForm.formState.errors.username}
                               helperText={loginForm.formState.errors.username?.message?.toString()}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <Mail className="h-5 w-5 text-muted-foreground" />
-                                  </InputAdornment>
-                                ),
-                              }}
                               {...field}
                             />
                           </FormItem>
@@ -175,13 +168,6 @@ export default function AuthPage() {
                               fullWidth
                               error={!!loginForm.formState.errors.password}
                               helperText={loginForm.formState.errors.password?.message?.toString()}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <Lock className="h-5 w-5 text-muted-foreground" />
-                                  </InputAdornment>
-                                ),
-                              }}
                               {...field}
                             />
                           </FormItem>
@@ -221,13 +207,6 @@ export default function AuthPage() {
                                 fullWidth
                                 error={!!registerForm.formState.errors.firstName}
                                 helperText={registerForm.formState.errors.firstName?.message?.toString()}
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment position="start">
-                                      <User className="h-5 w-5 text-muted-foreground" />
-                                    </InputAdornment>
-                                  ),
-                                }}
                                 {...field}
                               />
                             </FormItem>
@@ -263,13 +242,6 @@ export default function AuthPage() {
                               fullWidth
                               error={!!registerForm.formState.errors.username}
                               helperText={registerForm.formState.errors.username?.message?.toString()}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <Mail className="h-5 w-5 text-muted-foreground" />
-                                  </InputAdornment>
-                                ),
-                              }}
                               {...field}
                             />
                           </FormItem>
@@ -282,7 +254,7 @@ export default function AuthPage() {
                         render={({ field }) => (
                           <FormItem>
                             <div className="flex items-start space-x-2">
-                              <MuiFormControl sx={{ width: '30%' }}>
+                              <MuiFormControl sx={{ width: '40%' }}>
                                 <Select
                                   value={countryCode}
                                   onChange={(e) => {
@@ -294,11 +266,6 @@ export default function AuthPage() {
                                   }}
                                   displayEmpty
                                   variant="outlined"
-                                  startAdornment={
-                                    <InputAdornment position="start">
-                                      <Phone className="h-5 w-5 text-muted-foreground" />
-                                    </InputAdornment>
-                                  }
                                 >
                                   {countryCodes.map((item) => (
                                     <MenuItem key={item.code} value={item.code}>
@@ -334,13 +301,6 @@ export default function AuthPage() {
                               fullWidth
                               error={!!registerForm.formState.errors.password}
                               helperText={registerForm.formState.errors.password?.message?.toString()}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <Lock className="h-5 w-5 text-muted-foreground" />
-                                  </InputAdornment>
-                                ),
-                              }}
                               {...field}
                             />
                           </FormItem>
