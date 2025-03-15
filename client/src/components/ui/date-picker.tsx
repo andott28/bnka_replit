@@ -41,7 +41,18 @@ export function DatePicker({
   label,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [inputValue, setInputValue] = React.useState(date ? format(date, "dd/MM/yyyy") : "");
+  // Default to today or use the provided date
+  const defaultDate = date || new Date();
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(defaultDate);
+  const [inputValue, setInputValue] = React.useState(defaultDate ? format(defaultDate, "dd/MM/yyyy") : "");
+  
+  // Keep selectedDate in sync with external date prop
+  React.useEffect(() => {
+    if (date) {
+      setSelectedDate(date);
+      setInputValue(format(date, "dd/MM/yyyy"));
+    }
+  }, [date]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -112,9 +123,10 @@ export function DatePicker({
       >
         <Calendar
           mode="single"
-          selected={date}
+          selected={selectedDate}
           onSelect={(date) => {
             if (date) {
+              setSelectedDate(date);
               setInputValue(format(date, "dd/MM/yyyy"));
               onSelect?.(date);
             }
