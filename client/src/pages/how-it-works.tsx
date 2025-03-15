@@ -17,54 +17,93 @@ export default function HowItWorks() {
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-12">Slik fungerer det</h1>
+          <h1 className="text-4xl font-bold text-center mb-12">Våre tjenester</h1>
           
-          {/* Process Steps */}
+          {/* Services Introduction */}
+          <div className="text-center mb-12">
+            <p className="text-lg text-gray-700 mb-4">
+              BNKA tilbyr et bredt spekter av finansielle tjenester designet for å møte dine behov.
+              Vår digitale plattform gjør det enkelt å få tilgang til moderne bankløsninger.
+            </p>
+          </div>
+          
+          {/* Our Services */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-center mb-6">Våre lånetjenester</h2>
+          </div>
+          
           <div className="grid md:grid-cols-4 gap-8 mb-16">
-            <Card className="text-center p-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6">
                 <FileCheck className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="font-semibold mb-2">1. Søk online</h3>
+                <h3 className="font-semibold mb-2">Forbrukslån</h3>
                 <p className="text-sm text-gray-600">
-                  Fyll ut vår enkle online-søknad med personlig informasjon
+                  Fleksible lån til personlige behov med konkurransedyktige betingelser
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6">
                 <ShieldCheck className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="font-semibold mb-2">2. Verifisering</h3>
+                <h3 className="font-semibold mb-2">Refinansiering</h3>
                 <p className="text-sm text-gray-600">
-                  Vi verifiserer din identitet og kreditthistorikk
+                  Samle dine lån og få bedre betingelser med vår refinansieringsløsning
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6">
                 <Clock className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="font-semibold mb-2">3. Rask behandling</h3>
+                <h3 className="font-semibold mb-2">Billån</h3>
                 <p className="text-sm text-gray-600">
-                  Få svar på søknaden innen 24 timer
+                  Attraktive betingelser for billån med rask behandling
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
               <CardContent className="pt-6">
                 <CreditCard className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="font-semibold mb-2">4. Utbetaling</h3>
+                <h3 className="font-semibold mb-2">Kredittkort</h3>
                 <p className="text-sm text-gray-600">
-                  Pengene overføres direkte til din konto
+                  Få tilgang til våre eksklusive kredittkort med fordeler
                 </p>
               </CardContent>
             </Card>
           </div>
 
+          {/* Process Section */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-bold text-center mb-6">Slik søker du</h2>
+            <div className="grid md:grid-cols-4 gap-4 mb-12">
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mb-3">1</div>
+                <h3 className="font-medium mb-1">Søk online</h3>
+                <p className="text-sm text-gray-600">Fyll ut søknaden på nett</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mb-3">2</div>
+                <h3 className="font-medium mb-1">Verifisering</h3>
+                <p className="text-sm text-gray-600">Vi kontrollerer din informasjon</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mb-3">3</div>
+                <h3 className="font-medium mb-1">Godkjenning</h3>
+                <p className="text-sm text-gray-600">Svar innen 24 timer</p>
+              </div>
+              <div className="flex flex-col items-center text-center">
+                <div className="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center mb-3">4</div>
+                <h3 className="font-medium mb-1">Utbetaling</h3>
+                <p className="text-sm text-gray-600">Pengene overføres til din konto</p>
+              </div>
+            </div>
+          </div>
+          
           {/* FAQ Section */}
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-8">Ofte stilte spørsmål</h2>
+            <h2 className="text-2xl font-bold text-center mb-8">Ofte stilte spørsmål</h2>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
                 <AccordionTrigger>Hvem kan søke om lån?</AccordionTrigger>

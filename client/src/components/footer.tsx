@@ -49,13 +49,13 @@ export function Footer() {
               <Typography variant="h6" color="text.primary" gutterBottom>
                 Lenker
               </Typography>
-              <Link component={RouterLink} to="/" color="inherit" display="block" sx={{ mb: 1 }}>
+              <Link component={RouterLink} to="/" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
                 Hjem
               </Link>
-              <Link component={RouterLink} to="/hvordan-det-fungerer" color="inherit" display="block" sx={{ mb: 1 }}>
-                Hvordan det fungerer
+              <Link component={RouterLink} to="/tjenester" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
+                Tjenester
               </Link>
-              <Link component={RouterLink} to="/kontakt" color="inherit" display="block" sx={{ mb: 1 }}>
+              <Link component={RouterLink} to="/kontakt" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
                 Kontakt oss
               </Link>
             </Grid>
@@ -64,10 +64,10 @@ export function Footer() {
           <Box mt={5}>
             <Typography variant="body2" color="text.secondary" align="center">
               © {new Date().getFullYear()} BNKA | 
-              <Link component={RouterLink} to="/terms-of-service" color="inherit" sx={{ mx: 0.5 }}>
+              <Link component={RouterLink} to="/terms-of-service" color="text.secondary" sx={{ mx: 0.5, fontSize: '0.875rem' }}>
                 Brukervilkår
               </Link> | 
-              <Link component={RouterLink} to="/privacy-policy" color="inherit" sx={{ mx: 0.5 }}>
+              <Link component={RouterLink} to="/privacy-policy" color="text.secondary" sx={{ mx: 0.5, fontSize: '0.875rem' }}>
                 Personvernerklæring og informasjonskapsler
               </Link>
             </Typography>
