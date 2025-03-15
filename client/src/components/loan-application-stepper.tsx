@@ -95,27 +95,6 @@ export function LoanApplicationStepper({
         {children}
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
-          {!isFormValid && (
-            <Box 
-              sx={{ 
-                bgcolor: 'error.light', 
-                color: 'error.main', 
-                borderRadius: 2, 
-                p: 2, 
-                fontSize: '0.875rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <Box component="span" sx={{ mr: 1 }}>⚠️</Box>
-              <Typography variant="body2">
-                {activeStep === 0 && "Vennligst fyll ut alle feltene i personlig informasjon."}
-                {activeStep === 1 && "Vennligst fyll ut alle feltene i økonomisk informasjon."}
-                {activeStep === 2 && "BankID-verifisering er nødvendig for å fortsette."}
-              </Typography>
-            </Box>
-          )}
-          
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               variant="outlined"
@@ -132,7 +111,6 @@ export function LoanApplicationStepper({
             <Button
               variant="contained"
               onClick={handleNext}
-              disabled={!isFormValid}
               sx={{
                 textTransform: 'none',
                 borderRadius: '8px',
