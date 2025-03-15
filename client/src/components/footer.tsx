@@ -18,7 +18,7 @@ export function Footer() {
       >
         <Container maxWidth="lg">
           <Grid container spacing={4} justifyContent="space-between">
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="h6" color="text.primary" gutterBottom>
                 BNKA
               </Typography>
@@ -27,7 +27,7 @@ export function Footer() {
               </Typography>
             </Grid>
             
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={6}>
               <Typography variant="h6" color="text.primary" gutterBottom>
                 Kontakt
               </Typography>
