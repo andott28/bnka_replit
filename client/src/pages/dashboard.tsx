@@ -405,6 +405,66 @@ export default function Dashboard() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Slett konto dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-red-600">Slett konto</DialogTitle>
+            <DialogDescription>
+              Dette er en permanent handling. Alle dine data vil bli slettet fra våre systemer og kan ikke gjenopprettes.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 border-t border-b my-4">
+            <h3 className="font-medium mb-2">Før du fortsetter, vær oppmerksom på:</h3>
+            <ul className="space-y-2 text-sm text-gray-600">
+              <li className="flex items-start gap-2">
+                <div className="rounded-full bg-red-100 p-1 mt-0.5">
+                  <Trash2 className="h-3 w-3 text-red-600" />
+                </div>
+                <span>Alle dine personlige data vil bli permanent slettet</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <div className="rounded-full bg-red-100 p-1 mt-0.5">
+                  <Trash2 className="h-3 w-3 text-red-600" />
+                </div>
+                <span>Du vil miste all tilgang til dine bankkontoer og tjenester</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <div className="rounded-full bg-red-100 p-1 mt-0.5">
+                  <Trash2 className="h-3 w-3 text-red-600" />
+                </div>
+                <span>Eventuelle utestående betalinger eller overføringer må fullføres før sletting</span>
+              </li>
+            </ul>
+          </div>
+          
+          <DialogFooter className="flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:space-x-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              className="sm:flex-1"
+            >
+              Avbryt
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                // Utfør slettingen (implementeres senere)
+                toast({
+                  title: "Konto sletting",
+                  description: "Denne funksjonaliteten er ikke implementert ennå.",
+                });
+                setShowDeleteDialog(false);
+              }}
+              className="sm:flex-1"
+            >
+              Bekreft sletting
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
