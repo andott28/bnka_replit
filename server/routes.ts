@@ -142,6 +142,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const loans = await storage.getLoansByUserId(req.user.id);
     res.json(loans);
   });
+  
+  // Endpoint to get the latest credit score for the user
+  app.get("/api/loans/latest-credit-score", async (req, res) => {
+    if (!req.isAuthenticated()) return res.sendStatus(401);
+    
+    try {
+      // Get all loans for the user
+      const loans = await storage.getLoansByUserId(req.user.id);
+      
+      if (!loans || loans.length === 0) {
+        return res.status(404).json({ error: "Ingen lånesøknader funnet" });
+      }
+      
+      // Find the latest loan with a credit score
+      const loansWithCreditScore = loans
+        .filter(loan => loan.creditScore && loan.creditScoreDetails)
+        .sort((a, b) => {
+          // Use submittedAt for sorting
+          const dateA = a.submittedAt instanceof Date ? a.submittedAt : new Date(a.submittedAt);
+          const dateB = b.submittedAt instanceof Date ? b.submittedAt : new Date(b.submittedAt);
+          return dateB.getTime() - dateA.getTime();
+        });
+      
+      if (loansWithCreditScore.length === 0) {
+        return res.status(404).json({ error: "Ingen kredittvurdering funnet" });
+      }
+      
+      // Return the credit details for the latest loan
+      const latestLoan = loansWithCreditScore[0];
+      
+      // Ensure we return valid JSON for the credit score details
+      if (typeof latestLoan.creditScoreDetails === 'string') {
+        try {
+          // If it's stored as a string, parse it
+          res.json(JSON.parse(latestLoan.creditScoreDetails as string));
+        } catch (parseError) {
+          console.error("Error parsing credit score details:", parseError);
+          res.json(latestLoan.creditScoreDetails);
+        }
+      } else {
+        // Otherwise just return the object
+        res.json(latestLoan.creditScoreDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching latest credit score:", error);
+      res.status(500).json({ 
+        error: "Kunne ikke hente kredittvurdering", 
+        details: error instanceof Error ? error.message : "Ukjent feil" 
+      });
+    }
+  });
 
   app.get("/api/loans/all", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isAdmin) {

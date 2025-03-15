@@ -175,6 +175,13 @@ export default function LoanApplication() {
   };
 
   const handleBankIDSuccess = async (data: { personalNumber: string; name: string }) => {
+    // Track successful BankID verification in PostHog
+    if (trackEvent) {
+      trackEvent(AnalyticsEvents.BANKID_SUCCESS, {
+        from: "loan_application"
+      });
+    }
+    
     // Set the hasConsented value to true to enable the submit button
     form.setValue("hasConsented", true, { shouldValidate: true });
     
@@ -191,6 +198,15 @@ export default function LoanApplication() {
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       } catch (error) {
         console.error("Failed to update KYC status:", error);
+        
+        // Track error in PostHog
+        if (trackEvent) {
+          trackEvent(AnalyticsEvents.FORM_ERROR, {
+            action: "update_kyc_status",
+            error: error instanceof Error ? error.message : "Unknown error",
+            context: "loan_application"
+          });
+        }
       }
     }
     
