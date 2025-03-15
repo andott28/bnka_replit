@@ -58,12 +58,6 @@ export function Footer() {
               <Link component={RouterLink} to="/kontakt" color="inherit" display="block" sx={{ mb: 1 }}>
                 Kontakt oss
               </Link>
-              <Link component={RouterLink} to="/privacy-policy" color="inherit" display="block" sx={{ mb: 1 }}>
-                Personvernerklæring
-              </Link>
-              <Link component={RouterLink} to="/terms-of-service" color="inherit" display="block" sx={{ mb: 1 }}>
-                Brukervilkår
-              </Link>
             </Grid>
           </Grid>
           
