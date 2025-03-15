@@ -553,11 +553,11 @@ export default function LoanApplication() {
               <span>Verifiserer...</span>
             </div>
           ) : isBankIDVerified ? (
-            <div className="flex items-center justify-center text-green-700">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 animate-[bounce_0.5s_ease-in-out]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="flex items-center justify-center bg-green-100 text-green-800 px-3 py-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              <span>Identitet bekreftet</span>
+              <span className="font-medium">Identitet bekreftet</span>
             </div>
           ) : (
             <>

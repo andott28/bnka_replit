@@ -53,8 +53,6 @@ function Calendar({
         dropdown: "absolute bg-white rounded-lg shadow-md py-2 mt-1 z-50 min-w-[120px] border border-gray-200",
         dropdown_month: "py-1.5 px-4 hover:bg-gray-100 cursor-pointer text-sm transition-colors",
         dropdown_year: "py-1.5 px-4 hover:bg-gray-100 cursor-pointer text-sm transition-colors",
-        dropdown_months: "left-0 w-[140px]",  
-        dropdown_years: "right-0 w-[100px]",
         ...classNames,
       }}
       components={{

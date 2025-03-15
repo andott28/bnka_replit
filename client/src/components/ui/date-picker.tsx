@@ -110,26 +110,41 @@ export function DatePicker({
         align="start"
         sideOffset={8}
       >
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(date) => {
-            if (date) {
-              setInputValue(format(date, "dd/MM/yyyy"));
-              onSelect?.(date);
+        <div className="calendar-wrapper min-w-[280px]">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={(date) => {
+              if (date) {
+                setInputValue(format(date, "dd/MM/yyyy"));
+                onSelect?.(date);
+              }
+              setOpen(false);
+            }}
+            disabled={disabled}
+            locale={locale}
+            fromYear={fromYear}
+            toYear={toYear}
+            captionLayout={captionLayout}
+            showOutsideDays={true}
+            fixedWeeks={true}
+            hideHead={true}
+            initialFocus
+            className="min-w-[280px]"
+          />
+        </div>
+        
+        <style>
+          {`
+            /* Fikse overlappende dropdown-menyer i datovalgeren */
+            .rdp-dropdown_month {
+              margin-right: 8px;
             }
-            setOpen(false);
-          }}
-          disabled={disabled}
-          locale={locale}
-          fromYear={fromYear}
-          toYear={toYear}
-          captionLayout={captionLayout}
-          showOutsideDays={true}
-          fixedWeeks={true}
-          hideHead={true}
-          initialFocus
-        />
+            .rdp-dropdown_year {
+              margin-left: 8px;
+            }
+          `}
+        </style>
       </PopoverContent>
     </Popover>
   );
