@@ -14,11 +14,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { useTheme } from "@/hooks/use-theme";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { usePostHog, AnalyticsEvents } from "@/lib/posthog-provider";
 
 export default function Dashboard() {
   const { data: loans, isLoading } = useQuery<LoanApplication[]>({
@@ -27,6 +29,7 @@ export default function Dashboard() {
   const { logoutMutation, user } = useAuth();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
+  const { trackEvent } = usePostHog();
   const [selectedLoan, setSelectedLoan] = useState<LoanApplication | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -332,7 +335,13 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
                   <div 
                     className="flex items-center gap-2 cursor-pointer w-full" 
-                    onClick={() => setShowDeleteDialog(true)}
+                    onClick={() => {
+                      setShowDeleteDialog(true);
+                      trackEvent(AnalyticsEvents.OPEN_MODAL, {
+                        modal_type: 'delete_account',
+                        user_id: user?.id
+                      });
+                    }}
                   >
                     <Trash2 className="h-5 w-5 text-red-600" />
                     <span className="text-red-600">Slett konto</span>
@@ -443,7 +452,13 @@ export default function Dashboard() {
           <DialogFooter className="flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:space-x-2">
             <Button
               variant="outline"
-              onClick={() => setShowDeleteDialog(false)}
+              onClick={() => {
+                setShowDeleteDialog(false);
+                trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                  action: 'cancel_account_deletion',
+                  user_id: user?.id
+                });
+              }}
               className="sm:flex-1"
             >
               Avbryt
@@ -456,6 +471,13 @@ export default function Dashboard() {
                   title: "Konto sletting",
                   description: "Denne funksjonaliteten er ikke implementert ennå.",
                 });
+                
+                // Spor slettingsforsøket i analyse
+                trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                  action: 'confirm_account_deletion',
+                  user_id: user?.id
+                });
+                
                 setShowDeleteDialog(false);
               }}
               className="sm:flex-1"

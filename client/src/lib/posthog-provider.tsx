@@ -102,7 +102,7 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
       respect_dnt: true, // Respect Do Not Track browser setting
       property_blacklist: ['$ip', 'email'], // Avoid tracking these properties
       mask_all_text: true, // Don't capture actual text content, just events
-      mask_all_element_attributes: ['data-personal'], // Don't capture attributes with personal data
+      mask_all_element_attributes: true, // Don't capture attributes with personal data
       loaded: (ph) => {
         // Sett eventuelle begrensinger etter innlasting
         if (import.meta.env.MODE !== 'production') {
