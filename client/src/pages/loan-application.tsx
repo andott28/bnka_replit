@@ -60,14 +60,14 @@ export default function LoanApplication() {
         street: z.string().min(5, "Vennligst oppgi en gyldig gateadresse"),
         postalCode: z.string().length(4, "Postnummer må være 4 siffer"),
         city: z.string().min(2, "Vennligst oppgi en gyldig by"),
-        amount: insertLoanApplicationSchema.shape.amount
+        amount: z.coerce.number()
           .min(10000, "Minimum lånebeløp er 10 000 kr")
           .max(1000000, "Maksimalt lånebeløp er 1 000 000 kr"),
-        income: insertLoanApplicationSchema.shape.income
+        income: z.coerce.number()
           .min(200000, "Minimum årsinntekt er 200 000 kr"),
-        monthlyExpenses: insertLoanApplicationSchema.shape.monthlyExpenses
+        monthlyExpenses: z.coerce.number()
           .min(0, "Månedlige utgifter kan ikke være negative"),
-        outstandingDebt: insertLoanApplicationSchema.shape.outstandingDebt
+        outstandingDebt: z.coerce.number()
           .min(0, "Utestående gjeld kan ikke være negativ"),
         hasConsented: z.boolean().refine((val) => val === true, "Du må godta vilkårene"),
       })
@@ -218,10 +218,10 @@ export default function LoanApplication() {
     if (isStepValid) {
       setActiveStep((prev) => prev + 1);
     } else {
-      // Vis en toast-melding om at det er feil i skjemaet
+      // Mer diskré feilmelding som vises i toast
       toast({
-        title: 'Manglende informasjon',
-        description: 'Vennligst fyll ut alle påkrevde felt før du fortsetter.',
+        title: 'Mangler informasjon',
+        description: 'Vennligst fyll ut alle nødvendige felt markert med (*) før du fortsetter.',
         variant: 'destructive',
       });
     }

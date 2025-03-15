@@ -8,6 +8,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils"; // Import cn utility
 import {
   Sheet,
   SheetContent,
@@ -47,7 +48,7 @@ export function NavHeader() {
         <>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()} 
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")} 
               onClick={() => setLocation("/")}
             >
               Hjem
@@ -56,7 +57,7 @@ export function NavHeader() {
           
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={() => setLocation("/tjenester")}
             >
               Tjenester
@@ -65,7 +66,7 @@ export function NavHeader() {
 
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={() => setLocation("/apply")}
             >
               Søk Lån
@@ -74,7 +75,7 @@ export function NavHeader() {
 
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={() => setLocation("/dashboard")}
             >
               Min side
@@ -84,7 +85,7 @@ export function NavHeader() {
           {user.isAdmin && (
             <NavigationMenuItem>
               <NavigationMenuLink 
-                className={navigationMenuTriggerStyle()}
+                className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
                 onClick={() => setLocation("/admin")}
               >
                 Administrasjon
