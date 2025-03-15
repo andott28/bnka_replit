@@ -23,21 +23,34 @@ import * as z from 'zod';
 import { DatePicker } from "@/components/ui/date-picker";
 import { addYears, format, isAfter, isBefore, parseISO } from "date-fns";
 import { nb } from "date-fns/locale";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BankIDDialog } from "@/components/bankid-dialog";
 import { LoanApplicationStepper } from "@/components/loan-application-stepper";
+import { usePostHog } from "@/lib/posthog-provider";
+import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { trackEvent } = usePostHog();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showBankID, setShowBankID] = useState(false);
   const [isBankIDVerified, setIsBankIDVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  
+  useEffect(() => {
+    // Track page view when component loads
+    trackEvent(AnalyticsEvents.PAGE_VIEW, {
+      page: "loan_application"
+    });
+    
+    // Track loan application start
+    trackEvent(AnalyticsEvents.LOAN_APPLICATION_START);
+  }, [trackEvent]);
 
   const form = useForm({
     resolver: zodResolver(
@@ -121,6 +134,13 @@ export default function LoanApplication() {
       }
     },
     onSuccess: (creditScore) => {
+      // Track successful loan application
+      trackEvent(AnalyticsEvents.LOAN_APPLICATION_COMPLETE, {
+        status: "success",
+        creditGrade: creditScore?.grade,
+        purpose: form.getValues().purpose
+      });
+      
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       toast({
         title: "Søknad sendt",
@@ -130,6 +150,14 @@ export default function LoanApplication() {
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
+      
+      // Track error
+      trackEvent(AnalyticsEvents.FORM_ERROR, {
+        error: error.message || "Unknown error",
+        action: "submit_loan_application",
+        context: "loan_application_mutation"
+      });
+      
       toast({
         title: "Feil ved innsending",
         description: error.message || "Det oppsto en feil ved innsending av lånesøknaden. Vennligst prøv igjen senere.",
@@ -141,7 +169,21 @@ export default function LoanApplication() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Track file upload attempt
+      trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+        action: "upload_id_document",
+        fileType: file.type,
+        fileSize: Math.round(file.size / 1024) // Size in KB
+      });
+      
       if (file.size > 10 * 1024 * 1024) {
+        // Track error
+        trackEvent(AnalyticsEvents.FORM_ERROR, {
+          errorType: "file_too_large",
+          fileSize: Math.round(file.size / 1024),
+          context: "loan_application_id_upload"
+        });
+        
         toast({
           title: "Feil",
           description: "Filen er for stor. Maksimal størrelse er 10MB.",
@@ -152,6 +194,13 @@ export default function LoanApplication() {
 
       const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
       if (!validTypes.includes(file.type)) {
+        // Track error
+        trackEvent(AnalyticsEvents.FORM_ERROR, {
+          errorType: "invalid_file_type",
+          fileType: file.type,
+          context: "loan_application_id_upload"
+        });
+        
         toast({
           title: "Feil",
           description: "Ugyldig filformat. Kun PNG, JPG og PDF er tillatt.",
@@ -166,10 +215,22 @@ export default function LoanApplication() {
         const reader = new FileReader();
         reader.onloadend = () => {
           setPreviewUrl(reader.result as string);
+          
+          // Track successful image preview
+          trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+            action: "preview_id_image",
+            success: true
+          });
         };
         reader.readAsDataURL(file);
       } else {
         setPreviewUrl(null);
+        
+        // Track PDF upload (no preview)
+        trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+          action: "upload_id_pdf",
+          success: true
+        });
       }
     }
   };
@@ -245,6 +306,13 @@ export default function LoanApplication() {
   const handleNext = async () => {
     // Siste steg - send inn søknaden
     if (activeStep === steps.length - 1) {
+      // Track application submission attempt
+      trackEvent(AnalyticsEvents.LOAN_APPLICATION_STEP, {
+        step: activeStep,
+        action: "submit",
+        status: "final_submit"
+      });
+      
       form.handleSubmit((data) => mutation.mutate(data))();
       return;
     }
@@ -253,8 +321,22 @@ export default function LoanApplication() {
     const isStepValid = await validateStep(activeStep);
     
     if (isStepValid) {
+      // Track successful step completion
+      trackEvent(AnalyticsEvents.LOAN_APPLICATION_STEP, {
+        step: activeStep,
+        action: "next",
+        status: "success"
+      });
+      
       setActiveStep((prev) => prev + 1);
     } else {
+      // Track validation failure
+      trackEvent(AnalyticsEvents.FORM_ERROR, {
+        step: activeStep,
+        errorType: "validation",
+        context: "loan_application_step"
+      });
+      
       // Mer diskré feilmelding som vises i toast
       toast({
         title: 'Mangler informasjon',
@@ -560,6 +642,12 @@ export default function LoanApplication() {
           fullWidth
           onClick={() => {
             if (!isBankIDVerified && !isVerifying) {
+              // Track BankID verification start
+              trackEvent(AnalyticsEvents.BANKID_START, {
+                from: "loan_application",
+                step: activeStep
+              });
+              
               setIsVerifying(true);
               setShowBankID(true);
             }
