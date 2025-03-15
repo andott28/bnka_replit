@@ -1,8 +1,38 @@
+import { useState } from 'react';
 import { NavHeader } from '@/components/nav-header';
 import { Footer } from '@/components/footer';
-import { Box, Container, Typography, Paper, Divider, List, ListItem, ListItemText } from '@mui/material';
+import { 
+  Box, 
+  Container, 
+  Typography, 
+  Paper, 
+  Divider, 
+  List, 
+  ListItem, 
+  ListItemText,
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  Card,
+  CardContent
+} from '@mui/material';
+import { usePostHog } from '@/lib/posthog-provider';
 
 export default function PrivacyPolicy() {
+  const { consentStatus, acceptConsent, rejectConsent } = usePostHog();
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(consentStatus === 'accepted');
+
+  const handleAnalyticsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const enabled = event.target.checked;
+    setAnalyticsEnabled(enabled);
+    
+    if (enabled) {
+      acceptConsent();
+    } else {
+      rejectConsent();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <NavHeader />
@@ -115,8 +145,7 @@ export default function PrivacyPolicy() {
             </ListItem>
           </List>
           <Typography paragraph>
-            Du kan når som helst endre dine samtykker for informasjonskapsler ved å klikke på "Personverninnstillinger" 
-            i bunnteksten på nettsiden vår.
+            Du kan når som helst endre dine samtykker for informasjonskapsler ved å bruke personverninnstillingene nedenfor.
           </Typography>
 
           <Typography variant="h6" gutterBottom>
@@ -184,8 +213,50 @@ export default function PrivacyPolicy() {
           <Typography paragraph>
             Hvis du mener at vår behandling av dine personopplysninger er i strid med personvernlovgivningen,
             har du rett til å klage til Datatilsynet. Du finner informasjon om hvordan kontakte Datatilsynet 
-            på <a href="https://www.datatilsynet.no" target="_blank" rel="noopener noreferrer">www.datatilsynet.no</a>.
+            på Datatilsynets nettsider.
           </Typography>
+
+          <Typography variant="h6" sx={{ mt: 4 }} gutterBottom>
+            Personverninnstillinger
+          </Typography>
+          <Typography paragraph>
+            Her kan du endre dine personverninnstillinger og bestemme hvordan vi kan samle inn og bruke data om din bruk av nettsiden vår.
+          </Typography>
+
+          <Card sx={{ mb: 4, bgcolor: 'background.paper', boxShadow: 2 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Endre dine personvernvalg
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Du har tidligere {analyticsEnabled ? 'godtatt' : 'avslått'} bruk av analytiske informasjonskapsler. 
+                Du kan når som helst justere dette valget ved å bruke bryteren nedenfor.
+              </Typography>
+              
+              <FormGroup>
+                <FormControlLabel 
+                  control={
+                    <Switch 
+                      checked={analyticsEnabled} 
+                      onChange={handleAnalyticsToggle}
+                      color="primary"
+                    />
+                  } 
+                  label={
+                    <Typography variant="body1">
+                      Tillat anonymisert analyse av nettsidebruk (PostHog)
+                    </Typography>
+                  }
+                />
+              </FormGroup>
+              
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                {analyticsEnabled 
+                  ? 'Du har valgt å tillate oss å samle inn anonymiserte data om din bruk av nettsiden. Dette hjelper oss å forbedre tjenestene våre.' 
+                  : 'Du har valgt å ikke tillate oss å samle inn data om din bruk av nettsiden. Dette valget påvirker ikke nødvendige funksjoner.'}
+              </Typography>
+            </CardContent>
+          </Card>
 
           <Divider sx={{ my: 3 }} />
           <Typography variant="body2" color="text.secondary" align="center">

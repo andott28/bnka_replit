@@ -1,32 +1,9 @@
 import { Link as RouterLink } from 'wouter';
-import { Box, Container, Typography, Link, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { usePostHog } from '@/lib/posthog-provider';
-import { Settings } from 'lucide-react';
-import { useState } from 'react';
+import { Box, Container, Typography, Link, Grid } from '@mui/material';
 import { useAuth } from '@/hooks/use-auth';
 
 export function Footer() {
-  const { consentStatus, acceptConsent, rejectConsent } = usePostHog();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { user } = useAuth();
-
-  const openPrivacySettings = () => {
-    setIsSettingsOpen(true);
-  };
-
-  const closePrivacySettings = () => {
-    setIsSettingsOpen(false);
-  };
-
-  const handleAcceptConsent = () => {
-    acceptConsent();
-    closePrivacySettings();
-  };
-
-  const handleRejectConsent = () => {
-    rejectConsent();
-    closePrivacySettings();
-  };
 
   return (
     <>
@@ -87,14 +64,6 @@ export function Footer() {
               <Link component={RouterLink} to="/terms-of-service" color="inherit" display="block" sx={{ mb: 1 }}>
                 Brukervilkår
               </Link>
-              <Button
-                startIcon={<Settings size={16} />}
-                onClick={openPrivacySettings}
-                size="small"
-                sx={{ mt: 1, fontSize: '0.875rem', textTransform: 'none', color: 'text.secondary' }}
-              >
-                Personverninnstillinger
-              </Button>
             </Grid>
           </Grid>
           
@@ -111,40 +80,6 @@ export function Footer() {
           </Box>
         </Container>
       </Box>
-
-      {/* Dialog for personverninnstillinger */}
-      <Dialog 
-        open={isSettingsOpen}
-        onClose={closePrivacySettings}
-        aria-labelledby="privacy-settings-dialog-title"
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle id="privacy-settings-dialog-title">
-          Personverninnstillinger
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" gutterBottom>
-            Vi bruker informasjonskapsler for å analysere hvordan nettsiden brukes og forbedre 
-            brukeropplevelsen. I henhold til norsk lov og GDPR, trenger vi ditt samtykke for å samle inn 
-            anonymiserte data om din bruk av nettsiden.
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Du kan når som helst endre dine valg for informasjonskapsler. For mer informasjon, les vår{' '}
-            <Link component={RouterLink} to="/privacy-policy" onClick={closePrivacySettings}>
-              personvernerklæring
-            </Link>.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRejectConsent} color="inherit">
-            Avslå alle
-          </Button>
-          <Button onClick={handleAcceptConsent} variant="contained" color="primary">
-            Aksepter alle
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }
