@@ -41,14 +41,19 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
       api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
       capture_pageview: true,
       capture_pageleave: true,
-      autocapture: {
-        css_selector_allowlist: ['data-ph-capture'],
-      },
-      respect_dnt: true, // Respekter "Do Not Track"
+      autocapture: true, // Aktiverer automatisk capturing av hendelser
       loaded: (ph) => {
         // Sett eventuelle begrensinger etter innlasting
         if (import.meta.env.MODE !== 'production') {
           ph.opt_out_capturing(); // Opt-out i utviklingsmodus
+        } else {
+          // Manuelt send en pageview-hendelse når PostHog er lastet
+          ph.capture('$pageview');
+          
+          // Sett opp lytter for når brukeren forlater siden
+          window.addEventListener('beforeunload', () => {
+            ph.capture('$pageleave');
+          });
         }
       }
     });

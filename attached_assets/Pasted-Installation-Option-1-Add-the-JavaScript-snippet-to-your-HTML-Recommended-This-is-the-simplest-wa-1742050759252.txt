@@ -1,0 +1,86 @@
+Installation
+Option 1: Add the JavaScript snippet to your HTML Recommended
+This is the simplest way to get PostHog up and running. It only takes a few minutes.
+
+Copy the snippet below and replace <ph_project_api_key> and <ph_client_api_host> with your project's values, then add it within the <head> tags at the base of your product - ideally just before the closing </head> tag. This ensures PostHog loads on any page users visit.
+
+You can find the snippet pre-filled with this data in your project settings.
+
+HTML
+
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {api_host: 'https://us.i.posthog.com'})
+</script>
+Once the snippet is added, PostHog automatically captures $pageview and other events like button clicks. You can then enable other products, such as session replays, within your project settings.
+
+
+Set up a reverse proxy (recommended)
+Include ES5 support (optional)
+Option 2: Install via package manager
+Yarn
+NPM
+
+yarn add posthog-js
+And then include it with your project API key and host (which you can find in your project settings):
+
+Web
+
+import posthog from 'posthog-js'
+posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', { api_host: 'https://us.i.posthog.com' })
+See our framework specific docs for Next.js, React, Vue, Angular, Astro, Remix, and Svelte for more installation details.
+
+Bundle all required extensions (advanced)
+Don't want to send test data while developing?
+Once you've installed PostHog, see our features doc for more information about what you can do with it.
+
+Track across marketing website & app
+We recommend putting PostHog both on your homepage and your application if applicable. That means you'll be able to follow a user from the moment they come onto your website, all the way through signup and actually using your product.
+
+PostHog automatically sets a cross-domain cookie, so if your website is yourapp.com and your app is on app.yourapp.com users will be followed when they go from one to the other. See our tutorial on cross-website tracking if you need to track users across different domains.
+
+Permitted domains
+You can also configure "permitted domains" in your project settings. These are domains where you'll be able to record user sessions and use the PostHog toolbar.
+
+Opt out of data capture
+You can completely opt-out users from data capture. To do this, there are two options:
+
+Opt users out by default by setting opt_out_capturing_by_default to true in your PostHog config.
+Web
+
+posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {
+    opt_out_capturing_by_default: true,
+});
+Opt users out on a per-person basis by calling posthog.opt_out_capturing().
+Similarly, you can opt users in:
+
+Web
+
+posthog.opt_in_capturing()
+To check if a user is opted out:
+
+Web
+
+posthog.has_opted_out_capturing()
+Running more than one instance of PostHog at the same time
+While not a first-class citizen, PostHog allows you to run more than one instance of PostHog at the same time if you, for example, want to track different events in different posthog instances/projects.
+
+posthog.init accepts a third parameter that can be used to create named instances.
+
+TypeScript
+
+posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {}, 'project1')
+posthog.init('<ph_project_api_key>', {}, 'project2')
+You can then call these different instances by accessing it on the global posthog object
+
+TypeScript
+
+posthog.project1.capture("some_event")
+posthog.project2.capture("other_event")
+Note: You'll probably want to disable autocapture (and some other events) to avoid them from being sent to both instances. Check all of our config options to better understand that.
+
+Debugging
+To see all the data that is being sent to PostHog, you can run posthog.debug() in your dev console or set the debug option to true in the init call.
+
+Development
+For instructions on how to run posthog-js locally and setup your development environment, please checkout the README on the posthog-js repository.
