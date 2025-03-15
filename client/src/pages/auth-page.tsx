@@ -58,7 +58,14 @@ export default function AuthPage() {
   });
 
   if (user) {
-    setLocation("/dashboard");
+    // Sjekk om det finnes en redirect etter innlogging
+    const redirectPath = localStorage.getItem("redirectAfterLogin");
+    if (redirectPath) {
+      localStorage.removeItem("redirectAfterLogin");
+      setLocation(redirectPath);
+    } else {
+      setLocation("/dashboard");
+    }
     return null;
   }
 

@@ -47,7 +47,7 @@ function Router() {
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/auth" component={AuthPage} />
-        <Route path="/hvordan-det-fungerer" component={HowItWorks} />
+        <Route path="/tjenester" component={HowItWorks} />
         <Route path="/kontakt" component={Contact} />
         <Route path="/privacy-policy" component={PrivacyPolicy} />
         <Route path="/terms-of-service" component={TermsOfService} />

@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@mui/material";
 import {
@@ -16,9 +16,30 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { useEffect } from "react";
 
 export function NavHeader() {
   const { user } = useAuth();
+  const [location, setLocation] = useLocation();
+  
+  // Funksjon for å håndtere klikk på "Søk Lån" når man ikke er innlogget
+  const handleLoanApplicationClick = () => {
+    // Lagre informasjon om at brukeren ønsket å søke om lån
+    localStorage.setItem("redirectAfterLogin", "/apply");
+    // Omdirigere til innloggingssiden
+    setLocation("/auth");
+  };
+
+  // Sjekk ved lasting om det finnes en redirect etter innlogging
+  useEffect(() => {
+    if (user && location === "/auth") {
+      const redirectPath = localStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        localStorage.removeItem("redirectAfterLogin");
+        setLocation(redirectPath);
+      }
+    }
+  }, [user, location, setLocation]);
 
   const NavItems = () => (
     <>
@@ -28,6 +49,14 @@ export function NavHeader() {
             <Link href="/">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Hjem
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          
+          <NavigationMenuItem>
+            <Link href="/tjenester">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Tjenester
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -68,9 +97,9 @@ export function NavHeader() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/hvordan-det-fungerer">
+            <Link href="/tjenester">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Hvordan Det Fungerer
+                Tjenester
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
@@ -80,6 +109,13 @@ export function NavHeader() {
                 Kontakt
               </NavigationMenuLink>
             </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <button onClick={handleLoanApplicationClick}>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Søk Lån
+              </NavigationMenuLink>
+            </button>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <Link href="/auth">
@@ -98,6 +134,11 @@ export function NavHeader() {
           <Link href="/">
             <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Hjem
+            </Button>
+          </Link>
+          <Link href="/tjenester">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
+              Tjenester
             </Button>
           </Link>
           <Link href="/apply">
@@ -125,9 +166,9 @@ export function NavHeader() {
               Hjem
             </Button>
           </Link>
-          <Link href="/hvordan-det-fungerer">
+          <Link href="/tjenester">
             <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Hvordan Det Fungerer
+              Tjenester
             </Button>
           </Link>
           <Link href="/kontakt">
@@ -135,6 +176,11 @@ export function NavHeader() {
               Kontakt
             </Button>
           </Link>
+          <button onClick={handleLoanApplicationClick} className="w-full text-left">
+            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
+              Søk Lån
+            </Button>
+          </button>
           <Link href="/auth">
             <Button fullWidth variant="contained" color="primary">Logg inn</Button>
           </Link>
