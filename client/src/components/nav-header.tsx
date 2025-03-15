@@ -46,74 +46,86 @@ export function NavHeader() {
       {user ? (
         <>
           <NavigationMenuItem>
-            <Link href="/">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Hjem
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()} 
+              onClick={() => setLocation("/")}
+            >
+              Hjem
+            </NavigationMenuLink>
           </NavigationMenuItem>
           
           <NavigationMenuItem>
-            <Link href="/tjenester">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Tjenester
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={() => setLocation("/tjenester")}
+            >
+              Tjenester
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <Link href="/apply">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Søk Lån
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={() => setLocation("/apply")}
+            >
+              Søk Lån
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <Link href="/dashboard">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Min side
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={() => setLocation("/dashboard")}
+            >
+              Min side
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           {user.isAdmin && (
             <NavigationMenuItem>
-              <Link href="/admin">
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Administrasjon
-                </NavigationMenuLink>
-              </Link>
+              <NavigationMenuLink 
+                className={navigationMenuTriggerStyle()}
+                onClick={() => setLocation("/admin")}
+              >
+                Administrasjon
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )}
         </>
       ) : (
         <>
           <NavigationMenuItem>
-            <Link href="/">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Hjem
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={() => setLocation("/")}
+            >
+              Hjem
+            </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/tjenester">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Tjenester
-              </NavigationMenuLink>
-            </Link>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={() => setLocation("/tjenester")}
+            >
+              Tjenester
+            </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <button onClick={handleLoanApplicationClick}>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Søk Lån
-              </NavigationMenuLink>
-            </button>
+            <NavigationMenuLink 
+              className={navigationMenuTriggerStyle()}
+              onClick={handleLoanApplicationClick}
+            >
+              Søk Lån
+            </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/auth">
-              <Button variant="contained" color="primary">Logg inn</Button>
-            </Link>
+            <Button 
+              variant="contained" 
+              color="primary"
+              onClick={() => setLocation("/auth")}
+            >
+              Logg inn
+            </Button>
           </NavigationMenuItem>
         </>
       )}
@@ -124,54 +136,83 @@ export function NavHeader() {
     <>
       {user ? (
         <>
-          <Link href="/">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Hjem
-            </Button>
-          </Link>
-          <Link href="/tjenester">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Tjenester
-            </Button>
-          </Link>
-          <Link href="/apply">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Søk Lån
-            </Button>
-          </Link>
-          <Link href="/dashboard">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Min side
-            </Button>
-          </Link>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/")}
+          >
+            Hjem
+          </Button>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/tjenester")}
+          >
+            Tjenester
+          </Button>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/apply")}
+          >
+            Søk Lån
+          </Button>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/dashboard")}
+          >
+            Min side
+          </Button>
           {user.isAdmin && (
-            <Link href="/admin">
-              <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-                Administrasjon
-              </Button>
-            </Link>
+            <Button 
+              fullWidth 
+              variant="text" 
+              sx={{ justifyContent: 'start' }}
+              onClick={() => setLocation("/admin")}
+            >
+              Administrasjon
+            </Button>
           )}
         </>
       ) : (
         <>
-          <Link href="/">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Hjem
-            </Button>
-          </Link>
-          <Link href="/tjenester">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Tjenester
-            </Button>
-          </Link>
-          <button onClick={handleLoanApplicationClick} className="w-full text-left">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Søk Lån
-            </Button>
-          </button>
-          <Link href="/auth">
-            <Button fullWidth variant="contained" color="primary">Logg inn</Button>
-          </Link>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/")}
+          >
+            Hjem
+          </Button>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={() => setLocation("/tjenester")}
+          >
+            Tjenester
+          </Button>
+          <Button 
+            fullWidth 
+            variant="text" 
+            sx={{ justifyContent: 'start' }}
+            onClick={handleLoanApplicationClick}
+          >
+            Søk Lån
+          </Button>
+          <Button 
+            fullWidth 
+            variant="contained" 
+            color="primary"
+            onClick={() => setLocation("/auth")}
+          >
+            Logg inn
+          </Button>
         </>
       )}
     </>
@@ -182,17 +223,16 @@ export function NavHeader() {
       <div className="container mx-auto px-4 h-14 flex items-center justify-between">
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
-          <Link href="/">
-            <img 
-              src="/images/logo.png" 
-              alt="BNKA" 
-              className="h-8" 
-              style={{ 
-                objectFit: 'contain',
-                maxWidth: '140px'
-              }} 
-            />
-          </Link>
+          <img 
+            src="/images/logo.png" 
+            alt="BNKA" 
+            className="h-8 cursor-pointer" 
+            style={{ 
+              objectFit: 'contain',
+              maxWidth: '140px'
+            }} 
+            onClick={() => setLocation("/")}
+          />
         </div>
 
         {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}

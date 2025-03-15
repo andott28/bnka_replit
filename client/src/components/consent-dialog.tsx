@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 import { usePostHog } from '@/lib/posthog-provider';
 import { Box, Button, Typography, Paper } from '@mui/material';
 import { X } from 'lucide-react';
-import { Link } from 'wouter';
+import { useLocation } from 'wouter';
 
 export function ConsentDialog() {
   const { consentStatus, acceptConsent, rejectConsent } = usePostHog();
   const [open, setOpen] = useState(false);
+  const [, setLocation] = useLocation();
 
   useEffect(() => {
     // Vis dialogen bare hvis samtykke ikke er avgjort ennå
@@ -68,11 +69,15 @@ export function ConsentDialog() {
 
         <Typography variant="body2" sx={{ mb: 2 }}>
           Du kan lese mer om hvordan vi behandler personopplysninger i vår{' '}
-          <Link href="/privacy-policy">
-            <span style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}>
-              personvernerklæring
-            </span>
-          </Link>
+          <span 
+            style={{ color: '#1976d2', textDecoration: 'underline', cursor: 'pointer' }}
+            onClick={() => {
+              setOpen(false);
+              setLocation('/privacy-policy');
+            }}
+          >
+            personvernerklæring
+          </span>
           .
         </Typography>
 
