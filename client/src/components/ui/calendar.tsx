@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker, CaptionProps } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
@@ -12,11 +12,48 @@ function Calendar({
   showOutsideDays = true,
   fromYear: fromYearProp,
   toYear: toYearProp,
+  month,
+  defaultMonth,
+  onMonthChange,
   ...props
 }: CalendarProps) {
+  // Create a state to control the month internally
+  const [currentMonth, setCurrentMonth] = React.useState<Date>(month || defaultMonth || new Date());
+  
+  // Sync with external month prop if provided
+  React.useEffect(() => {
+    if (month) {
+      setCurrentMonth(month);
+    }
+  }, [month]);
+
+  // Handle month change and propagate it upwards
+  const handleMonthChange = (newMonth: Date) => {
+    setCurrentMonth(newMonth);
+    onMonthChange?.(newMonth);
+  };
+
+  // Calculate year range based on props or defaults
+  const getYearRange = React.useCallback((baseDate: Date) => {
+    const year = baseDate.getFullYear();
+    const fromYear = fromYearProp || year - 10;
+    const toYear = toYearProp || year + 10;
+    
+    return {
+      fromYear,
+      toYear,
+      yearOptions: Array.from(
+        { length: toYear - fromYear + 1 },
+        (_, i) => fromYear + i
+      )
+    };
+  }, [fromYearProp, toYearProp]);
+
   // Customize date picker with Material Design V3 styles
   return (
     <DayPicker
+      month={currentMonth}
+      onMonthChange={handleMonthChange}
       showOutsideDays={showOutsideDays}
       className={cn("p-4 bg-white rounded-xl shadow-lg", className)}
       classNames={{
@@ -42,7 +79,7 @@ function Calendar({
         ),
         day: cn(
           "h-9 w-9 p-0 font-normal rounded-full flex items-center justify-center",
-          "hover:bg-primary hover:bg-opacity-10 transition-colors",
+          "hover:bg-gray-100 transition-colors",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-25",
         ),
         day_selected:
@@ -51,7 +88,7 @@ function Calendar({
         day_outside: "text-muted-foreground opacity-50",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-primary aria-selected:bg-opacity-10 aria-selected:text-foreground",
+          "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
         vhidden: "sr-only",
         ...classNames,
@@ -60,35 +97,12 @@ function Calendar({
         IconLeft: () => <ChevronLeft className="h-5 w-5" />,
         IconRight: () => <ChevronRight className="h-5 w-5" />,
         Caption: ({ displayMonth }) => {
-          // Create a calendar UI with month/year dropdowns in Material Design V3 style
           const month = displayMonth.getMonth();
           const year = displayMonth.getFullYear();
+          const { fromYear, toYear, yearOptions } = getYearRange(displayMonth);
           
-          // Calculate year range based on props or defaults
-          const fromYear = fromYearProp || year - 10;
-          const toYear = toYearProp || year + 10;
-          
-          // Generate year options for the dropdown
-          const yearOptions = React.useMemo(() => {
-            return Array.from(
-              { length: toYear - fromYear + 1 },
-              (_, i) => fromYear + i
-            );
-          }, [fromYear, toYear]);
-          
-          // Component reference to access DayPicker methods
-          const dayPickerRef = React.useRef<HTMLDivElement>(null);
-          
-          // Update the displayed month
-          const updateMonth = (newMonth: Date) => {
-            // Access the DayPicker's goToMonth method directly from props
-            if (props.onMonthChange) {
-              props.onMonthChange(newMonth);
-            }
-          };
-
           return (
-            <div className="flex justify-center items-center px-1 py-2 h-14" ref={dayPickerRef}>
+            <div className="flex justify-center items-center px-1 py-2 h-14">
               <div className="flex flex-row space-x-2 items-center">
                 {/* Month Selector - Material Design V3 style */}
                 <div className="relative">
@@ -96,12 +110,12 @@ function Calendar({
                     aria-label="Velg måned"
                     className="appearance-none bg-transparent pl-3 pr-9 py-1.5 text-sm font-medium rounded-full 
                       border-0 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-25 
-                      hover:bg-primary hover:bg-opacity-10 transition-colors cursor-pointer"
+                      text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
                     value={month}
                     onChange={(e) => {
-                      const newMonth = new Date(displayMonth);
-                      newMonth.setMonth(parseInt(e.target.value));
-                      updateMonth(newMonth);
+                      const newDate = new Date(displayMonth);
+                      newDate.setMonth(parseInt(e.target.value));
+                      handleMonthChange(newDate);
                     }}
                   >
                     {Array.from({ length: 12 }).map((_, i) => (
@@ -114,7 +128,7 @@ function Calendar({
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
                     <svg
-                      className="h-4 w-4 text-primary opacity-70"
+                      className="h-4 w-4 text-gray-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -135,12 +149,12 @@ function Calendar({
                     aria-label="Velg år"
                     className="appearance-none bg-transparent pl-3 pr-9 py-1.5 text-sm font-medium rounded-full 
                       border-0 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-25 
-                      hover:bg-primary hover:bg-opacity-10 transition-colors cursor-pointer"
+                      text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
                     value={year}
                     onChange={(e) => {
-                      const newYear = new Date(displayMonth);
-                      newYear.setFullYear(parseInt(e.target.value));
-                      updateMonth(newYear);
+                      const newDate = new Date(displayMonth);
+                      newDate.setFullYear(parseInt(e.target.value));
+                      handleMonthChange(newDate);
                     }}
                   >
                     {yearOptions.map((yearValue) => (
@@ -151,7 +165,7 @@ function Calendar({
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
                     <svg
-                      className="h-4 w-4 text-primary opacity-70"
+                      className="h-4 w-4 text-gray-500"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
