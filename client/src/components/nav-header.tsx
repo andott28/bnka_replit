@@ -97,7 +97,7 @@ export function NavHeader() {
         <>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={() => setLocation("/")}
             >
               Hjem
@@ -105,7 +105,7 @@ export function NavHeader() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={() => setLocation("/tjenester")}
             >
               Tjenester
@@ -113,7 +113,7 @@ export function NavHeader() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink 
-              className={navigationMenuTriggerStyle()}
+              className={cn(navigationMenuTriggerStyle(), "cursor-pointer hover:no-underline hover:bg-transparent")}
               onClick={handleLoanApplicationClick}
             >
               Søk Lån
