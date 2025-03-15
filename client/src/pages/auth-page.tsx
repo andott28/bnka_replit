@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertUserSchema } from "@shared/schema";
 import { useLocation } from "wouter";
+import { usePostHog, AnalyticsEvents } from "@/lib/posthog-provider";
 import {
   Card,
   CardContent,
@@ -103,6 +104,7 @@ export default function AuthPage() {
   const [countryCode, setCountryCode] = useState("+47"); // Default til Norge
   const [phoneNumber, setPhoneNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const { trackEvent } = usePostHog();
   
   // Effect for å filtrere land basert på søkeord
   useEffect(() => {
@@ -198,9 +200,14 @@ export default function AuthPage() {
                 <TabsContent value="login">
                   <Form {...loginForm}>
                     <form
-                      onSubmit={loginForm.handleSubmit((data) =>
-                        loginMutation.mutate(data)
-                      )}
+                      onSubmit={loginForm.handleSubmit((data) => {
+                        // Spor innloggingsforsøk
+                        trackEvent(AnalyticsEvents.USER_LOGIN, {
+                          timestamp: new Date().toISOString(),
+                          email_domain: data.username.split('@')[1] || 'unknown' // Sporer kun domenet, ikke hele e-postadressen
+                        });
+                        loginMutation.mutate(data);
+                      })}
                       className="space-y-6"
                     >
                       <FormField

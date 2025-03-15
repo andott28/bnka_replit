@@ -37,6 +37,14 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
 
         if (data.status === "completed") {
           setStatus("completed");
+          
+          // Spor vellykket BankID-verifisering
+          trackEvent(AnalyticsEvents.BANKID_SUCCESS, {
+            timestamp: new Date().toISOString(),
+            reference_id: referenceId,
+            page: window.location.pathname
+          });
+          
           onSuccess(data);
           toast({
             title: "BankID Verifisert",
@@ -47,6 +55,14 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
       } catch (error) {
         console.error("Error checking BankID status:", error);
         setStatus("error");
+        
+        // Spor feil ved BankID-verifisering
+        trackEvent(AnalyticsEvents.BANKID_FAILURE, {
+          error_type: 'verification_error',
+          reference_id: referenceId,
+          timestamp: new Date().toISOString()
+        });
+        
         toast({
           title: "Feil",
           description: "Kunne ikke verifisere BankID",
@@ -62,7 +78,7 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
     return () => {
       if (statusInterval) clearInterval(statusInterval);
     };
-  }, [referenceId, status, onSuccess, onOpenChange, toast]);
+  }, [referenceId, status, onSuccess, onOpenChange, toast, trackEvent]);
 
   const handleInitiateBankID = async () => {
     setStatus("pending");
@@ -98,7 +114,19 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog 
+      open={open} 
+      onOpenChange={(isOpen) => {
+        if (!isOpen && status !== "completed") {
+          trackEvent(AnalyticsEvents.CLOSE_MODAL, {
+            modal_type: 'bankid_dialog',
+            status: status,
+            timestamp: new Date().toISOString()
+          });
+        }
+        onOpenChange(isOpen);
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>BankID Pålogging</DialogTitle>
@@ -109,7 +137,17 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
 
         <div className="flex flex-col items-center justify-center p-6 space-y-4">
           {status === "idle" && (
-            <Button onClick={handleInitiateBankID} className="w-full">
+            <Button 
+              onClick={() => {
+                trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                  action: 'start_bankid',
+                  context: 'bankid_dialog',
+                  timestamp: new Date().toISOString()
+                });
+                handleInitiateBankID();
+              }} 
+              className="w-full"
+            >
               Start BankID
             </Button>
           )}
@@ -131,7 +169,17 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
               <p className="text-sm text-destructive">
                 Det oppstod en feil med BankID-påloggingen
               </p>
-              <Button onClick={handleInitiateBankID} variant="outline">
+              <Button 
+                onClick={() => {
+                  trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                    action: 'retry_bankid',
+                    previous_status: 'error',
+                    timestamp: new Date().toISOString()
+                  });
+                  handleInitiateBankID();
+                }} 
+                variant="outline"
+              >
                 Prøv igjen
               </Button>
             </div>
