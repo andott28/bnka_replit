@@ -185,7 +185,17 @@ export default function AuthPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="login" className="space-y-4">
+              <Tabs 
+                defaultValue="login" 
+                className="space-y-4"
+                onValueChange={(value) => {
+                  trackEvent(AnalyticsEvents.TOGGLE_PREFERENCE, {
+                    preference_name: 'auth_tab',
+                    value: value,
+                    timestamp: new Date().toISOString()
+                  });
+                }}
+              >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="login" className="flex items-center gap-2">
                     <Lock className="h-4 w-4" />
@@ -261,9 +271,16 @@ export default function AuthPage() {
                 <TabsContent value="register">
                   <Form {...registerForm}>
                     <form
-                      onSubmit={registerForm.handleSubmit((data) =>
-                        registerMutation.mutate(data)
-                      )}
+                      onSubmit={registerForm.handleSubmit((data) => {
+                        // Spor registreringsforsøk
+                        trackEvent(AnalyticsEvents.USER_REGISTER, {
+                          timestamp: new Date().toISOString(),
+                          email_domain: data.username.split('@')[1] || 'unknown', // Sporer kun domenet, ikke hele e-postadressen
+                          has_phone: !!data.phoneNumber,
+                          country_code: countryCode 
+                        });
+                        registerMutation.mutate(data);
+                      })}
                       className="space-y-6"
                     >
                       <div className="grid grid-cols-2 gap-4">
@@ -439,7 +456,14 @@ export default function AuthPage() {
                         type="button"
                         variant="link"
                         className="w-full text-gray-500"
-                        onClick={() => setShowForeignDialog(true)}
+                        onClick={() => {
+                          trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                            button_name: 'foreign_phone_help',
+                            page: 'register',
+                            timestamp: new Date().toISOString()
+                          });
+                          setShowForeignDialog(true);
+                        }}
                       >
                         Har du ikke et norsk telefonnummer? Klikk her
                       </Button>
@@ -481,7 +505,18 @@ export default function AuthPage() {
       </div>
 
       {/* Dialog for foreign users */}
-      <Dialog open={showForeignDialog} onOpenChange={setShowForeignDialog}>
+      <Dialog 
+        open={showForeignDialog} 
+        onOpenChange={(open) => {
+          if (!open) {
+            trackEvent(AnalyticsEvents.CLOSE_MODAL, {
+              modal_name: 'foreign_registration',
+              timestamp: new Date().toISOString()
+            });
+          }
+          setShowForeignDialog(open);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Alternativ registrering</DialogTitle>
@@ -491,7 +526,14 @@ export default function AuthPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setShowForeignDialog(false)}>
+            <Button onClick={() => {
+              trackEvent(AnalyticsEvents.BUTTON_CLICK, {
+                button_name: 'close_foreign_dialog',
+                page: 'register',
+                timestamp: new Date().toISOString()
+              });
+              setShowForeignDialog(false);
+            }}>
               Tilbake til registrering
             </Button>
           </DialogFooter>
