@@ -28,6 +28,7 @@ export default function Dashboard() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const [selectedLoan, setSelectedLoan] = useState<LoanApplication | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [userInfo, setUserInfo] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -329,11 +330,13 @@ export default function Dashboard() {
                   <Button variant="outline">Endre</Button>
                 </div>
                 <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Trash2 className="h-5 w-5 text-destructive" />
-                    <span className="text-destructive">Slett konto</span>
+                  <div 
+                    className="flex items-center gap-2 cursor-pointer w-full" 
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    <Trash2 className="h-5 w-5 text-red-600" />
+                    <span className="text-red-600">Slett konto</span>
                   </div>
-                  <Button variant="destructive">Slett</Button>
                 </div>
                 <Button
                   variant="outline"

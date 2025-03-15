@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Building2, Lock, UserPlus, Mail, Phone, User } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -51,6 +51,49 @@ const countryCodes = [
   { code: "+49", country: "Tyskland" },
   { code: "+44", country: "Storbritannia" },
   { code: "+1", country: "USA/Canada" },
+  { code: "+33", country: "Frankrike" },
+  { code: "+34", country: "Spania" },
+  { code: "+39", country: "Italia" },
+  { code: "+31", country: "Nederland" },
+  { code: "+32", country: "Belgia" },
+  { code: "+41", country: "Sveits" },
+  { code: "+43", country: "Østerrike" },
+  { code: "+351", country: "Portugal" },
+  { code: "+30", country: "Hellas" },
+  { code: "+48", country: "Polen" },
+  { code: "+420", country: "Tsjekkia" },
+  { code: "+36", country: "Ungarn" },
+  { code: "+386", country: "Slovenia" },
+  { code: "+421", country: "Slovakia" },
+  { code: "+385", country: "Kroatia" },
+  { code: "+40", country: "Romania" },
+  { code: "+359", country: "Bulgaria" },
+  { code: "+370", country: "Litauen" },
+  { code: "+371", country: "Latvia" },
+  { code: "+372", country: "Estland" },
+  { code: "+353", country: "Irland" },
+  { code: "+352", country: "Luxembourg" },
+  { code: "+356", country: "Malta" },
+  { code: "+357", country: "Kypros" },
+  { code: "+354", country: "Island" },
+  { code: "+61", country: "Australia" },
+  { code: "+64", country: "New Zealand" },
+  { code: "+81", country: "Japan" },
+  { code: "+82", country: "Sør-Korea" },
+  { code: "+86", country: "Kina" },
+  { code: "+91", country: "India" },
+  { code: "+7", country: "Russland" },
+  { code: "+27", country: "Sør-Afrika" },
+  { code: "+55", country: "Brasil" },
+  { code: "+52", country: "Mexico" },
+  { code: "+54", country: "Argentina" },
+  { code: "+56", country: "Chile" },
+  { code: "+57", country: "Colombia" },
+  { code: "+62", country: "Indonesia" },
+  { code: "+60", country: "Malaysia" },
+  { code: "+65", country: "Singapore" },
+  { code: "+66", country: "Thailand" },
+  { code: "+84", country: "Vietnam" },
 ];
 
 export default function AuthPage() {
@@ -59,6 +102,27 @@ export default function AuthPage() {
   const [showForeignDialog, setShowForeignDialog] = useState(false);
   const [countryCode, setCountryCode] = useState("+47"); // Default til Norge
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  // Effect for å filtrere land basert på søkeord
+  useEffect(() => {
+    const searchElement = document.getElementById('country-search');
+    if (!searchElement) return;
+    
+    const term = searchTerm.toLowerCase();
+    const menuItems = searchElement.querySelectorAll('[data-country], [data-code]');
+    
+    menuItems.forEach((item: Element) => {
+      const country = item.getAttribute('data-country') || '';
+      const code = item.getAttribute('data-code') || '';
+      
+      if (country.includes(term) || code.includes(term) || term === '') {
+        (item as HTMLElement).style.display = '';
+      } else {
+        (item as HTMLElement).style.display = 'none';
+      }
+    });
+  }, [searchTerm]);
 
   const loginForm = useForm({
     resolver: zodResolver(insertUserSchema),
@@ -266,12 +330,58 @@ export default function AuthPage() {
                                   }}
                                   displayEmpty
                                   variant="outlined"
+                                  renderValue={(value) => <>{value}</>}
+                                  MenuProps={{
+                                    PaperProps: {
+                                      style: {
+                                        maxHeight: 300
+                                      }
+                                    }
+                                  }}
                                 >
-                                  {countryCodes.map((item) => (
-                                    <MenuItem key={item.code} value={item.code}>
-                                      {item.code} ({item.country})
-                                    </MenuItem>
-                                  ))}
+                                  <Box px={2} py={1}>
+                                    <TextField
+                                      size="small"
+                                      autoFocus
+                                      placeholder="Søk land..."
+                                      fullWidth
+                                      value={searchTerm}
+                                      InputProps={{
+                                        sx: { fontSize: 14 }
+                                      }}
+                                      onChange={(e) => setSearchTerm(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        // Hindre at Enter-tasten lukker dropdown-menyen
+                                        if (e.key === 'Enter') {
+                                          e.stopPropagation();
+                                          e.preventDefault();
+                                        }
+                                      }}
+                                    />
+                                  </Box>
+                                  <div id="country-search" data-search="" style={{ overflow: 'auto', maxHeight: '250px' }}>
+                                    {countryCodes.map((item) => (
+                                      <MenuItem 
+                                        key={item.code} 
+                                        value={item.code}
+                                        style={{
+                                          display: 'block'
+                                        }}
+                                        sx={{
+                                          '&.MuiMenuItem-root': {
+                                            display: 'flex'
+                                          },
+                                          '&.MuiButtonBase-root': {
+                                            display: 'flex'
+                                          }
+                                        }}
+                                        data-country={item.country.toLowerCase()}
+                                        data-code={item.code.substring(1).toLowerCase()}
+                                      >
+                                        <span>{item.code}</span> <span style={{ marginLeft: 5, color: '#666', fontSize: '0.85em' }}>({item.country})</span>
+                                      </MenuItem>
+                                    ))}
+                                  </div>
                                 </Select>
                               </MuiFormControl>
                               
