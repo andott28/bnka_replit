@@ -17,6 +17,7 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import HowItWorks from "@/pages/how-it-works";
 import Contact from "@/pages/contact";
 import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
 import CreditScoreResult from "@/pages/credit-score-result";
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/hvordan-det-fungerer" component={HowItWorks} />
       <Route path="/kontakt" component={Contact} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/apply" component={LoanApplication} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
