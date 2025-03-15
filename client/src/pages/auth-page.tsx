@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Building2, Lock, UserPlus } from "lucide-react";
+import { Loader2, Building2, Lock, UserPlus, Mail, Phone, User } from "lucide-react";
 import { NavHeader } from "@/components/nav-header";
 import { useState } from "react";
 import {
@@ -32,11 +32,33 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { 
+  Box, 
+  InputAdornment, 
+  TextField, 
+  MenuItem, 
+  Select, 
+  FormControl as MuiFormControl,
+  FormHelperText
+} from "@mui/material";
+
+// Liste over vanlige landskoder
+const countryCodes = [
+  { code: "+47", country: "Norge" },
+  { code: "+46", country: "Sverige" },
+  { code: "+45", country: "Danmark" },
+  { code: "+358", country: "Finland" },
+  { code: "+49", country: "Tyskland" },
+  { code: "+44", country: "Storbritannia" },
+  { code: "+1", country: "USA/Canada" },
+];
 
 export default function AuthPage() {
   const { loginMutation, registerMutation, user } = useAuth();
   const [, setLocation] = useLocation();
   const [showForeignDialog, setShowForeignDialog] = useState(false);
+  const [countryCode, setCountryCode] = useState("+47"); // Default til Norge
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const loginForm = useForm({
     resolver: zodResolver(insertUserSchema),
@@ -56,6 +78,18 @@ export default function AuthPage() {
       phoneNumber: "",
     },
   });
+  
+  // Funksjon for å håndtere endring av landskode
+  const handleCountryCodeChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setCountryCode(event.target.value as string);
+  };
+  
+  // Funksjon for å håndtere endring av telefonnummer
+  const handlePhoneNumberChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPhoneNumber(event.target.value);
+    // Oppdater verdien i registerForm med kombinert landskode og nummer
+    registerForm.setValue('phoneNumber', `${countryCode}${event.target.value}`);
+  };
 
   if (user) {
     // Sjekk om det finnes en redirect etter innlogging
@@ -103,18 +137,29 @@ export default function AuthPage() {
                       onSubmit={loginForm.handleSubmit((data) =>
                         loginMutation.mutate(data)
                       )}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
                       <FormField
                         control={loginForm.control}
                         name="username"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>E-post</FormLabel>
-                            <FormControl>
-                              <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <TextField
+                              label="E-post"
+                              variant="outlined"
+                              type="email"
+                              fullWidth
+                              error={!!loginForm.formState.errors.username}
+                              helperText={loginForm.formState.errors.username?.message?.toString()}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Mail className="h-5 w-5 text-muted-foreground" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              {...field}
+                            />
                           </FormItem>
                         )}
                       />
@@ -123,17 +168,28 @@ export default function AuthPage() {
                         name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Passord</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <TextField
+                              label="Passord"
+                              variant="outlined"
+                              type="password"
+                              fullWidth
+                              error={!!loginForm.formState.errors.password}
+                              helperText={loginForm.formState.errors.password?.message?.toString()}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Lock className="h-5 w-5 text-muted-foreground" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              {...field}
+                            />
                           </FormItem>
                         )}
                       />
                       <Button
                         type="submit"
-                        className="w-full"
+                        className="w-full rounded-md bg-primary py-3 text-white font-medium hover:bg-primary/90 transition-colors"
                         disabled={loginMutation.isPending}
                       >
                         {loginMutation.isPending && (
@@ -151,76 +207,149 @@ export default function AuthPage() {
                       onSubmit={registerForm.handleSubmit((data) =>
                         registerMutation.mutate(data)
                       )}
-                      className="space-y-4"
+                      className="space-y-6"
                     >
-                      <FormField
-                        control={registerForm.control}
-                        name="firstName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Fornavn</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={registerForm.control}
-                        name="lastName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Etternavn</FormLabel>
-                            <FormControl>
-                              <Input {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={registerForm.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <TextField
+                                label="Fornavn"
+                                variant="outlined"
+                                fullWidth
+                                error={!!registerForm.formState.errors.firstName}
+                                helperText={registerForm.formState.errors.firstName?.message?.toString()}
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment position="start">
+                                      <User className="h-5 w-5 text-muted-foreground" />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                {...field}
+                              />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={registerForm.control}
+                          name="lastName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <TextField
+                                label="Etternavn"
+                                variant="outlined"
+                                fullWidth
+                                error={!!registerForm.formState.errors.lastName}
+                                helperText={registerForm.formState.errors.lastName?.message?.toString()}
+                                {...field}
+                              />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
                       <FormField
                         control={registerForm.control}
                         name="username"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>E-post</FormLabel>
-                            <FormControl>
-                              <Input type="email" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <TextField
+                              label="E-post"
+                              variant="outlined"
+                              type="email"
+                              fullWidth
+                              error={!!registerForm.formState.errors.username}
+                              helperText={registerForm.formState.errors.username?.message?.toString()}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Mail className="h-5 w-5 text-muted-foreground" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              {...field}
+                            />
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={registerForm.control}
                         name="phoneNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Telefonnummer</FormLabel>
-                            <FormControl>
-                              <Input type="tel" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <div className="flex items-start space-x-2">
+                              <MuiFormControl sx={{ width: '30%' }}>
+                                <Select
+                                  value={countryCode}
+                                  onChange={(e) => {
+                                    setCountryCode(e.target.value);
+                                    // Oppdater telefonnummer i skjemaet med ny landskode
+                                    if (phoneNumber) {
+                                      registerForm.setValue('phoneNumber', `${e.target.value}${phoneNumber}`);
+                                    }
+                                  }}
+                                  displayEmpty
+                                  variant="outlined"
+                                  startAdornment={
+                                    <InputAdornment position="start">
+                                      <Phone className="h-5 w-5 text-muted-foreground" />
+                                    </InputAdornment>
+                                  }
+                                >
+                                  {countryCodes.map((item) => (
+                                    <MenuItem key={item.code} value={item.code}>
+                                      {item.code} ({item.country})
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </MuiFormControl>
+                              
+                              <TextField
+                                label="Telefonnummer"
+                                variant="outlined"
+                                fullWidth
+                                value={phoneNumber}
+                                onChange={handlePhoneNumberChange}
+                                error={!!registerForm.formState.errors.phoneNumber}
+                                helperText={registerForm.formState.errors.phoneNumber?.message?.toString()}
+                              />
+                            </div>
                           </FormItem>
                         )}
                       />
+                      
                       <FormField
                         control={registerForm.control}
                         name="password"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Passord</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
+                            <TextField
+                              label="Passord"
+                              variant="outlined"
+                              type="password"
+                              fullWidth
+                              error={!!registerForm.formState.errors.password}
+                              helperText={registerForm.formState.errors.password?.message?.toString()}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment position="start">
+                                    <Lock className="h-5 w-5 text-muted-foreground" />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              {...field}
+                            />
                           </FormItem>
                         )}
                       />
+                      
                       <Button
                         type="submit"
-                        className="w-full"
+                        className="w-full rounded-md bg-primary py-3 text-white font-medium hover:bg-primary/90 transition-colors"
                         disabled={registerMutation.isPending}
                       >
                         {registerMutation.isPending && (
@@ -228,6 +357,7 @@ export default function AuthPage() {
                         )}
                         Opprett konto
                       </Button>
+                      
                       <Button
                         type="button"
                         variant="link"

@@ -104,13 +104,6 @@ export function NavHeader() {
             </Link>
           </NavigationMenuItem>
           <NavigationMenuItem>
-            <Link href="/kontakt">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Kontakt
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
             <button onClick={handleLoanApplicationClick}>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Søk Lån
@@ -169,11 +162,6 @@ export function NavHeader() {
           <Link href="/tjenester">
             <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
               Tjenester
-            </Button>
-          </Link>
-          <Link href="/kontakt">
-            <Button fullWidth variant="text" sx={{ justifyContent: 'start' }}>
-              Kontakt
             </Button>
           </Link>
           <button onClick={handleLoanApplicationClick} className="w-full text-left">
