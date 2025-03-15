@@ -5,6 +5,8 @@ import { AuthProvider } from "./hooks/use-auth";
 import { Toaster } from "@/components/ui/toaster";
 import { ProtectedRoute } from "./lib/protected-route";
 import { ThemeProvider } from "./hooks/use-theme";
+import { PostHogProvider } from "./lib/posthog-provider";
+import { ConsentDialog } from "@/components/consent-dialog";
 
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
@@ -14,6 +16,8 @@ import LoanApplication from "@/pages/loan-application";
 import AdminDashboard from "@/pages/admin-dashboard";
 import HowItWorks from "@/pages/how-it-works";
 import Contact from "@/pages/contact";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import CreditScoreResult from "@/pages/credit-score-result";
 
 function Router() {
   return (
@@ -22,9 +26,11 @@ function Router() {
       <Route path="/auth" component={AuthPage} />
       <Route path="/hvordan-det-fungerer" component={HowItWorks} />
       <Route path="/kontakt" component={Contact} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/apply" component={LoanApplication} />
       <ProtectedRoute path="/admin" component={AdminDashboard} />
+      <ProtectedRoute path="/credit-score-result" component={CreditScoreResult} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -34,10 +40,13 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="bnka-theme">
-        <AuthProvider>
-          <Router />
-          <Toaster />
-        </AuthProvider>
+        <PostHogProvider>
+          <AuthProvider>
+            <Router />
+            <Toaster />
+            <ConsentDialog />
+          </AuthProvider>
+        </PostHogProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { NavHeader } from "@/components/nav-header";
+import { Footer } from "@/components/footer";
 import { Link } from "wouter";
 import {
   CreditCard,
