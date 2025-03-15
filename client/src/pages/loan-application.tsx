@@ -92,13 +92,33 @@ export default function LoanApplication() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const loanRes = await apiRequest("POST", "/api/loans/apply", data);
-      const loanData = await loanRes.json();
-      const creditRes = await apiRequest("POST", "/api/loans/credit-score", {
-        ...data,
-        loanApplicationId: loanData.id
-      });
-      return creditRes.json();
+      try {
+        console.log("Sending loan application with data:", data);
+        const loanRes = await apiRequest("POST", "/api/loans/apply", data);
+        if (!loanRes.ok) {
+          const errorData = await loanRes.json();
+          throw new Error(errorData.error || "Feil ved innsending av lånesøknad");
+        }
+        
+        const loanData = await loanRes.json();
+        console.log("Loan application created with ID:", loanData.id);
+        
+        // Send credit score request
+        const creditRes = await apiRequest("POST", "/api/loans/credit-score", {
+          ...data,
+          loanApplicationId: loanData.id
+        });
+        
+        if (!creditRes.ok) {
+          const errorData = await creditRes.json();
+          throw new Error(errorData.error || "Feil ved beregning av kredittscoring");
+        }
+        
+        return creditRes.json();
+      } catch (error) {
+        console.error("Error in loan application mutation:", error);
+        throw error;
+      }
     },
     onSuccess: (creditScore) => {
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
@@ -109,9 +129,10 @@ export default function LoanApplication() {
       setLocation("/credit-score-result");
     },
     onError: (error: Error) => {
+      console.error("Mutation error:", error);
       toast({
-        title: "Feil",
-        description: error.message,
+        title: "Feil ved innsending",
+        description: error.message || "Det oppsto en feil ved innsending av lånesøknaden. Vennligst prøv igjen senere.",
         variant: "destructive",
       });
     },

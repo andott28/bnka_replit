@@ -12,6 +12,27 @@
   }
 }
 
+/* Kalender/datovelger-stiler */
+.rdp-caption {
+  position: relative;
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+}
+
+.rdp-dropdown_month {
+  position: absolute;
+  left: 0;
+  margin-left: 2rem;
+  min-width: 120px;
+}
+
+.rdp-dropdown_year {
+  position: absolute;
+  right: 0;
+  margin-right: 2rem;
+  min-width: 80px;
+}
+
 /* Dark theme specific styles */
 .dark {
   /* Elevated surfaces get progressively lighter */

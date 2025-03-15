@@ -44,17 +44,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.isAuthenticated()) return res.sendStatus(401);
 
     try {
-      const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+      // Validate required fields
+      const { loanApplicationId, income, employmentStatus, monthlyExpenses, outstandingDebt, assets } = req.body;
+      
+      if (!loanApplicationId) {
+        return res.status(400).json({ error: "Manglende lånesøknad ID" });
+      }
+      
+      if (!income || !employmentStatus || !monthlyExpenses || outstandingDebt === undefined || !assets) {
+        return res.status(400).json({ error: "Manglende obligatoriske finansielle data for kredittvurdering" });
+      }
+      
+      console.log("Credit score request for loan application:", loanApplicationId);
+      
+      // Initialize Google AI
+      if (!process.env.GOOGLE_API_KEY) {
+        console.error("GOOGLE_API_KEY is not configured in the environment");
+        return res.status(500).json({ error: "AI-tjenesten er ikke riktig konfigurert" });
+      }
+      
+      const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-      const {
-        income,
-        employmentStatus,
-        monthlyExpenses,
-        outstandingDebt,
-        assets,
-        loanApplicationId
-      } = req.body;
 
       // Calculate debt-to-income ratio
       const monthlyIncome = income / 12;
@@ -82,19 +92,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const result = await model.generateContent(prompt);
       const response = result.response;
-      const creditAssessment = JSON.parse(response.text());
+      
+      try {
+        const creditAssessment = JSON.parse(response.text());
+        console.log("Credit assessment completed for loan:", loanApplicationId);
 
-      // Store the credit score in the database
-      await storage.updateLoanApplicationCreditScore(
-        loanApplicationId,
-        creditAssessment.grade,
-        creditAssessment
-      );
+        // Store the credit score in the database
+        await storage.updateLoanApplicationCreditScore(
+          loanApplicationId,
+          creditAssessment.grade,
+          creditAssessment
+        );
 
-      res.json(creditAssessment);
+        res.json(creditAssessment);
+      } catch (parseError) {
+        console.error("Error parsing AI response:", parseError);
+        console.error("Raw response:", response.text());
+        res.status(500).json({ error: "Kunne ikke tolke kredittscoreresultatet" });
+      }
     } catch (error) {
       console.error("Error generating credit score:", error);
-      res.status(500).json({ error: "Could not generate credit score" });
+      res.status(500).json({ 
+        error: "Kunne ikke generere kredittscore", 
+        details: error instanceof Error ? error.message : "Ukjent feil" 
+      });
     }
   });
 
