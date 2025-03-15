@@ -1,4 +1,5 @@
 import { NavHeader } from '@/components/nav-header';
+import { Footer } from '@/components/footer';
 import { Box, Container, Typography, Paper, Divider, List, ListItem, ListItemText } from '@mui/material';
 
 export default function PrivacyPolicy() {
@@ -192,6 +193,7 @@ export default function PrivacyPolicy() {
           </Typography>
         </Paper>
       </Container>
+      <Footer />
     </div>
   );
 }

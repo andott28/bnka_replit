@@ -93,64 +93,7 @@ export default function HomePage() {
         </section>
       </main>
 
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Om BNKA</h3>
-              <p className="text-gray-400">
-                Din betrodde partner for digitale banktjenester og finansielle løsninger.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Hurtiglenker</h3>
-              <ul className="space-y-2 text-gray-400">
-                {!user ? (
-                  <>
-                    <li>
-                      <Link href="/auth">
-                        <Button variant="link" className="text-gray-400 p-0 h-auto">Logg inn</Button>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/auth">
-                        <Button variant="link" className="text-gray-400 p-0 h-auto">Registrer deg</Button>
-                      </Link>
-                    </li>
-                  </>
-                ) : (
-                  <>
-                    <li>
-                      <Link href="/dashboard">
-                        <Button variant="link" className="text-gray-400 p-0 h-auto">Min konto</Button>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/apply">
-                        <Button variant="link" className="text-gray-400 p-0 h-auto">Søk om lån</Button>
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <Link href="/kontakt">
-                    <Button variant="link" className="text-gray-400 p-0 h-auto">Kontakt oss</Button>
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Kontakt</h3>
-              <p className="text-gray-400">
-                Ta kontakt med vårt supportteam hvis du trenger hjelp.
-              </p>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 BNKA. Alle rettigheter reservert.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
