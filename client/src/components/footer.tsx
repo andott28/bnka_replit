@@ -100,7 +100,13 @@ export function Footer() {
           
           <Box mt={5}>
             <Typography variant="body2" color="text.secondary" align="center">
-              © {new Date().getFullYear()} BNKA | Brukervilkår | Personvernerklæring og informasjonskapsler
+              © {new Date().getFullYear()} BNKA | 
+              <Link component={RouterLink} to="/terms-of-service" color="inherit" sx={{ mx: 0.5 }}>
+                Brukervilkår
+              </Link> | 
+              <Link component={RouterLink} to="/privacy-policy" color="inherit" sx={{ mx: 0.5 }}>
+                Personvernerklæring og informasjonskapsler
+              </Link>
             </Typography>
           </Box>
         </Container>
