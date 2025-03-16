@@ -30,34 +30,16 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Helper functions for number formatting
-const formatNumber = (value: string | number): string => {
-  // If empty string or undefined, return empty string
-  if (value === "" || value === undefined) return "";
-  
-  // Remove any non-digit characters except for a possible leading '-'
-  const digitsOnly = value.toString().replace(/[^\d-]/g, '');
-  
-  // Remove any minus signs that aren't at the beginning
-  const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
-  
-  // If empty after cleaning, return empty string
-  if (withProperMinus === "" || withProperMinus === "-") return "";
-  
-  // Parse to number, format with spaces
-  const num = parseInt(withProperMinus);
-  return new Intl.NumberFormat('nb-NO').format(num);
-};
-
-// Format number for display only (not changing the actual value)
-const formatNumberForDisplay = (value: string | number | undefined): string => {
+// Helper function for number formatting 
+// Based on https://stackoverflow.com/questions/6458990/how-to-format-a-number-1000-as-1-000
+const formatNumberWithSpaces = (value: string | number | undefined): string => {
   if (value === undefined || value === "") return "";
   
-  // Remove any existing spaces
-  const withoutSpaces = value.toString().replace(/\s/g, '');
+  // Konverter til string og fjern alle mellomrom
+  const numStr = String(value).replace(/\s/g, '');
   
-  // Format with spaces for thousands
-  return withoutSpaces.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  // Bruk regex for å legge til mellomrom mellom tusentall
+  return numStr.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1 ");
 };
 
 export default function LoanApplication() {
@@ -554,7 +536,7 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Format values on blur - setter ren verdi i skjemaet
+    // Enkel formatering: fjern mellomrom ved lagring til form
     const formatFieldValue = (field: any, value: string) => {
       // Fjern alle mellomrom før validering/lagring
       const cleanValue = value.replace(/\s/g, '');
@@ -563,45 +545,14 @@ export default function LoanApplication() {
       form.setValue(field as any, cleanValue, { shouldValidate: true });
     };
     
-    // Forbedret tallformatering som bevarer markørposisjon
-    // basert på https://stackoverflow.com/questions/6458990/how-to-format-a-number-1000-as-1-000
+    // Enkelt, robust oppsett for tallformatering
     const handleNumberChange = (field: string, value: string) => {
-      // Hent det aktive input-elementet
-      const input = document.activeElement as HTMLInputElement;
-      if (!input) return;
-      
-      // Lagre markørposisjonen før vi gjør endringer
-      const cursorPosition = input.selectionStart || 0;
-      
-      // Tell mellomrom før markøren for å justere posisjon senere
-      const spacesBeforeCursor = (value.substring(0, cursorPosition).match(/ /g) || []).length;
-      
       // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
       const digitsOnly = value.replace(/[^\d-]/g, '');
       const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
       
       // Sett den rå numeriske verdien i form state
       form.setValue(field as any, withProperMinus, { shouldValidate: false });
-      
-      // Formater visningen med mellomrom (kun for visning)
-      const formattedValue = formatNumberForDisplay(withProperMinus);
-      
-      // Manuell visning som unngår å miste fokus
-      setTimeout(() => {
-        // Sørg for at elementet fortsatt har fokus 
-        if (document.activeElement === input) {
-          // Tell nye mellomrom før markørposisjonen
-          const newSpacesBeforeCursor = (formattedValue.substring(0, cursorPosition).match(/ /g) || []).length;
-          const spaceDifference = newSpacesBeforeCursor - spacesBeforeCursor;
-          
-          // Sett input value direkte uten å gå via React for å unngå å miste fokus
-          input.value = formattedValue;
-          
-          // Juster markørposisjonen basert på endring i antall mellomrom
-          const newCursorPosition = cursorPosition + spaceDifference;
-          input.setSelectionRange(newCursorPosition, newCursorPosition);
-        }
-      }, 0);
     };
 
     // Effects to sync state with form fields
@@ -634,7 +585,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.income}
             helperText={form.formState.errors.income?.message || "Oppgi din månedlige inntekt (0 eller høyere)"}
             {...form.register("income")}
-            value={formatNumberForDisplay(form.watch("income"))}
+            value={formatNumberWithSpaces(form.watch("income"))}
             onChange={(e) => handleNumberChange("income", e.target.value)}
             onBlur={(e) => formatFieldValue("income", e.target.value)}
             variant="outlined"
