@@ -42,6 +42,9 @@ const formatNumberWithSpaces = (value: string | number | undefined): string => {
   return numStr.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1 ");
 };
 
+// Tilgjengelig for bakoverkompatibilitet
+const formatNumberForDisplay = formatNumberWithSpaces;
+
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -607,7 +610,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.monthlyExpenses}
             helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
             {...form.register("monthlyExpenses")}
-            value={formatNumberForDisplay(form.watch("monthlyExpenses"))}
+            value={formatNumberWithSpaces(form.watch("monthlyExpenses"))}
             onChange={(e) => handleNumberChange("monthlyExpenses", e.target.value)}
             onBlur={(e) => formatFieldValue("monthlyExpenses", e.target.value)}
             variant="outlined"
@@ -629,7 +632,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.outstandingDebt}
             helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
             {...form.register("outstandingDebt")}
-            value={formatNumberForDisplay(form.watch("outstandingDebt"))}
+            value={formatNumberWithSpaces(form.watch("outstandingDebt"))}
             onChange={(e) => handleNumberChange("outstandingDebt", e.target.value)}
             onBlur={(e) => formatFieldValue("outstandingDebt", e.target.value)}
             variant="outlined"
@@ -684,7 +687,7 @@ export default function LoanApplication() {
                   error={!!form.formState.errors.studentLoanAmount}
                   helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
                   {...form.register("studentLoanAmount")}
-                  value={formatNumberForDisplay(form.watch("studentLoanAmount"))}
+                  value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
                   onChange={(e) => handleNumberChange("studentLoanAmount", e.target.value)}
                   onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
                   variant="outlined"
@@ -757,7 +760,7 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.savingsAmount}
                 helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
                 {...form.register("savingsAmount")}
-                value={formatNumberForDisplay(form.watch("savingsAmount"))}
+                value={formatNumberWithSpaces(form.watch("savingsAmount"))}
                 onChange={(e) => handleNumberChange("savingsAmount", e.target.value)}
                 onBlur={(e) => formatFieldValue("savingsAmount", e.target.value)}
                 variant="outlined"
@@ -835,7 +838,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.amount}
             helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
             {...form.register("amount")}
-            value={formatNumberForDisplay(form.watch("amount"))}
+            value={formatNumberWithSpaces(form.watch("amount"))}
             onChange={(e) => handleNumberChange("amount", e.target.value)}
             onBlur={(e) => formatFieldValue("amount", e.target.value)}
             variant="outlined"
