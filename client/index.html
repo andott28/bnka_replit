@@ -3,21 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <!-- Deaktiverer PostHog-tracking midlertidig inntil nettverksproblemer er løst -->
+    <!-- PostHog med robust feilhåndtering -->
     <script>
-    // Definere en tom versjon av PostHog som ikke gjør noe
+    // Definere en mer robust PostHog-stub som håndterer nettverksproblemer
     window.posthog = {
-      capture: function() { /* Deaktivert sporing */ },
-      identify: function() { /* Deaktivert identifikasjon */ },
-      register: function() { /* Deaktivert registrering */ },
-      opt_out_capturing: function() { /* Deaktivert opt-out */ },
-      init: function() { console.log('Using PostHog stub (disabled)'); return window.posthog; },
-      __loaded: true, // Markerer som lastet for å unngå reinitialisering
-      debug: false
+      capture: function() { return Promise.resolve(); },
+      identify: function() { return Promise.resolve(); },
+      register: function() { return Promise.resolve(); },
+      opt_out_capturing: function() { return Promise.resolve(); },
+      reset: function() { return Promise.resolve(); },
+      get_distinct_id: function() { return "offline-user"; },
+      init: function() { 
+        console.log('Using PostHog stub (network-resilient)'); 
+        return window.posthog; 
+      },
+      onFeatureFlags: function(callback) { setTimeout(callback, 0); return window.posthog; },
+      getFeatureFlag: function() { return null; },
+      isFeatureEnabled: function() { return false; },
+      __loaded: true
     };
     
-    // Logging av at sporingen er deaktivert
-    console.log('PostHog tracking temporarily disabled due to network issues');
+    // Forsøk en forsiktig initialisering i try-catch
+    try {
+      // Kun initialisere i produksjon eller hvis vi eksplisitt aktiverer
+      if (window.location.hostname !== 'localhost' && !window.location.hostname.includes('replit.dev')) {
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {
+          api_host: 'https://us.i.posthog.com',
+          // Disable features that might be problematic
+          capture_pageview: false, // La React-appen håndtere pageview tracking
+          persistence: 'localStorage', // Bruk localStorage for stabilitet
+          bootstrap: { distinctID: 'anonymous_user' },
+          disable_session_recording: true, // Deaktiver session recording
+          mask_all_text: true, // Ikke samle inn tekstinnhold
+          mask_all_element_attributes: true, // Ikke samle inn element-attributter
+          loaded: function(ph) {
+            console.log('PostHog loaded successfully');
+          },
+          on_xhr_error: function(statusCode, err) {
+            console.warn('PostHog XHR error (will retry later):', statusCode);
+            // Deaktiver midlertidig for å unngå gjentatte feil
+            window._posthogNetworkFailed = true;
+          }
+        });
+      } else {
+        console.log('PostHog disabled in development environment');
+      }
+    } catch (e) {
+      console.warn('Failed to initialize PostHog:', e);
+    }
     </script>
   </head>
   <body>

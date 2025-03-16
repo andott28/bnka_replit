@@ -160,75 +160,141 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
   };
 
   // Function to track events with standard format
+  // Mer robust og fault-tolerant analytics-tracking
   const trackEvent = (eventName: string | AnalyticsEvents, properties?: Record<string, any>) => {
+    // Ikke track hvis bruker ikke har samtykket
     if (consentStatus !== 'accepted') return;
     
-    try {
-      // Add standard metadata to all events
-      const enhancedProperties = {
-        ...properties,
-        timestamp: new Date().toISOString(),
-        url_path: window.location.pathname,
-        app_context: 'bnka_web'
-      };
-      
-      // Sjekk om PostHog faktisk er tilgjengelig
-      if (typeof posthog !== 'undefined' && typeof posthog.capture === 'function') {
-        posthog.capture(eventName, enhancedProperties);
-      } else {
-        console.warn('PostHog not available for tracking event:', eventName);
+    // Bruk setTimeout for å hindre at tracking blokkerer UI, og håndtere feil bedre
+    setTimeout(() => {
+      try {
+        // Add standard metadata to all events
+        const enhancedProperties = {
+          ...properties,
+          timestamp: new Date().toISOString(),
+          url_path: window.location.pathname,
+          app_context: 'bnka_web'
+        };
+        
+        // Sjekk om PostHog faktisk er tilgjengelig og fungerer
+        if (typeof posthog !== 'undefined' && typeof posthog.capture === 'function') {
+          // Promise-wrap for bedre feilhåndtering
+          Promise.resolve().then(() => {
+            return posthog.capture(eventName, enhancedProperties);
+          }).catch(err => {
+            // Stille feilhåndtering, ikke skriv til konsoll i produksjon
+            if (import.meta.env.MODE !== 'production') {
+              console.warn('PostHog capture failed:', err);
+            }
+          });
+        } else if (import.meta.env.MODE !== 'production') {
+          console.warn('PostHog not fully initialized for tracking:', eventName);
+        }
+      } catch (error) {
+        // Ikke la analytics-feil krasje applikasjonen
+        if (import.meta.env.MODE !== 'production') {
+          console.error('Error in analytics tracking:', error);
+        }
       }
-    } catch (error) {
-      // Ikke la analytics-feil krasje applikasjonen
-      console.error('Error tracking event:', error);
-    }
+    }, 0);
   };
 
+  // Forbedret samtykke-aksept med feilhåndtering
   const acceptConsent = () => {
-    localStorage.setItem(
-      CONSENT_COOKIE_NAME,
-      JSON.stringify({
-        status: 'accepted',
-        timestamp: new Date().toISOString(),
-        version: CONSENT_VERSION,
-      })
-    );
-    setConsentStatus('accepted');
-    initPostHog();
-    
     try {
-      // Track the consent acceptance
-      posthog.capture(AnalyticsEvents.CONSENT_ACCEPT, {
-        consent_version: CONSENT_VERSION,
-        timestamp: new Date().toISOString()
-      });
+      localStorage.setItem(
+        CONSENT_COOKIE_NAME,
+        JSON.stringify({
+          status: 'accepted',
+          timestamp: new Date().toISOString(),
+          version: CONSENT_VERSION,
+        })
+      );
+      setConsentStatus('accepted');
+      
+      // Initialiser PostHog etter samtykke
+      initPostHog();
+      
+      // Track i en setTimeout for å unngå mulige blokkeringsproblemer
+      setTimeout(() => {
+        try {
+          if (typeof posthog !== 'undefined' && typeof posthog.capture === 'function') {
+            // Promise-wrap feilhåndtering
+            Promise.resolve().then(() => {
+              return posthog.capture(AnalyticsEvents.CONSENT_ACCEPT, {
+                consent_version: CONSENT_VERSION,
+                timestamp: new Date().toISOString()
+              });
+            }).catch(err => {
+              if (import.meta.env.MODE !== 'production') {
+                console.warn('Error tracking consent acceptance:', err);
+              }
+            });
+          }
+        } catch (innerError) {
+          if (import.meta.env.MODE !== 'production') {
+            console.warn('Failed to track consent acceptance:', innerError);
+          }
+        }
+      }, 0);
     } catch (error) {
-      console.error('Error tracking consent acceptance:', error);
+      console.error('Error during consent acceptance:', error);
+      // Fortsatt sette samtykke selv om tracking mislyktes
+      setConsentStatus('accepted');
     }
   };
 
+  // Forbedret samtykke-avvisning med feilhåndtering
   const rejectConsent = () => {
-    localStorage.setItem(
-      CONSENT_COOKIE_NAME,
-      JSON.stringify({
-        status: 'rejected',
-        timestamp: new Date().toISOString(),
-        version: CONSENT_VERSION,
-      })
-    );
-    setConsentStatus('rejected');
-    
     try {
-      // Deaktiver sporing
-      posthog.opt_out_capturing();
+      localStorage.setItem(
+        CONSENT_COOKIE_NAME,
+        JSON.stringify({
+          status: 'rejected',
+          timestamp: new Date().toISOString(),
+          version: CONSENT_VERSION,
+        })
+      );
+      setConsentStatus('rejected');
       
-      // Siste sporing for å registrere avvisning
-      posthog.capture(AnalyticsEvents.CONSENT_REJECT, {
-        consent_version: CONSENT_VERSION,
-        timestamp: new Date().toISOString()
-      });
+      // Kjør i setTimeout for å unngå å blokkere UI
+      setTimeout(() => {
+        try {
+          if (typeof posthog !== 'undefined') {
+            // Prøv å deaktivere først
+            try {
+              posthog.opt_out_capturing();
+            } catch (optOutError) {
+              if (import.meta.env.MODE !== 'production') {
+                console.warn('Failed to opt out of tracking:', optOutError);
+              }
+            }
+            
+            // Forsøk en siste sporing i en try-catch
+            if (typeof posthog.capture === 'function') {
+              Promise.resolve().then(() => {
+                return posthog.capture(AnalyticsEvents.CONSENT_REJECT, {
+                  consent_version: CONSENT_VERSION,
+                  timestamp: new Date().toISOString()
+                });
+              }).catch(err => {
+                // Ikke logg i produksjon
+                if (import.meta.env.MODE !== 'production') {
+                  console.warn('Error logging consent rejection:', err);
+                }
+              });
+            }
+          }
+        } catch (innerError) {
+          if (import.meta.env.MODE !== 'production') {
+            console.warn('Error in rejection tracking:', innerError);
+          }
+        }
+      }, 0);
     } catch (error) {
       console.error('Error during consent rejection:', error);
+      // Fortsatt sette avvisning selv om storage mislyktes
+      setConsentStatus('rejected');
     }
   };
 
