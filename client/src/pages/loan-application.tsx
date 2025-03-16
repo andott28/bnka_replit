@@ -853,8 +853,8 @@ export default function LoanApplication() {
             error={!!form.formState.errors.amount}
             helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
             {...form.register("amount")}
-            value={form.watch("amount")}
-            onChange={(e) => form.setValue("amount", e.target.value, { shouldValidate: false })}
+            value={formatNumberForDisplay(form.watch("amount"))}
+            onChange={(e) => handleNumberChange("amount", e.target.value)}
             onBlur={(e) => formatFieldValue("amount", e.target.value)}
             variant="outlined"
             InputProps={{
