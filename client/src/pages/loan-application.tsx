@@ -556,7 +556,21 @@ export default function LoanApplication() {
   const FinancialInfoStep = () => {
     // Format values on blur
     const formatFieldValue = (field: any, value: string) => {
-      form.setValue(field as any, formatNumber(value), { shouldValidate: true });
+      // Fjern alle mellomrom før validering/lagring
+      const cleanValue = value.replace(/\s/g, '');
+      
+      // Sett den rensede verdien i skjemaet for validering
+      form.setValue(field as any, formatNumber(cleanValue), { shouldValidate: true });
+    };
+    
+    // Formater tall for visning mens brukeren skriver
+    const handleNumberChange = (field: string, value: string) => {
+      // Fjern alle tegn unntatt tall og mulig minustegn i begynnelsen
+      const digitsOnly = value.replace(/[^\d-]/g, '');
+      const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
+      
+      // Sett den rå numeriske verdien uten mellomrom
+      form.setValue(field as any, withProperMinus, { shouldValidate: false });
     };
 
     // Effects to sync state with form fields
@@ -589,8 +603,8 @@ export default function LoanApplication() {
             error={!!form.formState.errors.income}
             helperText={form.formState.errors.income?.message || "Oppgi din månedlige inntekt (0 eller høyere)"}
             {...form.register("income")}
-            value={form.watch("income")}
-            onChange={(e) => form.setValue("income", e.target.value, { shouldValidate: false })}
+            value={formatNumberForDisplay(form.watch("income"))}
+            onChange={(e) => handleNumberChange("income", e.target.value)}
             onBlur={(e) => formatFieldValue("income", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -611,8 +625,8 @@ export default function LoanApplication() {
             error={!!form.formState.errors.monthlyExpenses}
             helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
             {...form.register("monthlyExpenses")}
-            value={form.watch("monthlyExpenses")}
-            onChange={(e) => form.setValue("monthlyExpenses", e.target.value, { shouldValidate: false })}
+            value={formatNumberForDisplay(form.watch("monthlyExpenses"))}
+            onChange={(e) => handleNumberChange("monthlyExpenses", e.target.value)}
             onBlur={(e) => formatFieldValue("monthlyExpenses", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -633,8 +647,8 @@ export default function LoanApplication() {
             error={!!form.formState.errors.outstandingDebt}
             helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
             {...form.register("outstandingDebt")}
-            value={form.watch("outstandingDebt")}
-            onChange={(e) => form.setValue("outstandingDebt", e.target.value, { shouldValidate: false })}
+            value={formatNumberForDisplay(form.watch("outstandingDebt"))}
+            onChange={(e) => handleNumberChange("outstandingDebt", e.target.value)}
             onBlur={(e) => formatFieldValue("outstandingDebt", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -688,8 +702,8 @@ export default function LoanApplication() {
                   error={!!form.formState.errors.studentLoanAmount}
                   helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
                   {...form.register("studentLoanAmount")}
-                  value={form.watch("studentLoanAmount")}
-                  onChange={(e) => form.setValue("studentLoanAmount", e.target.value, { shouldValidate: false })}
+                  value={formatNumberForDisplay(form.watch("studentLoanAmount"))}
+                  onChange={(e) => handleNumberChange("studentLoanAmount", e.target.value)}
                   onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
                   variant="outlined"
                   InputProps={{
@@ -761,8 +775,8 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.savingsAmount}
                 helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
                 {...form.register("savingsAmount")}
-                value={form.watch("savingsAmount")}
-                onChange={(e) => form.setValue("savingsAmount", e.target.value, { shouldValidate: false })}
+                value={formatNumberForDisplay(form.watch("savingsAmount"))}
+                onChange={(e) => handleNumberChange("savingsAmount", e.target.value)}
                 onBlur={(e) => formatFieldValue("savingsAmount", e.target.value)}
                 variant="outlined"
                 InputProps={{
