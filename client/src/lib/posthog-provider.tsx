@@ -89,61 +89,73 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
   }, []);
 
   const initPostHog = () => {
-    // Sjekk om PostHog allerede er initialisert (fra inline script i index.html)
-    // @ts-ignore: Property '__loaded' does not exist on type 'PostHogType'
-    if (!posthog.__loaded) {
-      // Initialiser PostHog når brukeren har gitt samtykke og hvis det ikke allerede er initialisert
-      posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {
-        api_host: 'https://us.i.posthog.com',
-        capture_pageview: true,
-        capture_pageleave: true,
-        person_profiles: 'identified_only', // Bare lag profiler for identifiserte brukere
-        autocapture: {
-          // Configure autocapture to be more specific and privacy-conscious
-          css_selector_allowlist: ['button', 'a', 'input', 'form'],
-          dom_event_allowlist: ['click', 'submit']
-        },
-        respect_dnt: true, // Respect Do Not Track browser setting
-        property_blacklist: ['$ip', 'email'], // Avoid tracking these properties
-        mask_all_text: true, // Don't capture actual text content, just events
-        mask_all_element_attributes: true, // Don't capture attributes with personal data
-        loaded: (ph) => {
-          // Sett eventuelle begrensinger etter innlasting
-          if (import.meta.env.MODE !== 'production') {
-            ph.opt_out_capturing(); // Opt-out i utviklingsmodus
-          } else {
-            // Sett opp lytter for når brukeren forlater siden
-            window.addEventListener('beforeunload', () => {
-              ph.capture('$pageleave');
-            });
-            
-            // Add user properties that help with segment analysis but maintain privacy
-            ph.register({
-              app_version: '1.0',
-              interface_language: navigator.language,
-              is_mobile: window.innerWidth < 768,
-              viewport_width: window.innerWidth,
-              theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-            });
-          }
-        }
-      });
-    } else {
-      console.log('PostHog already initialized from HTML script');
+    try {
+      // Sjekk om PostHog allerede er initialisert (fra inline script i index.html)
+      // @ts-ignore: Property '__loaded' does not exist on type 'PostHogType'
+      const isAlreadyLoaded = typeof posthog !== 'undefined' && posthog.__loaded;
       
-      // Still register our configuration
-      if (import.meta.env.MODE !== 'production') {
-        posthog.opt_out_capturing(); // Opt-out i utviklingsmodus
-      } else {
-        // Register standard properties even when initialized by head script
-        posthog.register({
-          app_version: '1.0',
-          interface_language: navigator.language,
-          is_mobile: window.innerWidth < 768,
-          viewport_width: window.innerWidth,
-          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+      if (!isAlreadyLoaded) {
+        // Initialiser PostHog når brukeren har gitt samtykke og hvis det ikke allerede er initialisert
+        posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {
+          api_host: 'https://us.i.posthog.com',
+          capture_pageview: true,
+          capture_pageleave: true,
+          person_profiles: 'identified_only', // Bare lag profiler for identifiserte brukere
+          autocapture: {
+            // Configure autocapture to be more specific and privacy-conscious
+            css_selector_allowlist: ['button', 'a', 'input', 'form'],
+            dom_event_allowlist: ['click', 'submit']
+          },
+          respect_dnt: true, // Respect Do Not Track browser setting
+          property_blacklist: ['$ip', 'email'], // Avoid tracking these properties
+          mask_all_text: true, // Don't capture actual text content, just events
+          mask_all_element_attributes: true, // Don't capture attributes with personal data
+          bootstrap: {
+            distinctID: 'anonymous_user'
+          },
+          // Fjern on_xhr_error siden vi har problemer med typene
+          // og vi har allerede try-catch rundt hele initialiseringen
+          loaded: (ph) => {
+            console.log('PostHog loaded successfully from provider');
+            // Sett eventuelle begrensinger etter innlasting
+            if (import.meta.env.MODE !== 'production') {
+              ph.opt_out_capturing(); // Opt-out i utviklingsmodus
+            } else {
+              // Sett opp lytter for når brukeren forlater siden
+              window.addEventListener('beforeunload', () => {
+                ph.capture('$pageleave');
+              });
+              
+              // Add user properties that help with segment analysis but maintain privacy
+              ph.register({
+                app_version: '1.0',
+                interface_language: navigator.language,
+                is_mobile: window.innerWidth < 768,
+                viewport_width: window.innerWidth,
+                theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+              });
+            }
+          }
         });
+      } else {
+        console.log('PostHog already initialized from HTML script');
+        
+        // Still register our configuration
+        if (import.meta.env.MODE !== 'production') {
+          posthog.opt_out_capturing(); // Opt-out i utviklingsmodus
+        } else {
+          // Register standard properties even when initialized by head script
+          posthog.register({
+            app_version: '1.0',
+            interface_language: navigator.language,
+            is_mobile: window.innerWidth < 768,
+            viewport_width: window.innerWidth,
+            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+          });
+        }
       }
+    } catch (error) {
+      console.error('Failed to initialize PostHog from provider:', error);
     }
   };
 
@@ -151,15 +163,25 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
   const trackEvent = (eventName: string | AnalyticsEvents, properties?: Record<string, any>) => {
     if (consentStatus !== 'accepted') return;
     
-    // Add standard metadata to all events
-    const enhancedProperties = {
-      ...properties,
-      timestamp: new Date().toISOString(),
-      url_path: window.location.pathname,
-      app_context: 'bnka_web'
-    };
-    
-    posthog.capture(eventName, enhancedProperties);
+    try {
+      // Add standard metadata to all events
+      const enhancedProperties = {
+        ...properties,
+        timestamp: new Date().toISOString(),
+        url_path: window.location.pathname,
+        app_context: 'bnka_web'
+      };
+      
+      // Sjekk om PostHog faktisk er tilgjengelig
+      if (typeof posthog !== 'undefined' && typeof posthog.capture === 'function') {
+        posthog.capture(eventName, enhancedProperties);
+      } else {
+        console.warn('PostHog not available for tracking event:', eventName);
+      }
+    } catch (error) {
+      // Ikke la analytics-feil krasje applikasjonen
+      console.error('Error tracking event:', error);
+    }
   };
 
   const acceptConsent = () => {
@@ -174,11 +196,15 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
     setConsentStatus('accepted');
     initPostHog();
     
-    // Track the consent acceptance
-    posthog.capture(AnalyticsEvents.CONSENT_ACCEPT, {
-      consent_version: CONSENT_VERSION,
-      timestamp: new Date().toISOString()
-    });
+    try {
+      // Track the consent acceptance
+      posthog.capture(AnalyticsEvents.CONSENT_ACCEPT, {
+        consent_version: CONSENT_VERSION,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error tracking consent acceptance:', error);
+    }
   };
 
   const rejectConsent = () => {
@@ -191,7 +217,19 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
       })
     );
     setConsentStatus('rejected');
-    posthog.opt_out_capturing(); // Deaktiver sporing
+    
+    try {
+      // Deaktiver sporing
+      posthog.opt_out_capturing();
+      
+      // Siste sporing for å registrere avvisning
+      posthog.capture(AnalyticsEvents.CONSENT_REJECT, {
+        consent_version: CONSENT_VERSION,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Error during consent rejection:', error);
+    }
   };
 
   return (
