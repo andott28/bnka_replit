@@ -32,15 +32,8 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Funksjon for å fjerne alle mellomrom fra numeriske verdier
-const formatNumberWithSpaces = (value: string | number | undefined): string => {
-  if (value === undefined || value === "") return "";
-  // Sikrer at verdien behandles som streng og fjerner eventuelle mellomrom
-  return String(value).replace(/\s+/g, "");
-};
-
-// Håndterer gammel funksjonsnavn for bakoverkompatibilitet
-const formatNumberForDisplay = formatNumberWithSpaces;
+// Enkel implementasjon uten formatering av tallverdier
+// Fjernet kompleks tallformatering for bedre ytelse og enklere kode
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
