@@ -344,25 +344,20 @@ export default function LoanApplication() {
         valid = await form.trigger(['birthDate', 'street', 'postalCode', 'city', 'employmentStatus']);
         break;
       case 1: // FinancialInfoStep
-        const fieldsToValidate = [
-          'income' as const, 
-          'monthlyExpenses' as const, 
-          'outstandingDebt' as const, 
-          'amount' as const, 
-          'purpose' as const
-        ];
+        // Valider alt i ett trinn med any - vi må unngå TypeScript-feil
+        const fieldsToValidate = ['income', 'monthlyExpenses', 'outstandingDebt', 'amount', 'purpose'];
         
-        // Validere valgfrie felt hvis de er aktivert
+        // Legg til valgfrie felt hvis de er aktivert
         if (hasAssets) {
-          fieldsToValidate.push('assets' as const);
+          fieldsToValidate.push('assets');
         }
         
         if (hasStudentLoan) {
-          fieldsToValidate.push('studentLoanAmount' as const);
+          fieldsToValidate.push('studentLoanAmount');
         }
         
         if (hasSavings) {
-          fieldsToValidate.push('savingsAmount' as const);
+          fieldsToValidate.push('savingsAmount');
         }
         
         valid = await form.trigger(fieldsToValidate as any);
@@ -548,8 +543,8 @@ export default function LoanApplication() {
 
   const FinancialInfoStep = () => {
     // Format values on blur
-    const formatFieldValue = (field: keyof typeof form.getValues, value: string) => {
-      form.setValue(field, formatNumber(value), { shouldValidate: true });
+    const formatFieldValue = (field: any, value: string) => {
+      form.setValue(field as any, formatNumber(value), { shouldValidate: true });
     };
 
     // Effects to sync state with form fields
