@@ -773,7 +773,7 @@ export default function LoanApplication() {
                 helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
                 {...form.register("savingsAmount")}
                 value={formatNumberWithSpaces(form.watch("savingsAmount"))}
-                onChange={(e) => handleNumberChange("savingsAmount", e.target.value)}
+                onChange={(e) => handleNumberChange("savingsAmount", e)}
                 onBlur={(e) => formatFieldValue("savingsAmount", e.target.value)}
                 variant="outlined"
                 InputProps={{
@@ -851,7 +851,7 @@ export default function LoanApplication() {
             helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
             {...form.register("amount")}
             value={formatNumberWithSpaces(form.watch("amount"))}
-            onChange={(e) => handleNumberChange("amount", e.target.value)}
+            onChange={(e) => handleNumberChange("amount", e)}
             onBlur={(e) => formatFieldValue("amount", e.target.value)}
             variant="outlined"
             InputProps={{
