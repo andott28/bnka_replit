@@ -41,8 +41,19 @@ export function DatePicker({
   label,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  // Initialize with current date as default
+  
+  // Calculate date for exactly 18 years ago from today
   const today = new Date();
+  const eighteenYearsAgo = new Date(
+    today.getFullYear() - 18,
+    today.getMonth(),
+    today.getDate()
+  );
+  
+  // Set initial default date to show in calendar
+  const [defaultViewDate] = React.useState(eighteenYearsAgo);
+  
+  // Initialize with date prop or undefined
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(date);
   const [inputValue, setInputValue] = React.useState(date ? format(date, "dd/MM/yyyy") : "");
   
@@ -59,8 +70,8 @@ export function DatePicker({
     let formatted = value;
 
     // Add slashes automatically
-    if (value.length === 2) formatted = value + "/";
-    if (value.length === 5) formatted = value + "/";
+    if (value.length === 2 && !value.includes("/")) formatted = value + "/";
+    if (value.length === 5 && value.indexOf("/", 3) === -1) formatted = value + "/";
 
     setInputValue(formatted);
 
@@ -69,6 +80,7 @@ export function DatePicker({
       try {
         const parsedDate = parse(value, "dd/MM/yyyy", new Date());
         if (!isNaN(parsedDate.getTime())) {
+          setSelectedDate(parsedDate);
           onSelect?.(parsedDate);
         }
       } catch (error) {
@@ -140,6 +152,7 @@ export function DatePicker({
           showOutsideDays={true}
           fixedWeeks={true}
           hideHead={true}
+          defaultMonth={selectedDate || defaultViewDate}
           initialFocus
           className="min-w-[280px]"
         />

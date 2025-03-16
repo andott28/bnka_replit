@@ -49,6 +49,17 @@ const formatNumber = (value: string | number): string => {
   return new Intl.NumberFormat('nb-NO').format(num);
 };
 
+// Format number for display only (not changing the actual value)
+const formatNumberForDisplay = (value: string | number | undefined): string => {
+  if (value === undefined || value === "") return "";
+  
+  // Remove any existing spaces
+  const withoutSpaces = value.toString().replace(/\s/g, '');
+  
+  // Format with spaces for thousands
+  return withoutSpaces.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+};
+
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
