@@ -537,36 +537,16 @@ export default function LoanApplication() {
 
   const FinancialInfoStep = () => {
     // Forbedret tallfelthåndtering med bevaring av cursor-posisjon
+    // Enkel validering av feltverdier
     const formatFieldValue = (field: any, value: string) => {
-      // Fjern alle tegn unntatt tall (ingen mellomrom, ingen formatering)
-      const digitsOnly = value.replace(/[^\d]/g, '');
-      
-      // Setter verdien for validering ved blur
-      form.setValue(field as any, digitsOnly, { shouldValidate: true });
+      form.setValue(field as any, value, { shouldValidate: true });
     };
     
     // Forenklet tallhåndtering
     const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      // Nåværende verdi
       const value = e.target.value;
-      const cursorPosition = e.target.selectionStart || 0;
-      
-      // Fjern alle tegn unntatt tall (ingen mellomrom, ingen formatering)
-      if (!/^\d*$/.test(value)) {
-        const digitsOnly = value.replace(/[^\d]/g, '');
-        form.setValue(field as any, digitsOnly, { shouldValidate: false });
-        
-        // Gjenopprett markørposisjonen
-        setTimeout(() => {
-          const input = document.querySelector(`[name="${field}"]`) as HTMLInputElement;
-          if (input) {
-            // Juster for forskjellen i lengden etter å ha fjernet ikke-numeriske tegn
-            const newPosition = Math.max(0, cursorPosition - (value.length - digitsOnly.length));
-            input.setSelectionRange(newPosition, newPosition);
-          }
-        }, 0);
-      } else {
-        // Hvis det er et gyldig tall, la det passere direkte
+      // Tillat bare tall
+      if (/^\d*$/.test(value)) {
         form.setValue(field as any, value, { shouldValidate: false });
       }
     };
@@ -702,31 +682,33 @@ export default function LoanApplication() {
             />
           </FormControl>
 
-          {hasStudentLoan && (
-            <>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Studielån (NOK)"
-                  error={!!form.formState.errors.studentLoanAmount}
-                  helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
-                  {...form.register("studentLoanAmount")}
-                  value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
-                  onChange={(e) => handleNumberChange("studentLoanAmount", e)}
-                  onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
-                  variant="outlined"
-                  InputProps={{
-                    sx: { 
-                      borderRadius: 2,
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'primary.main',
-                      },
-                    }
-                  }}
-                />
-              </FormControl>
+          <Box sx={{ 
+            display: hasStudentLoan ? 'block' : 'none',
+            mt: 2
+          }}>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                label="Studielån (NOK)"
+                error={!!form.formState.errors.studentLoanAmount}
+                helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
+                {...form.register("studentLoanAmount")}
+                value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
+                onChange={(e) => handleNumberChange("studentLoanAmount", e)}
+                onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  sx: { 
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  }
+                }}
+              />
+            </FormControl>
 
-              <FormControl fullWidth>
+            <FormControl fullWidth>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -754,8 +736,7 @@ export default function LoanApplication() {
                   }}
                 />
               </FormControl>
-            </>
-          )}
+            </Box>
         </Box>
 
         {/* Savings Section */}
@@ -798,7 +779,10 @@ export default function LoanApplication() {
             />
           </FormControl>
 
-          {hasSavings && (
+          <Box sx={{ 
+            display: hasSavings ? 'block' : 'none',
+            mt: 2
+          }}>
             <FormControl fullWidth>
               <TextField
                 fullWidth
@@ -820,7 +804,7 @@ export default function LoanApplication() {
                 }}
               />
             </FormControl>
-          )}
+          </Box>
         </Box>
 
         {/* Assets Section */}
@@ -863,7 +847,10 @@ export default function LoanApplication() {
             />
           </FormControl>
 
-          {hasAssets && (
+          <Box sx={{ 
+            display: hasAssets ? 'block' : 'none',
+            mt: 2
+          }}>
             <FormControl fullWidth>
               <TextField
                 fullWidth
@@ -885,7 +872,7 @@ export default function LoanApplication() {
                 }}
               />
             </FormControl>
-          )}
+          </Box>
         </Box>
 
         <FormControl fullWidth>
