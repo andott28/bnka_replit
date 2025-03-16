@@ -97,14 +97,59 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
     return;
   };
 
-  // Deaktivert tracking funksjon som ikke gjør noe
+  // Implementerer PostHog-sporing via direkte API-kall
   const trackEvent = (eventName: string | AnalyticsEvents, properties?: Record<string, any>) => {
-    // Ikke gjør noe, logging er deaktivert
-    if (import.meta.env.MODE !== 'production') {
-      // Logg bare i utviklingsmiljø for debugging
-      console.log('Analytics tracking deaktivert:', eventName, properties);
+    // Ikke track hvis bruker ikke har samtykket eller i utviklingsmodus
+    if (consentStatus !== 'accepted' || import.meta.env.MODE !== 'production') {
+      if (import.meta.env.MODE !== 'production') {
+        console.log('Analytics tracking (dev only):', eventName, properties);
+      }
+      return;
     }
-    return; // Ikke gjør noe
+
+    // Kjør API-kall utenfor hovedtråden med setTimeout
+    setTimeout(async () => {
+      try {
+        // Forbered data som skal sendes
+        const payload = {
+          api_key: 'phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz',
+          event: eventName,
+          properties: {
+            distinct_id: localStorage.getItem('user_id') || 'anonymous',
+            app_version: '1.0',
+            interface_language: navigator.language,
+            is_mobile: window.innerWidth < 768,
+            viewport_width: window.innerWidth,
+            url_path: window.location.pathname,
+            app_context: 'bnka_web',
+            ...properties,
+          },
+          timestamp: new Date().toISOString(),
+          $process_person_profile: false // Ikke lag person-profiler
+        };
+
+        // Send via fetch API
+        const response = await fetch('https://us.i.posthog.com/capture/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+          // Kort timeout for å ikke blokkere brukeropplevelsen
+          signal: AbortSignal.timeout(2000) // 2 sekunder timeout
+        });
+
+        // Bare logg respons i utviklingsmodus
+        if (import.meta.env.MODE !== 'production' && !response.ok) {
+          console.warn('PostHog API error:', await response.text());
+        }
+      } catch (error) {
+        // Stille feil - ikke la dette påvirke brukeropplevelsen
+        if (import.meta.env.MODE !== 'production') {
+          console.warn('Error sending analytics:', error);
+        }
+      }
+    }, 0);
   };
 
   // Forenklet samtykke-aksept som ikke gjør noe sporing
