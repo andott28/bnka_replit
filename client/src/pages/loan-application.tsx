@@ -32,8 +32,22 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Enkel implementasjon uten formatering av tallverdier
-// Fjernet kompleks tallformatering for bedre ytelse og enklere kode
+// Funksjon for å formatere tall med mellomrom for bedre lesbarhet
+const formatNumberWithSpaces = (value: string | number | undefined): string => {
+  if (!value) return '';
+  // Konverter til streng og fjern mellomrom
+  const valueStr = typeof value === 'number' ? value.toString() : value.toString().replace(/\s/g, '');
+  // Sjekk at det er et gyldig tall
+  if (valueStr === '' || isNaN(Number(valueStr))) return valueStr;
+  // Formater med mellomrom for hver tredje siffer
+  return valueStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
+
+// Funksjon for å fjerne mellomrom fra tall før validering/lagring
+const removeSpaces = (value: string | undefined): string => {
+  if (!value) return '';
+  return value.replace(/\s/g, '');
+};
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
@@ -529,7 +543,7 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Enkel implementasjon uten formatering og spesialhåndtering
+    // Implementasjon med formatering av tall med mellomrom for bedre lesbarhet
     
     // Effects to sync state with form fields
     useEffect(() => {
@@ -561,6 +575,19 @@ export default function LoanApplication() {
             error={!!form.formState.errors.income}
             helperText={form.formState.errors.income?.message || "Din brutto inntekt per måned (før skatt)"}
             {...form.register("income")}
+            value={formatNumberWithSpaces(form.watch("income"))}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Bare tillat tall og mellomrom
+              if (/^[0-9\s]*$/.test(value)) {
+                form.setValue("income", value.replace(/\s/g, ''), { shouldValidate: false });
+              }
+            }}
+            onBlur={(e) => {
+              const value = e.target.value;
+              const formattedValue = formatNumberWithSpaces(value);
+              form.setValue("income", formattedValue, { shouldValidate: true });
+            }}
             inputMode="numeric"
             variant="outlined"
             InputProps={{
