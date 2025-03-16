@@ -32,22 +32,8 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Funksjon for å formatere tall med mellomrom for bedre lesbarhet
-const formatNumberWithSpaces = (value: string | number | undefined): string => {
-  if (!value) return '';
-  // Konverter til streng og fjern mellomrom
-  const valueStr = typeof value === 'number' ? value.toString() : value.toString().replace(/\s/g, '');
-  // Sjekk at det er et gyldig tall
-  if (valueStr === '' || isNaN(Number(valueStr))) return valueStr;
-  // Formater med mellomrom for hver tredje siffer
-  return valueStr.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-};
-
-// Funksjon for å fjerne mellomrom fra tall før validering/lagring
-const removeSpaces = (value: string | undefined): string => {
-  if (!value) return '';
-  return value.replace(/\s/g, '');
-};
+// Enkel implementasjon uten formatering av tallverdier
+// Fjernet kompleks tallformatering for bedre ytelse og enklere kode
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
@@ -543,7 +529,7 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Implementasjon med formatering av tall med mellomrom for bedre lesbarhet
+    // Enkel implementasjon uten formatering og spesialhåndtering
     
     // Effects to sync state with form fields
     useEffect(() => {
@@ -575,19 +561,6 @@ export default function LoanApplication() {
             error={!!form.formState.errors.income}
             helperText={form.formState.errors.income?.message || "Din brutto inntekt per måned (før skatt)"}
             {...form.register("income")}
-            value={formatNumberWithSpaces(form.watch("income"))}
-            onChange={(e) => {
-              const value = e.target.value;
-              // Bare tillat tall og mellomrom
-              if (/^[0-9\s]*$/.test(value)) {
-                form.setValue("income", value.replace(/\s/g, ''), { shouldValidate: false });
-              }
-            }}
-            onBlur={(e) => {
-              const value = e.target.value;
-              const formattedValue = formatNumberWithSpaces(value);
-              form.setValue("income", formattedValue, { shouldValidate: true });
-            }}
             inputMode="numeric"
             variant="outlined"
             InputProps={{
@@ -608,19 +581,6 @@ export default function LoanApplication() {
             error={!!form.formState.errors.monthlyExpenses}
             helperText={form.formState.errors.monthlyExpenses?.message || "Sum av alle regelmessige utgifter (bolig, bil, strøm, osv.)"}
             {...form.register("monthlyExpenses")}
-            value={formatNumberWithSpaces(form.watch("monthlyExpenses"))}
-            onChange={(e) => {
-              const value = e.target.value;
-              // Bare tillat tall og mellomrom
-              if (/^[0-9\s]*$/.test(value)) {
-                form.setValue("monthlyExpenses", value.replace(/\s/g, ''), { shouldValidate: false });
-              }
-            }}
-            onBlur={(e) => {
-              const value = e.target.value;
-              const formattedValue = formatNumberWithSpaces(value);
-              form.setValue("monthlyExpenses", formattedValue, { shouldValidate: true });
-            }}
             inputMode="numeric"
             variant="outlined"
             InputProps={{
@@ -641,19 +601,6 @@ export default function LoanApplication() {
             error={!!form.formState.errors.outstandingDebt}
             helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
             {...form.register("outstandingDebt")}
-            value={formatNumberWithSpaces(form.watch("outstandingDebt"))}
-            onChange={(e) => {
-              const value = e.target.value;
-              // Bare tillat tall og mellomrom
-              if (/^[0-9\s]*$/.test(value)) {
-                form.setValue("outstandingDebt", value.replace(/\s/g, ''), { shouldValidate: false });
-              }
-            }}
-            onBlur={(e) => {
-              const value = e.target.value;
-              const formattedValue = formatNumberWithSpaces(value);
-              form.setValue("outstandingDebt", formattedValue, { shouldValidate: true });
-            }}
             inputMode="numeric"
             variant="outlined"
             InputProps={{
@@ -720,19 +667,6 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.studentLoanAmount}
                 helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
                 {...form.register("studentLoanAmount")}
-                value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  // Bare tillat tall og mellomrom
-                  if (/^[0-9\s]*$/.test(value)) {
-                    form.setValue("studentLoanAmount", value.replace(/\s/g, ''), { shouldValidate: false });
-                  }
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value;
-                  const formattedValue = formatNumberWithSpaces(value);
-                  form.setValue("studentLoanAmount", formattedValue, { shouldValidate: true });
-                }}
                 inputMode="numeric"
                 variant="outlined"
                 InputProps={{
@@ -828,19 +762,6 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.savingsAmount}
                 helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
                 {...form.register("savingsAmount")}
-                value={formatNumberWithSpaces(form.watch("savingsAmount"))}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  // Bare tillat tall og mellomrom
-                  if (/^[0-9\s]*$/.test(value)) {
-                    form.setValue("savingsAmount", value.replace(/\s/g, ''), { shouldValidate: false });
-                  }
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value;
-                  const formattedValue = formatNumberWithSpaces(value);
-                  form.setValue("savingsAmount", formattedValue, { shouldValidate: true });
-                }}
                 inputMode="numeric"
                 variant="outlined"
                 InputProps={{
@@ -931,19 +852,6 @@ export default function LoanApplication() {
             error={!!form.formState.errors.amount}
             helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
             {...form.register("amount")}
-            value={formatNumberWithSpaces(form.watch("amount"))}
-            onChange={(e) => {
-              const value = e.target.value;
-              // Bare tillat tall og mellomrom
-              if (/^[0-9\s]*$/.test(value)) {
-                form.setValue("amount", value.replace(/\s/g, ''), { shouldValidate: false });
-              }
-            }}
-            onBlur={(e) => {
-              const value = e.target.value;
-              const formattedValue = formatNumberWithSpaces(value);
-              form.setValue("amount", formattedValue, { shouldValidate: true });
-            }}
             inputMode="numeric"
             variant="outlined"
             InputProps={{
