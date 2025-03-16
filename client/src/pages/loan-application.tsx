@@ -554,23 +554,54 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Format values on blur
+    // Format values on blur - setter ren verdi i skjemaet
     const formatFieldValue = (field: any, value: string) => {
       // Fjern alle mellomrom før validering/lagring
       const cleanValue = value.replace(/\s/g, '');
       
       // Sett den rensede verdien i skjemaet for validering
-      form.setValue(field as any, formatNumber(cleanValue), { shouldValidate: true });
+      form.setValue(field as any, cleanValue, { shouldValidate: true });
     };
     
-    // Formater tall for visning mens brukeren skriver
+    // Forbedret tallformatering som bevarer markørposisjon
+    // basert på https://stackoverflow.com/questions/6458990/how-to-format-a-number-1000-as-1-000
     const handleNumberChange = (field: string, value: string) => {
-      // Fjern alle tegn unntatt tall og mulig minustegn i begynnelsen
+      // Hent det aktive input-elementet
+      const input = document.activeElement as HTMLInputElement;
+      if (!input) return;
+      
+      // Lagre markørposisjonen før vi gjør endringer
+      const cursorPosition = input.selectionStart || 0;
+      
+      // Tell mellomrom før markøren for å justere posisjon senere
+      const spacesBeforeCursor = (value.substring(0, cursorPosition).match(/ /g) || []).length;
+      
+      // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
       const digitsOnly = value.replace(/[^\d-]/g, '');
       const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
       
-      // Sett den rå numeriske verdien uten mellomrom
+      // Sett den rå numeriske verdien i form state
       form.setValue(field as any, withProperMinus, { shouldValidate: false });
+      
+      // Formater visningen med mellomrom (kun for visning)
+      const formattedValue = formatNumberForDisplay(withProperMinus);
+      
+      // Manuell visning som unngår å miste fokus
+      setTimeout(() => {
+        // Sørg for at elementet fortsatt har fokus 
+        if (document.activeElement === input) {
+          // Tell nye mellomrom før markørposisjonen
+          const newSpacesBeforeCursor = (formattedValue.substring(0, cursorPosition).match(/ /g) || []).length;
+          const spaceDifference = newSpacesBeforeCursor - spacesBeforeCursor;
+          
+          // Sett input value direkte uten å gå via React for å unngå å miste fokus
+          input.value = formattedValue;
+          
+          // Juster markørposisjonen basert på endring i antall mellomrom
+          const newCursorPosition = cursorPosition + spaceDifference;
+          input.setSelectionRange(newCursorPosition, newCursorPosition);
+        }
+      }, 0);
     };
 
     // Effects to sync state with form fields
