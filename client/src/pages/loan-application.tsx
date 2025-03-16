@@ -30,6 +30,25 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
+// Helper functions for number formatting
+const formatNumber = (value: string | number): string => {
+  // If empty string or undefined, return empty string
+  if (value === "" || value === undefined) return "";
+  
+  // Remove any non-digit characters except for a possible leading '-'
+  const digitsOnly = value.toString().replace(/[^\d-]/g, '');
+  
+  // Remove any minus signs that aren't at the beginning
+  const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
+  
+  // If empty after cleaning, return empty string
+  if (withProperMinus === "" || withProperMinus === "-") return "";
+  
+  // Parse to number, format with spaces
+  const num = parseInt(withProperMinus);
+  return new Intl.NumberFormat('nb-NO').format(num);
+};
+
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -52,6 +71,12 @@ export default function LoanApplication() {
     trackEvent(AnalyticsEvents.LOAN_APPLICATION_START);
   }, [trackEvent]);
 
+  // State for assets, savings and student loan
+  const [hasAssets, setHasAssets] = useState(false);
+  const [hasSavings, setHasSavings] = useState(false);
+  const [hasStudentLoan, setHasStudentLoan] = useState(false);
+  const [isPayingStudentLoan, setIsPayingStudentLoan] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(
       insertLoanApplicationSchema.extend({
@@ -73,33 +98,62 @@ export default function LoanApplication() {
         street: z.string().min(5, "Vennligst oppgi en gyldig gateadresse"),
         postalCode: z.string().length(4, "Postnummer må være 4 siffer"),
         city: z.string().min(2, "Vennligst oppgi en gyldig by"),
-        amount: z.coerce.number()
-          .min(10000, "Minimum lånebeløp er 10 000 kr")
-          .max(1000000, "Maksimalt lånebeløp er 1 000 000 kr"),
-        income: z.coerce.number()
-          .min(200000, "Minimum årsinntekt er 200 000 kr"),
-        monthlyExpenses: z.coerce.number()
-          .min(0, "Månedlige utgifter kan ikke være negative"),
-        outstandingDebt: z.coerce.number()
-          .min(0, "Utestående gjeld kan ikke være negativ"),
+        amount: z.string() // Now a string to handle formatted input
+          .transform((val) => parseInt(val.replace(/\s/g, ""))) // Transform to number for validation
+          .pipe(z.number()
+            .min(10000, "Minimum lånebeløp er 10 000 kr")
+            .max(1000000, "Maksimalt lånebeløp er 1 000 000 kr")
+          ),
+        income: z.string() // Now a string to handle formatted input
+          .transform((val) => parseInt(val.replace(/\s/g, ""))) // Transform to number for validation
+          .pipe(z.number()
+            .min(0, "Inntekt kan ikke være negativ")
+          ),
+        monthlyExpenses: z.string() // Now a string to handle formatted input
+          .transform((val) => parseInt(val.replace(/\s/g, ""))) // Transform to number for validation
+          .pipe(z.number()
+            .min(0, "Månedlige utgifter kan ikke være negative")
+          ),
+        outstandingDebt: z.string() // Now a string to handle formatted input
+          .transform((val) => parseInt(val.replace(/\s/g, ""))) // Transform to number for validation
+          .pipe(z.number()
+            .min(0, "Utestående gjeld kan ikke være negativ")
+          ),
         hasConsented: z.boolean().refine((val) => val === true, "Du må godta vilkårene"),
+        // Add new fields
+        hasStudentLoan: z.boolean().optional(),
+        isPayingStudentLoan: z.boolean().optional(),
+        studentLoanAmount: z.string().optional()
+          .transform((val) => val ? parseInt(val.replace(/\s/g, "")) : 0)
+          .pipe(z.number().min(0, "Studielån kan ikke være negativt").optional()),
+        hasSavings: z.boolean().optional(),
+        savingsAmount: z.string().optional()
+          .transform((val) => val ? parseInt(val.replace(/\s/g, "")) : 0)
+          .pipe(z.number().min(0, "Sparepenger kan ikke være negativt").optional()),
+        hasAssets: z.boolean().optional(),
       })
     ),
     defaultValues: {
-      amount: undefined,
+      amount: "",
       purpose: "",
-      income: undefined,
+      income: "",
       employmentStatus: "",
-      birthDate: undefined, // Fjernet default verdi
+      birthDate: undefined,
       street: "",
       postalCode: "",
       city: "",
-      monthlyExpenses: undefined,
-      outstandingDebt: undefined,
+      monthlyExpenses: "",
+      outstandingDebt: "",
       assets: "",
       additionalInfo: "",
       hasConsented: false,
       idVerified: false,
+      hasStudentLoan: false,
+      isPayingStudentLoan: false,
+      studentLoanAmount: "",
+      hasSavings: false,
+      savingsAmount: "",
+      hasAssets: false,
     },
   });
 
@@ -290,7 +344,28 @@ export default function LoanApplication() {
         valid = await form.trigger(['birthDate', 'street', 'postalCode', 'city', 'employmentStatus']);
         break;
       case 1: // FinancialInfoStep
-        valid = await form.trigger(['income', 'monthlyExpenses', 'outstandingDebt', 'amount', 'purpose', 'assets']);
+        const fieldsToValidate = [
+          'income' as const, 
+          'monthlyExpenses' as const, 
+          'outstandingDebt' as const, 
+          'amount' as const, 
+          'purpose' as const
+        ];
+        
+        // Validere valgfrie felt hvis de er aktivert
+        if (hasAssets) {
+          fieldsToValidate.push('assets' as const);
+        }
+        
+        if (hasStudentLoan) {
+          fieldsToValidate.push('studentLoanAmount' as const);
+        }
+        
+        if (hasSavings) {
+          fieldsToValidate.push('savingsAmount' as const);
+        }
+        
+        valid = await form.trigger(fieldsToValidate as any);
         break;
       case 2: // VerificationStep
         valid = await form.trigger(['hasConsented', 'idVerified']);
@@ -471,163 +546,361 @@ export default function LoanApplication() {
     </Box>
   );
 
-  const FinancialInfoStep = () => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Årsinntekt (NOK) *"
-          type="number"
-          error={!!form.formState.errors.income}
-          helperText={form.formState.errors.income?.message || "Minimum årsinntekt: 200 000 kr"}
-          {...form.register("income")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
+  const FinancialInfoStep = () => {
+    // Format values on blur
+    const formatFieldValue = (field: keyof typeof form.getValues, value: string) => {
+      form.setValue(field, formatNumber(value), { shouldValidate: true });
+    };
+
+    // Effects to sync state with form fields
+    useEffect(() => {
+      // Set hasAssets state based on form value
+      setHasAssets(form.getValues().hasAssets || false);
+    }, [form.watch("hasAssets")]);
+
+    useEffect(() => {
+      // Set hasSavings state based on form value
+      setHasSavings(form.getValues().hasSavings || false);
+    }, [form.watch("hasSavings")]);
+
+    useEffect(() => {
+      // Set hasStudentLoan state based on form value
+      setHasStudentLoan(form.getValues().hasStudentLoan || false);
+    }, [form.watch("hasStudentLoan")]);
+
+    useEffect(() => {
+      // Set isPayingStudentLoan state based on form value
+      setIsPayingStudentLoan(form.getValues().isPayingStudentLoan || false);
+    }, [form.watch("isPayingStudentLoan")]);
+
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <FormControl fullWidth>
+          <TextField
+            fullWidth
+            label="Månedsinntekt (NOK) *"
+            error={!!form.formState.errors.income}
+            helperText={form.formState.errors.income?.message || "Oppgi din månedlige inntekt (0 eller høyere)"}
+            {...form.register("income")}
+            value={form.watch("income")}
+            onChange={(e) => form.setValue("income", e.target.value, { shouldValidate: false })}
+            onBlur={(e) => formatFieldValue("income", e.target.value)}
+            variant="outlined"
+            InputProps={{
+              sx: { 
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl fullWidth>
+          <TextField
+            fullWidth
+            label="Månedlige utgifter (NOK) *"
+            error={!!form.formState.errors.monthlyExpenses}
+            helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
+            {...form.register("monthlyExpenses")}
+            value={form.watch("monthlyExpenses")}
+            onChange={(e) => form.setValue("monthlyExpenses", e.target.value, { shouldValidate: false })}
+            onBlur={(e) => formatFieldValue("monthlyExpenses", e.target.value)}
+            variant="outlined"
+            InputProps={{
+              sx: { 
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl fullWidth>
+          <TextField
+            fullWidth
+            label="Utestående gjeld (NOK) *"
+            error={!!form.formState.errors.outstandingDebt}
+            helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
+            {...form.register("outstandingDebt")}
+            value={form.watch("outstandingDebt")}
+            onChange={(e) => form.setValue("outstandingDebt", e.target.value, { shouldValidate: false })}
+            onBlur={(e) => formatFieldValue("outstandingDebt", e.target.value)}
+            variant="outlined"
+            InputProps={{
+              sx: { 
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }
+            }}
+          />
+        </FormControl>
+
+        {/* Student Loan Section */}
+        <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'medium' }}>
+              Studielån
+            </Typography>
+          </Box>
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <input
+                type="checkbox"
+                id="hasStudentLoan"
+                {...form.register("hasStudentLoan")}
+                checked={hasStudentLoan}
+                onChange={(e) => {
+                  setHasStudentLoan(e.target.checked);
+                  form.setValue("hasStudentLoan", e.target.checked, { shouldValidate: true });
+                  if (!e.target.checked) {
+                    form.setValue("studentLoanAmount", "", { shouldValidate: false });
+                    form.setValue("isPayingStudentLoan", false, { shouldValidate: false });
+                    setIsPayingStudentLoan(false);
+                  }
+                }}
+              />
+              <label htmlFor="hasStudentLoan">
+                Jeg har studielån
+              </label>
+            </Box>
+          </FormControl>
+
+          {hasStudentLoan && (
+            <>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="Studielån (NOK)"
+                  error={!!form.formState.errors.studentLoanAmount}
+                  helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
+                  {...form.register("studentLoanAmount")}
+                  value={form.watch("studentLoanAmount")}
+                  onChange={(e) => form.setValue("studentLoanAmount", e.target.value, { shouldValidate: false })}
+                  onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
+                  variant="outlined"
+                  InputProps={{
+                    sx: { 
+                      borderRadius: 2,
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'primary.main',
+                      },
+                    }
+                  }}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <input
+                    type="checkbox"
+                    id="isPayingStudentLoan"
+                    {...form.register("isPayingStudentLoan")}
+                    checked={isPayingStudentLoan}
+                    onChange={(e) => {
+                      setIsPayingStudentLoan(e.target.checked);
+                      form.setValue("isPayingStudentLoan", e.target.checked, { shouldValidate: true });
+                    }}
+                  />
+                  <label htmlFor="isPayingStudentLoan">
+                    Jeg betaler ned på studielånet mitt
+                  </label>
+                </Box>
+              </FormControl>
+            </>
+          )}
+        </Box>
+
+        {/* Savings Section */}
+        <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'medium' }}>
+              Sparepenger
+            </Typography>
+          </Box>
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <input
+                type="checkbox"
+                id="hasSavings"
+                {...form.register("hasSavings")}
+                checked={hasSavings}
+                onChange={(e) => {
+                  setHasSavings(e.target.checked);
+                  form.setValue("hasSavings", e.target.checked, { shouldValidate: true });
+                  if (!e.target.checked) {
+                    form.setValue("savingsAmount", "", { shouldValidate: false });
+                  }
+                }}
+              />
+              <label htmlFor="hasSavings">
+                Jeg har sparepenger
+              </label>
+            </Box>
+          </FormControl>
+
+          {hasSavings && (
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                label="Sparepenger (NOK)"
+                error={!!form.formState.errors.savingsAmount}
+                helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
+                {...form.register("savingsAmount")}
+                value={form.watch("savingsAmount")}
+                onChange={(e) => form.setValue("savingsAmount", e.target.value, { shouldValidate: false })}
+                onBlur={(e) => formatFieldValue("savingsAmount", e.target.value)}
+                variant="outlined"
+                InputProps={{
+                  sx: { 
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  }
+                }}
+              />
+            </FormControl>
+          )}
+        </Box>
+
+        {/* Assets Section */}
+        <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 2, p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Typography variant="subtitle1" component="div" sx={{ fontWeight: 'medium' }}>
+              Eiendeler
+            </Typography>
+          </Box>
+          
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <input
+                type="checkbox"
+                id="hasAssets"
+                {...form.register("hasAssets")}
+                checked={hasAssets}
+                onChange={(e) => {
+                  setHasAssets(e.target.checked);
+                  form.setValue("hasAssets", e.target.checked, { shouldValidate: true });
+                  if (!e.target.checked) {
+                    form.setValue("assets", "", { shouldValidate: false });
+                  }
+                }}
+              />
+              <label htmlFor="hasAssets">
+                Jeg har andre eiendeler
+              </label>
+            </Box>
+          </FormControl>
+
+          {hasAssets && (
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                label="Beskriv dine eiendeler"
+                multiline
+                rows={3}
+                placeholder="Beskriv dine eiendeler (eiendom, investeringer, etc.)"
+                error={!!form.formState.errors.assets}
+                helperText={form.formState.errors.assets?.message || "Beskriv din finansielle situasjon med eiendeler som kan være relevant for lånesøknaden"}
+                {...form.register("assets")}
+                variant="outlined"
+                InputProps={{
+                  sx: { 
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  }
+                }}
+              />
+            </FormControl>
+          )}
+        </Box>
+
+        <FormControl fullWidth>
+          <TextField
+            fullWidth
+            label="Ønsket lånebeløp (NOK) *"
+            error={!!form.formState.errors.amount}
+            helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
+            {...form.register("amount")}
+            value={form.watch("amount")}
+            onChange={(e) => form.setValue("amount", e.target.value, { shouldValidate: false })}
+            onBlur={(e) => formatFieldValue("amount", e.target.value)}
+            variant="outlined"
+            InputProps={{
+              sx: { 
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }
+            }}
+          />
+        </FormControl>
+
+        <FormControl fullWidth variant="outlined">
+          <InputLabel id="purpose-label">Formål med lånet *</InputLabel>
+          <Select
+            labelId="purpose-label"
+            label="Formål med lånet *"
+            error={!!form.formState.errors.purpose}
+            {...form.register("purpose")}
+            sx={{ 
               borderRadius: 2,
               '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: 'primary.main',
               },
-            }
-          }}
-        />
-      </FormControl>
+            }}
+          >
+            <MenuItem value="bolig">Boligkjøp</MenuItem>
+            <MenuItem value="bil">Bilkjøp</MenuItem>
+            <MenuItem value="renovering">Renovering</MenuItem>
+            <MenuItem value="refinansiering">Refinansiering</MenuItem>
+            <MenuItem value="annet">Annet</MenuItem>
+          </Select>
+          {form.formState.errors.purpose ? (
+            <FormHelperText error>
+              {form.formState.errors.purpose.message}
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              Velg hovedformålet med lånet
+            </FormHelperText>
+          )}
+        </FormControl>
 
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Månedlige utgifter (NOK) *"
-          type="number"
-          error={!!form.formState.errors.monthlyExpenses}
-          helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
-          {...form.register("monthlyExpenses")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
-              borderRadius: 2,
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Utestående gjeld (NOK) *"
-          type="number"
-          error={!!form.formState.errors.outstandingDebt}
-          helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
-          {...form.register("outstandingDebt")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
-              borderRadius: 2,
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Ønsket lånebeløp (NOK) *"
-          type="number"
-          error={!!form.formState.errors.amount}
-          helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
-          {...form.register("amount")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
-              borderRadius: 2,
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl fullWidth variant="outlined">
-        <InputLabel id="purpose-label">Formål med lånet *</InputLabel>
-        <Select
-          labelId="purpose-label"
-          label="Formål med lånet *"
-          error={!!form.formState.errors.purpose}
-          {...form.register("purpose")}
-          sx={{ 
-            borderRadius: 2,
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'primary.main',
-            },
-          }}
-        >
-          <MenuItem value="bolig">Boligkjøp</MenuItem>
-          <MenuItem value="bil">Bilkjøp</MenuItem>
-          <MenuItem value="renovering">Renovering</MenuItem>
-          <MenuItem value="refinansiering">Refinansiering</MenuItem>
-          <MenuItem value="annet">Annet</MenuItem>
-        </Select>
-        {form.formState.errors.purpose ? (
-          <FormHelperText error>
-            {form.formState.errors.purpose.message}
-          </FormHelperText>
-        ) : (
-          <FormHelperText>
-            Velg hovedformålet med lånet
-          </FormHelperText>
-        )}
-      </FormControl>
-
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Eiendeler *"
-          multiline
-          rows={3}
-          placeholder="Beskriv dine eiendeler (eiendom, sparepenger, investeringer, etc.)"
-          error={!!form.formState.errors.assets}
-          helperText={form.formState.errors.assets?.message || "Beskriv din finansielle situasjon med eiendeler som kan være relevant for lånesøknaden"}
-          {...form.register("assets")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
-              borderRadius: 2,
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-            }
-          }}
-        />
-      </FormControl>
-
-      <FormControl fullWidth>
-        <TextField
-          fullWidth
-          label="Tilleggsinformasjon"
-          multiline
-          rows={3}
-          placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon som kan være relevant for søknaden"
-          {...form.register("additionalInfo")}
-          variant="outlined"
-          InputProps={{
-            sx: { 
-              borderRadius: 2,
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: 'primary.main',
-              },
-            }
-          }}
-          helperText="Annen informasjon du mener er relevant for vurdering av din søknad (f.eks. planlagte endringer i inntekt/utgifter, særlige behov, osv.)"
-        />
-      </FormControl>
-    </Box>
-  );
+        <FormControl fullWidth>
+          <TextField
+            fullWidth
+            label="Tilleggsinformasjon"
+            multiline
+            rows={3}
+            placeholder="Oppgi eventuell tilleggsinformasjon om din økonomiske situasjon som kan være relevant for søknaden"
+            {...form.register("additionalInfo")}
+            variant="outlined"
+            InputProps={{
+              sx: { 
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'primary.main',
+                },
+              }
+            }}
+            helperText="Annen informasjon du mener er relevant for vurdering av din søknad (f.eks. planlagte endringer i inntekt/utgifter, særlige behov, osv.)"
+          />
+        </FormControl>
+      </Box>
+    );
+  };
 
   const VerificationStep = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

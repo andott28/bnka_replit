@@ -94,7 +94,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const response = result.response;
       
       try {
-        const creditAssessment = JSON.parse(response.text());
+        // Get the response text
+        const responseText = response.text();
+        console.log("Raw response:", responseText);
+        
+        // Clean up the response if it's wrapped in markdown code blocks
+        let cleanedResponse = responseText;
+        if (responseText.includes("```json")) {
+          cleanedResponse = responseText.replace(/```json\n|\n```/g, "");
+        } else if (responseText.includes("```")) {
+          cleanedResponse = responseText.replace(/```\n|\n```/g, "");
+        }
+        
+        // Parse the JSON
+        const creditAssessment = JSON.parse(cleanedResponse);
         console.log("Credit assessment completed for loan:", loanApplicationId);
 
         // Store the credit score in the database
