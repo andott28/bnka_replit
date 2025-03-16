@@ -533,20 +533,41 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Enkel formatering uten spesialbehandling
+    // Forbedret tallfelthåndtering med bevaring av cursor-posisjon
     const formatFieldValue = (field: any, value: string) => {
-      // Sett verdien direkte i skjemaet for validering
+      // Setter verdien for validering, men kun ved blur for å unngå å forstyrre brukeropplevelsen
       form.setValue(field as any, value, { shouldValidate: true });
     };
     
-    // Forenklet oppsett for tallredigering
-    const handleNumberChange = (field: string, value: string) => {
+    // Forbedret tallhåndtering som bevarer cursor-posisjon
+    const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      // Lagre original cursor-posisjon
+      const input = e.target;
+      const cursorPosition = input.selectionStart;
+      const previousValue = input.value;
+      
       // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
+      const value = input.value;
       const digitsOnly = value.replace(/[^\d-]/g, '');
       const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
       
-      // Sett den rå numeriske verdien i form state
-      form.setValue(field as any, withProperMinus, { shouldValidate: false });
+      // Bare oppdater hvis verdien faktisk har endret seg
+      if (previousValue !== withProperMinus) {
+        // Oppdater verdien uten validering for å unngå unødvendig re-render
+        form.setValue(field as any, withProperMinus, { shouldValidate: false });
+        
+        // Beregn ny cursor-posisjon basert på endringen i strenglengde
+        // Dette gir en mye bedre brukeropplevelse
+        const lengthDifference = withProperMinus.length - previousValue.length;
+        const newPosition = cursorPosition ? cursorPosition + lengthDifference : 0;
+        
+        // Gjenopprett cursor-posisjon på neste tick etter React har oppdatert DOM
+        setTimeout(() => {
+          if (input) {
+            input.setSelectionRange(newPosition, newPosition);
+          }
+        }, 0);
+      }
     };
 
     // Effects to sync state with form fields
@@ -580,7 +601,7 @@ export default function LoanApplication() {
             helperText={form.formState.errors.income?.message || "Oppgi din månedlige inntekt (0 eller høyere)"}
             {...form.register("income")}
             value={formatNumberWithSpaces(form.watch("income"))}
-            onChange={(e) => handleNumberChange("income", e.target.value)}
+            onChange={(e) => handleNumberChange("income", e)}
             onBlur={(e) => formatFieldValue("income", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -602,7 +623,7 @@ export default function LoanApplication() {
             helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
             {...form.register("monthlyExpenses")}
             value={formatNumberWithSpaces(form.watch("monthlyExpenses"))}
-            onChange={(e) => handleNumberChange("monthlyExpenses", e.target.value)}
+            onChange={(e) => handleNumberChange("monthlyExpenses", e)}
             onBlur={(e) => formatFieldValue("monthlyExpenses", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -624,7 +645,7 @@ export default function LoanApplication() {
             helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
             {...form.register("outstandingDebt")}
             value={formatNumberWithSpaces(form.watch("outstandingDebt"))}
-            onChange={(e) => handleNumberChange("outstandingDebt", e.target.value)}
+            onChange={(e) => handleNumberChange("outstandingDebt", e)}
             onBlur={(e) => formatFieldValue("outstandingDebt", e.target.value)}
             variant="outlined"
             InputProps={{
@@ -679,7 +700,7 @@ export default function LoanApplication() {
                   helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
                   {...form.register("studentLoanAmount")}
                   value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
-                  onChange={(e) => handleNumberChange("studentLoanAmount", e.target.value)}
+                  onChange={(e) => handleNumberChange("studentLoanAmount", e)}
                   onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
                   variant="outlined"
                   InputProps={{
