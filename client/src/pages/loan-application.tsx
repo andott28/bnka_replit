@@ -536,21 +536,8 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Forbedret tallfelthåndtering med bevaring av cursor-posisjon
-    // Enkel validering av feltverdier
-    const formatFieldValue = (field: any, value: string) => {
-      form.setValue(field as any, value, { shouldValidate: true });
-    };
+    // Enkel implementasjon uten formatering og spesialhåndtering
     
-    // Forenklet tallhåndtering
-    const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = e.target.value;
-      // Tillat bare tall
-      if (/^\d*$/.test(value)) {
-        form.setValue(field as any, value, { shouldValidate: false });
-      }
-    };
-
     // Effects to sync state with form fields
     useEffect(() => {
       // Set hasAssets state based on form value
@@ -581,9 +568,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.income}
             helperText={form.formState.errors.income?.message || "Din brutto inntekt per måned (før skatt)"}
             {...form.register("income")}
-            value={formatNumberWithSpaces(form.watch("income"))}
-            onChange={(e) => handleNumberChange("income", e)}
-            onBlur={(e) => formatFieldValue("income", e.target.value)}
+            inputMode="numeric"
             variant="outlined"
             InputProps={{
               sx: { 
@@ -603,9 +588,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.monthlyExpenses}
             helperText={form.formState.errors.monthlyExpenses?.message || "Sum av alle regelmessige utgifter (bolig, bil, strøm, osv.)"}
             {...form.register("monthlyExpenses")}
-            value={formatNumberWithSpaces(form.watch("monthlyExpenses"))}
-            onChange={(e) => handleNumberChange("monthlyExpenses", e)}
-            onBlur={(e) => formatFieldValue("monthlyExpenses", e.target.value)}
+            inputMode="numeric"
             variant="outlined"
             InputProps={{
               sx: { 
@@ -625,9 +608,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.outstandingDebt}
             helperText={form.formState.errors.outstandingDebt?.message || "Inkluder alle lån og kreditt (boliglån, billån, forbrukslån, etc.)"}
             {...form.register("outstandingDebt")}
-            value={formatNumberWithSpaces(form.watch("outstandingDebt"))}
-            onChange={(e) => handleNumberChange("outstandingDebt", e)}
-            onBlur={(e) => formatFieldValue("outstandingDebt", e.target.value)}
+            inputMode="numeric"
             variant="outlined"
             InputProps={{
               sx: { 
@@ -693,9 +674,7 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.studentLoanAmount}
                 helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
                 {...form.register("studentLoanAmount")}
-                value={formatNumberWithSpaces(form.watch("studentLoanAmount"))}
-                onChange={(e) => handleNumberChange("studentLoanAmount", e)}
-                onBlur={(e) => formatFieldValue("studentLoanAmount", e.target.value)}
+                inputMode="numeric"
                 variant="outlined"
                 InputProps={{
                   sx: { 
@@ -790,9 +769,7 @@ export default function LoanApplication() {
                 error={!!form.formState.errors.savingsAmount}
                 helperText={form.formState.errors.savingsAmount?.message || "Oppgi totalt beløp i sparepenger"}
                 {...form.register("savingsAmount")}
-                value={formatNumberWithSpaces(form.watch("savingsAmount"))}
-                onChange={(e) => handleNumberChange("savingsAmount", e)}
-                onBlur={(e) => formatFieldValue("savingsAmount", e.target.value)}
+                inputMode="numeric"
                 variant="outlined"
                 InputProps={{
                   sx: { 
@@ -882,9 +859,7 @@ export default function LoanApplication() {
             error={!!form.formState.errors.amount}
             helperText={form.formState.errors.amount?.message || "Beløp mellom 10 000 kr og 1 000 000 kr"}
             {...form.register("amount")}
-            value={formatNumberWithSpaces(form.watch("amount"))}
-            onChange={(e) => handleNumberChange("amount", e)}
-            onBlur={(e) => formatFieldValue("amount", e.target.value)}
+            inputMode="numeric"
             variant="outlined"
             InputProps={{
               sx: { 
