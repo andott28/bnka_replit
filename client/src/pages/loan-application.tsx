@@ -30,19 +30,13 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Helper function for number formatting 
-// Based on https://stackoverflow.com/questions/6458990/how-to-format-a-number-1000-as-1-000
+// Enkel funksjon som bare returnerer verdien uten formatering
 const formatNumberWithSpaces = (value: string | number | undefined): string => {
   if (value === undefined || value === "") return "";
-  
-  // Konverter til string og fjern alle mellomrom
-  const numStr = String(value).replace(/\s/g, '');
-  
-  // Bruk regex for å legge til mellomrom mellom tusentall
-  return numStr.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1 ");
+  return String(value);
 };
 
-// Tilgjengelig for bakoverkompatibilitet
+// Beholdt for bakoverkompatibilitet
 const formatNumberForDisplay = formatNumberWithSpaces;
 
 export default function LoanApplication() {
@@ -539,16 +533,13 @@ export default function LoanApplication() {
   );
 
   const FinancialInfoStep = () => {
-    // Enkel formatering: fjern mellomrom ved lagring til form
+    // Enkel formatering uten spesialbehandling
     const formatFieldValue = (field: any, value: string) => {
-      // Fjern alle mellomrom før validering/lagring
-      const cleanValue = value.replace(/\s/g, '');
-      
-      // Sett den rensede verdien i skjemaet for validering
-      form.setValue(field as any, cleanValue, { shouldValidate: true });
+      // Sett verdien direkte i skjemaet for validering
+      form.setValue(field as any, value, { shouldValidate: true });
     };
     
-    // Enkelt, robust oppsett for tallformatering
+    // Forenklet oppsett for tallredigering
     const handleNumberChange = (field: string, value: string) => {
       // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
       const digitsOnly = value.replace(/[^\d-]/g, '');
