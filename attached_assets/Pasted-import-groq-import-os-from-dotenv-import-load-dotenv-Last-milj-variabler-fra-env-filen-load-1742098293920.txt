@@ -1,0 +1,98 @@
+import groq
+import os
+from dotenv import load_dotenv
+
+# Last miljøvariabler fra .env-filen
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Initialiser Groq-klienten
+client = groq.Client(api_key=GROQ_API_KEY)
+
+# Vekting av parametere (sum = 1000 poeng)
+VEKTING = {
+    "jobbstatus": 100,
+    "norsk_inntekt": 150,
+    "global_inntekt": 150,
+    "arbeidstilbud": 120,
+    "utdanning": 80,
+    "oppholdstid": 120,
+    "gjeld": -200,  # Negativ faktor
+    "betalingshistorikk": 150,
+    "språkkunnskaper": 60,
+    "nettverk_i_norge": 70,
+}
+
+# Funksjon for å beregne kredittscore
+def beregn_kredittscore(jobbstatus, norsk_inntekt, global_inntekt, arbeidstilbud, utdanning,
+                         oppholdstid, gjeld, betalingshistorikk, språkkunnskaper, nettverk_i_norge):
+    score = 0
+    faktorer = {}
+
+    # Poengberegning for hver faktor
+    faktorer["jobbstatus"] = VEKTING["jobbstatus"] if jobbstatus.lower() in ["fast jobb", "egen bedrift"] else 30
+    faktorer["norsk_inntekt"] = min(norsk_inntekt / 500, 150)  # 500 NOK per poeng, maks 150
+    faktorer["global_inntekt"] = min(global_inntekt / 1000, 150)  # 1000 NOK per poeng, maks 150
+    faktorer["arbeidstilbud"] = VEKTING["arbeidstilbud"] if arbeidstilbud.lower() == "ja" else 0
+
+    utdanning_poeng = {"ingen utdanning": 0, "videregående": 40, "bachelor": 60, "master": 80}
+    faktorer["utdanning"] = utdanning_poeng.get(utdanning.lower(), 0)
+
+    oppholdstid_poeng = {"6 mnd": 30, "1 år": 60, "3+ år": 100, "permanent": 120}
+    faktorer["oppholdstid"] = oppholdstid_poeng.get(oppholdstid.lower(), 0)
+    faktorer["gjeld"] = max(-200, -gjeld / 5000 * 200)  # -200 poeng per 5000 NOK, maks -200
+
+    betalingshistorikk_poeng = {"ingen forsinkelser": 150, "noen forsinkelser": 75, "mange forsinkelser": 0}
+    faktorer["betalingshistorikk"] = betalingshistorikk_poeng.get(betalingshistorikk.lower(), 0)
+
+    språkkunnskaper_poeng = {"ingen": 0, "litt": 30, "flytende": 60}
+    faktorer["språkkunnskaper"] = språkkunnskaper_poeng.get(språkkunnskaper.lower(), 0)
+
+    nettverk_poeng = {"ingen": 0, "venner": 40, "familie": 60, "profesjonelt nettverk": 70}
+    faktorer["nettverk_i_norge"] = nettverk_poeng.get(nettverk_i_norge.lower(), 0)
+
+    # Total score
+    score = sum(faktorer.values())
+
+    return score, faktorer
+
+
+# AI-funksjon for vurdering basert på score
+def kredittvurdering(navn, alder, bosted, jobbstatus, norsk_inntekt, global_inntekt, arbeidstilbud, utdanning, oppholdstid, gjeld, betalingshistorikk, språkkunnskaper, nettverk_i_norge):
+    score, faktorer = beregn_kredittscore(jobbstatus, norsk_inntekt, global_inntekt, arbeidstilbud,
+                                          utdanning, oppholdstid, gjeld, betalingshistorikk, språkkunnskaper,
+                                          nettverk_i_norge)
+
+    prompt = f"""
+        Du er en AI som forklarer kredittvurderinger basert på alternative faktorer for innvandrere og expats.
+        Personen har fått en kredittscore på {score} av 1000, basert på følgende faktorer:
+
+    - Jobbstatus: {faktorer["jobbstatus"]} poeng
+    - Norsk inntekt: {faktorer["norsk_inntekt"]} poeng
+    - Global inntekt: {faktorer["global_inntekt"]} poeng
+    - Arbeidstilbud: {faktorer["arbeidstilbud"]} poeng
+    - Utdanning: {faktorer["utdanning"]} poeng
+    - Oppholdstid: {faktorer["oppholdstid"]} poeng
+    - Gjeld: {faktorer["gjeld"]} poeng
+    - Betalingshistorikk: {faktorer["betalingshistorikk"]} poeng
+    - Språkkunnskaper: {faktorer["språkkunnskaper"]} poeng
+    - Nettverk i Norge: {faktorer["nettverk_i_norge"]} poeng
+
+    Forklar kort hvorfor denne personen fikk denne scoren, og vurder deres evne til å få lån.
+    """
+
+    response = client.chat.completions.create(
+        model="deepseek-r1-distill-llama-70b",
+        messages=[{"role": "system", "content": prompt}]
+    )
+
+    return {
+        "kredittscore": score,
+        "faktorer": faktorer,
+        "vurdering": response.choices[0].message.content
+    }
+
+# Eksempelbruk
+resultat = kredittvurdering("Omar", 29, "Bergen", "Jobbsøker", 0, 40000, "Ja", "Master", "3+ år", 15000, "Ingen forsinkelser", "Litt", "Profesjonelt nettverk")
+
+print(resultat)
