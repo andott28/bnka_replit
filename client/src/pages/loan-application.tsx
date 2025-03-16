@@ -433,13 +433,14 @@ export default function LoanApplication() {
           }}
           disabled={(date) => {
             // Må være minst 18 år gammel
-            const min18Years = addYears(new Date(), -18);
+            const today = new Date();
+            const min18Years = addYears(today, -18);
             // Ikke eldre enn 100 år
-            const max100Years = addYears(new Date(), -100);
+            const max100Years = addYears(today, -100);
             return isAfter(date, min18Years) || isBefore(date, max100Years);
           }}
-          fromYear={1923}
-          toYear={2005}
+          fromYear={addYears(new Date(), -100).getFullYear()}
+          toYear={addYears(new Date(), -18).getFullYear()}
           locale={nb}
           error={!!form.formState.errors.birthDate}
         />
@@ -1101,7 +1102,9 @@ export default function LoanApplication() {
             isLastStep={activeStep === steps.length - 1}
             isFormValid={!!steps[activeStep].isValid}
           >
-            {steps[activeStep].component()}
+            {activeStep === 0 && <PersonalInfoStep />}
+            {activeStep === 1 && <FinancialInfoStep />}
+            {activeStep === 2 && <VerificationStep />}
           </LoanApplicationStepper>
         </form>
       </main>
