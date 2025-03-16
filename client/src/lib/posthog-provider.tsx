@@ -89,41 +89,62 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
   }, []);
 
   const initPostHog = () => {
-    // Initialiser PostHog når brukeren har gitt samtykke
-    posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY as string, {
-      api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-      capture_pageview: true,
-      capture_pageleave: true,
-      autocapture: {
-        // Configure autocapture to be more specific and privacy-conscious
-        css_selector_allowlist: ['button', 'a', 'input', 'form'],
-        dom_event_allowlist: ['click', 'submit']
-      },
-      respect_dnt: true, // Respect Do Not Track browser setting
-      property_blacklist: ['$ip', 'email'], // Avoid tracking these properties
-      mask_all_text: true, // Don't capture actual text content, just events
-      mask_all_element_attributes: true, // Don't capture attributes with personal data
-      loaded: (ph) => {
-        // Sett eventuelle begrensinger etter innlasting
-        if (import.meta.env.MODE !== 'production') {
-          ph.opt_out_capturing(); // Opt-out i utviklingsmodus
-        } else {
-          // Sett opp lytter for når brukeren forlater siden
-          window.addEventListener('beforeunload', () => {
-            ph.capture('$pageleave');
-          });
-          
-          // Add user properties that help with segment analysis but maintain privacy
-          ph.register({
-            app_version: '1.0',
-            interface_language: navigator.language,
-            is_mobile: window.innerWidth < 768,
-            viewport_width: window.innerWidth,
-            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
-          });
+    // Sjekk om PostHog allerede er initialisert (fra inline script i index.html)
+    // @ts-ignore: Property '__loaded' does not exist on type 'PostHogType'
+    if (!posthog.__loaded) {
+      // Initialiser PostHog når brukeren har gitt samtykke og hvis det ikke allerede er initialisert
+      posthog.init('phc_zducSI4daJVemOPzwDohrkNtzpTjtY9qlw55GdPoCCz', {
+        api_host: 'https://us.i.posthog.com',
+        capture_pageview: true,
+        capture_pageleave: true,
+        person_profiles: 'identified_only', // Bare lag profiler for identifiserte brukere
+        autocapture: {
+          // Configure autocapture to be more specific and privacy-conscious
+          css_selector_allowlist: ['button', 'a', 'input', 'form'],
+          dom_event_allowlist: ['click', 'submit']
+        },
+        respect_dnt: true, // Respect Do Not Track browser setting
+        property_blacklist: ['$ip', 'email'], // Avoid tracking these properties
+        mask_all_text: true, // Don't capture actual text content, just events
+        mask_all_element_attributes: true, // Don't capture attributes with personal data
+        loaded: (ph) => {
+          // Sett eventuelle begrensinger etter innlasting
+          if (import.meta.env.MODE !== 'production') {
+            ph.opt_out_capturing(); // Opt-out i utviklingsmodus
+          } else {
+            // Sett opp lytter for når brukeren forlater siden
+            window.addEventListener('beforeunload', () => {
+              ph.capture('$pageleave');
+            });
+            
+            // Add user properties that help with segment analysis but maintain privacy
+            ph.register({
+              app_version: '1.0',
+              interface_language: navigator.language,
+              is_mobile: window.innerWidth < 768,
+              viewport_width: window.innerWidth,
+              theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+            });
+          }
         }
+      });
+    } else {
+      console.log('PostHog already initialized from HTML script');
+      
+      // Still register our configuration
+      if (import.meta.env.MODE !== 'production') {
+        posthog.opt_out_capturing(); // Opt-out i utviklingsmodus
+      } else {
+        // Register standard properties even when initialized by head script
+        posthog.register({
+          app_version: '1.0',
+          interface_language: navigator.language,
+          is_mobile: window.innerWidth < 768,
+          viewport_width: window.innerWidth,
+          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        });
       }
-    });
+    }
   };
 
   // Function to track events with standard format
