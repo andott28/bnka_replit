@@ -5,15 +5,17 @@ import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { NavHeader } from "@/components/nav-header";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@mui/material";
 import {
-  TextField,
-  MenuItem,
-  FormHelperText,
-  FormControl,
-  InputLabel,
-  Select,
+  Button,
+  Checkbox,
+  FormControlLabel,
   Box,
+  FormControl,
+  FormHelperText,
+  TextField,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
 import { Upload, Loader2 } from "lucide-react";
@@ -535,38 +537,32 @@ export default function LoanApplication() {
   const FinancialInfoStep = () => {
     // Forbedret tallfelthåndtering med bevaring av cursor-posisjon
     const formatFieldValue = (field: any, value: string) => {
-      // Setter verdien for validering, men kun ved blur for å unngå å forstyrre brukeropplevelsen
-      form.setValue(field as any, value, { shouldValidate: true });
-    };
-    
-    // Forbedret tallhåndtering som bevarer cursor-posisjon
-    const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      // Lagre original cursor-posisjon
-      const input = e.target;
-      const cursorPosition = input.selectionStart;
-      const previousValue = input.value;
-      
       // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
-      const value = input.value;
       const digitsOnly = value.replace(/[^\d-]/g, '');
       const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
       
-      // Bare oppdater hvis verdien faktisk har endret seg
-      if (previousValue !== withProperMinus) {
-        // Oppdater verdien uten validering for å unngå unødvendig re-render
+      // Setter verdien for validering ved blur
+      form.setValue(field as any, withProperMinus, { shouldValidate: true });
+    };
+    
+    // Forenklet tallhåndtering
+    const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      // Nåværende verdi
+      const value = e.target.value;
+      
+      // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
+      // Vi lar InputText-komponenten beholde verdiforandringen direkte
+      // Dette sikrer at input beholder fokus og at cursor-posisjon bevares
+      
+      // Kun sjekk om vi forsøker å skrive inn noe som ikke er tall
+      // I så fall filtrerer vi det ut
+      if (!/^-?\d*$/.test(value)) {
+        const digitsOnly = value.replace(/[^\d-]/g, '');
+        const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
         form.setValue(field as any, withProperMinus, { shouldValidate: false });
-        
-        // Beregn ny cursor-posisjon basert på endringen i strenglengde
-        // Dette gir en mye bedre brukeropplevelse
-        const lengthDifference = withProperMinus.length - previousValue.length;
-        const newPosition = cursorPosition ? cursorPosition + lengthDifference : 0;
-        
-        // Gjenopprett cursor-posisjon på neste tick etter React har oppdatert DOM
-        setTimeout(() => {
-          if (input) {
-            input.setSelectionRange(newPosition, newPosition);
-          }
-        }, 0);
+      } else {
+        // Hvis det er et gyldig tall, la det passere direkte
+        form.setValue(field as any, value, { shouldValidate: false });
       }
     };
 
@@ -596,9 +592,9 @@ export default function LoanApplication() {
         <FormControl fullWidth>
           <TextField
             fullWidth
-            label="Månedsinntekt (NOK) *"
+            label="Lønn per måned (NOK) *"
             error={!!form.formState.errors.income}
-            helperText={form.formState.errors.income?.message || "Oppgi din månedlige inntekt (0 eller høyere)"}
+            helperText={form.formState.errors.income?.message || "Din brutto inntekt per måned (før skatt)"}
             {...form.register("income")}
             value={formatNumberWithSpaces(form.watch("income"))}
             onChange={(e) => handleNumberChange("income", e)}
@@ -618,9 +614,9 @@ export default function LoanApplication() {
         <FormControl fullWidth>
           <TextField
             fullWidth
-            label="Månedlige utgifter (NOK) *"
+            label="Faste kostnader (NOK) *"
             error={!!form.formState.errors.monthlyExpenses}
-            helperText={form.formState.errors.monthlyExpenses?.message || "Gjennomsnittlige månedlige utgifter inkludert bolig, forbruk, etc."}
+            helperText={form.formState.errors.monthlyExpenses?.message || "Sum av alle regelmessige utgifter (bolig, bil, strøm, osv.)"}
             {...form.register("monthlyExpenses")}
             value={formatNumberWithSpaces(form.watch("monthlyExpenses"))}
             onChange={(e) => handleNumberChange("monthlyExpenses", e)}
@@ -668,26 +664,37 @@ export default function LoanApplication() {
           </Box>
           
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                id="hasStudentLoan"
-                {...form.register("hasStudentLoan")}
-                checked={hasStudentLoan}
-                onChange={(e) => {
-                  setHasStudentLoan(e.target.checked);
-                  form.setValue("hasStudentLoan", e.target.checked, { shouldValidate: true });
-                  if (!e.target.checked) {
-                    form.setValue("studentLoanAmount", "", { shouldValidate: false });
-                    form.setValue("isPayingStudentLoan", false, { shouldValidate: false });
-                    setIsPayingStudentLoan(false);
-                  }
-                }}
-              />
-              <label htmlFor="hasStudentLoan">
-                Jeg har studielån
-              </label>
-            </Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="hasStudentLoan"
+                  checked={hasStudentLoan}
+                  {...form.register("hasStudentLoan")}
+                  onChange={(e) => {
+                    setHasStudentLoan(e.target.checked);
+                    form.setValue("hasStudentLoan", e.target.checked, { shouldValidate: true });
+                    if (!e.target.checked) {
+                      form.setValue("studentLoanAmount", "", { shouldValidate: false });
+                      form.setValue("isPayingStudentLoan", false, { shouldValidate: false });
+                      setIsPayingStudentLoan(false);
+                    }
+                  }}
+                  sx={{ 
+                    '&.Mui-checked': { color: 'primary.main' },
+                    borderRadius: '4px'
+                  }}
+                />
+              }
+              label="Jeg har studielån"
+              sx={{ 
+                width: '100%',
+                margin: 0,
+                '& .MuiFormControlLabel-label': { 
+                  fontWeight: 'normal',
+                  fontSize: '0.9rem' 
+                }
+              }}
+            />
           </FormControl>
 
           {hasStudentLoan && (
