@@ -32,13 +32,14 @@ import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
 
 
-// Enkel funksjon som bare returnerer verdien uten formatering
+// Funksjon for å fjerne alle mellomrom fra numeriske verdier
 const formatNumberWithSpaces = (value: string | number | undefined): string => {
   if (value === undefined || value === "") return "";
-  return String(value);
+  // Sikrer at verdien behandles som streng og fjerner eventuelle mellomrom
+  return String(value).replace(/\s+/g, "");
 };
 
-// Beholdt for bakoverkompatibilitet
+// Håndterer gammel funksjonsnavn for bakoverkompatibilitet
 const formatNumberForDisplay = formatNumberWithSpaces;
 
 export default function LoanApplication() {
@@ -537,29 +538,33 @@ export default function LoanApplication() {
   const FinancialInfoStep = () => {
     // Forbedret tallfelthåndtering med bevaring av cursor-posisjon
     const formatFieldValue = (field: any, value: string) => {
-      // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
-      const digitsOnly = value.replace(/[^\d-]/g, '');
-      const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
+      // Fjern alle tegn unntatt tall (ingen mellomrom, ingen formatering)
+      const digitsOnly = value.replace(/[^\d]/g, '');
       
       // Setter verdien for validering ved blur
-      form.setValue(field as any, withProperMinus, { shouldValidate: true });
+      form.setValue(field as any, digitsOnly, { shouldValidate: true });
     };
     
     // Forenklet tallhåndtering
     const handleNumberChange = (field: string, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       // Nåværende verdi
       const value = e.target.value;
+      const cursorPosition = e.target.selectionStart || 0;
       
-      // Fjern alle tegn unntatt tall og eventuelt minustegn i begynnelsen
-      // Vi lar InputText-komponenten beholde verdiforandringen direkte
-      // Dette sikrer at input beholder fokus og at cursor-posisjon bevares
-      
-      // Kun sjekk om vi forsøker å skrive inn noe som ikke er tall
-      // I så fall filtrerer vi det ut
-      if (!/^-?\d*$/.test(value)) {
-        const digitsOnly = value.replace(/[^\d-]/g, '');
-        const withProperMinus = digitsOnly.replace(/(?!^)-/g, '');
-        form.setValue(field as any, withProperMinus, { shouldValidate: false });
+      // Fjern alle tegn unntatt tall (ingen mellomrom, ingen formatering)
+      if (!/^\d*$/.test(value)) {
+        const digitsOnly = value.replace(/[^\d]/g, '');
+        form.setValue(field as any, digitsOnly, { shouldValidate: false });
+        
+        // Gjenopprett markørposisjonen
+        setTimeout(() => {
+          const input = document.querySelector(`[name="${field}"]`) as HTMLInputElement;
+          if (input) {
+            // Juster for forskjellen i lengden etter å ha fjernet ikke-numeriske tegn
+            const newPosition = Math.max(0, cursorPosition - (value.length - digitsOnly.length));
+            input.setSelectionRange(newPosition, newPosition);
+          }
+        }, 0);
       } else {
         // Hvis det er et gyldig tall, la det passere direkte
         form.setValue(field as any, value, { shouldValidate: false });
@@ -722,21 +727,32 @@ export default function LoanApplication() {
               </FormControl>
 
               <FormControl fullWidth>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <input
-                    type="checkbox"
-                    id="isPayingStudentLoan"
-                    {...form.register("isPayingStudentLoan")}
-                    checked={isPayingStudentLoan}
-                    onChange={(e) => {
-                      setIsPayingStudentLoan(e.target.checked);
-                      form.setValue("isPayingStudentLoan", e.target.checked, { shouldValidate: true });
-                    }}
-                  />
-                  <label htmlFor="isPayingStudentLoan">
-                    Jeg betaler ned på studielånet mitt
-                  </label>
-                </Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      id="isPayingStudentLoan"
+                      checked={isPayingStudentLoan}
+                      {...form.register("isPayingStudentLoan")}
+                      onChange={(e) => {
+                        setIsPayingStudentLoan(e.target.checked);
+                        form.setValue("isPayingStudentLoan", e.target.checked, { shouldValidate: true });
+                      }}
+                      sx={{ 
+                        '&.Mui-checked': { color: 'primary.main' },
+                        borderRadius: '4px'
+                      }}
+                    />
+                  }
+                  label="Jeg betaler ned på studielånet mitt"
+                  sx={{ 
+                    width: '100%',
+                    margin: 0,
+                    '& .MuiFormControlLabel-label': { 
+                      fontWeight: 'normal',
+                      fontSize: '0.9rem' 
+                    }
+                  }}
+                />
               </FormControl>
             </>
           )}
@@ -751,24 +767,35 @@ export default function LoanApplication() {
           </Box>
           
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                id="hasSavings"
-                {...form.register("hasSavings")}
-                checked={hasSavings}
-                onChange={(e) => {
-                  setHasSavings(e.target.checked);
-                  form.setValue("hasSavings", e.target.checked, { shouldValidate: true });
-                  if (!e.target.checked) {
-                    form.setValue("savingsAmount", "", { shouldValidate: false });
-                  }
-                }}
-              />
-              <label htmlFor="hasSavings">
-                Jeg har sparepenger
-              </label>
-            </Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="hasSavings"
+                  checked={hasSavings}
+                  {...form.register("hasSavings")}
+                  onChange={(e) => {
+                    setHasSavings(e.target.checked);
+                    form.setValue("hasSavings", e.target.checked, { shouldValidate: true });
+                    if (!e.target.checked) {
+                      form.setValue("savingsAmount", "", { shouldValidate: false });
+                    }
+                  }}
+                  sx={{ 
+                    '&.Mui-checked': { color: 'primary.main' },
+                    borderRadius: '4px'
+                  }}
+                />
+              }
+              label="Jeg har sparepenger"
+              sx={{ 
+                width: '100%',
+                margin: 0,
+                '& .MuiFormControlLabel-label': { 
+                  fontWeight: 'normal',
+                  fontSize: '0.9rem' 
+                }
+              }}
+            />
           </FormControl>
 
           {hasSavings && (
@@ -805,24 +832,35 @@ export default function LoanApplication() {
           </Box>
           
           <FormControl fullWidth sx={{ mb: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <input
-                type="checkbox"
-                id="hasAssets"
-                {...form.register("hasAssets")}
-                checked={hasAssets}
-                onChange={(e) => {
-                  setHasAssets(e.target.checked);
-                  form.setValue("hasAssets", e.target.checked, { shouldValidate: true });
-                  if (!e.target.checked) {
-                    form.setValue("assets", "", { shouldValidate: false });
-                  }
-                }}
-              />
-              <label htmlFor="hasAssets">
-                Jeg har andre eiendeler
-              </label>
-            </Box>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  id="hasAssets"
+                  checked={hasAssets}
+                  {...form.register("hasAssets")}
+                  onChange={(e) => {
+                    setHasAssets(e.target.checked);
+                    form.setValue("hasAssets", e.target.checked, { shouldValidate: true });
+                    if (!e.target.checked) {
+                      form.setValue("assets", "", { shouldValidate: false });
+                    }
+                  }}
+                  sx={{ 
+                    '&.Mui-checked': { color: 'primary.main' },
+                    borderRadius: '4px'
+                  }}
+                />
+              }
+              label="Jeg har andre eiendeler"
+              sx={{ 
+                width: '100%',
+                margin: 0,
+                '& .MuiFormControlLabel-label': { 
+                  fontWeight: 'normal',
+                  fontSize: '0.9rem' 
+                }
+              }}
+            />
           </FormControl>
 
           {hasAssets && (
