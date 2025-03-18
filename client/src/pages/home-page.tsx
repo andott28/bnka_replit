@@ -274,20 +274,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section - Material Design V3 med forbedret visuell tekstur */}
+        {/* CTA Section - Modern blue gradient design */}
         <section className="py-20 md:py-28 relative overflow-hidden">
-          {/* Bakgrunn med kompleks gradient og mønster - tilsvarende hero-seksjon */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-700 via-primary-800 to-primary-700"></div>
+          {/* Main gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-blue-700 to-primary-900"></div>
           
-          {/* Dekorative elementer som matcher hero-seksjon */}
-          <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full bg-white/5"></div>
-          <div className="absolute bottom-[-15%] left-[-10%] w-[250px] h-[250px] rounded-full bg-white/5"></div>
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-blue-400/20 via-transparent to-transparent blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-primary-800/30 via-transparent to-transparent blur-3xl"></div>
           
-          {/* Subtil gradient bakgrunn for bevegelse og dybde */}
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] bg-[length:500px_500px] animate-[gradient_20s_linear_infinite]"></div>
+          {/* Subtle pattern overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:20px_20px]"></div>
           
-          {/* Tillegg av pattern overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(255,255,255,0.15)_1%,transparent_10%),radial-gradient(circle_at_75%_30%,rgba(255,255,255,0.15)_1%,transparent_8%)] bg-[length:50px_50px] opacity-70"></div>
+          {/* Additional light effects */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.1)_0%,transparent_50%)] pointer-events-none"></div>
           
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
