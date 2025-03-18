@@ -33,41 +33,41 @@ export default function HowItWorks() {
           </div>
           
           <div className="grid md:grid-cols-4 gap-8 mb-16">
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
                 <FileCheck className="h-12 w-12 mx-auto mb-4 text-primary" />
                 <h3 className="font-semibold mb-2">Forbrukslån</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 flex-grow">
                   Fleksible lån til personlige behov med konkurransedyktige betingelser
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
                 <ShieldCheck className="h-12 w-12 mx-auto mb-4 text-primary" />
                 <h3 className="font-semibold mb-2">Refinansiering</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 flex-grow">
                   Samle dine lån og få bedre betingelser med vår refinansieringsløsning
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
                 <Clock className="h-12 w-12 mx-auto mb-4 text-primary" />
                 <h3 className="font-semibold mb-2">Billån</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 flex-grow">
                   Attraktive betingelser for billån med rask behandling
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="text-center p-6 hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
+            <Card className="text-center p-6 hover:shadow-lg transition-shadow h-full">
+              <CardContent className="pt-6 h-full flex flex-col">
                 <CreditCard className="h-12 w-12 mx-auto mb-4 text-primary" />
                 <h3 className="font-semibold mb-2">Kredittkort</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 flex-grow">
                   Få tilgang til våre eksklusive kredittkort med fordeler
                 </p>
               </CardContent>

@@ -277,24 +277,24 @@ export default function HomePage() {
         {/* CTA Section - Material Design V3 med forbedret visuell tekstur */}
         <section className="py-20 md:py-28 relative overflow-hidden">
           {/* Bakgrunn med kompleks gradient og mønster - tilsvarende hero-seksjon */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-900"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-700 via-primary-800 to-primary-700"></div>
           
           {/* Dekorative elementer som matcher hero-seksjon */}
           <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full bg-white/5"></div>
-          <div className="absolute bottom-[-15%] left-[-10%] w-[250px] h-[250px] rounded-full bg-white/3"></div>
+          <div className="absolute bottom-[-15%] left-[-10%] w-[250px] h-[250px] rounded-full bg-white/5"></div>
           
           {/* Subtil gradient bakgrunn for bevegelse og dybde */}
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_25%,rgba(255,255,255,0.08)_50%,transparent_75%)] bg-[length:500px_500px] animate-[gradient_20s_linear_infinite]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] bg-[length:500px_500px] animate-[gradient_20s_linear_infinite]"></div>
           
           {/* Tillegg av pattern overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(255,255,255,0.1)_1%,transparent_10%),radial-gradient(circle_at_75%_30%,rgba(255,255,255,0.1)_1%,transparent_8%)] bg-[length:50px_50px] opacity-70"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(255,255,255,0.15)_1%,transparent_10%),radial-gradient(circle_at_75%_30%,rgba(255,255,255,0.15)_1%,transparent_8%)] bg-[length:50px_50px] opacity-70"></div>
           
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white">
                 Klar for å starte din finansielle reise?
               </h2>
-              <p className="text-lg md:text-xl text-white/90 mb-10 leading-relaxed">
+              <p className="text-lg md:text-xl text-white mb-10 leading-relaxed">
                 Registrer deg på under 5 minutter og få umiddelbar tilgang til 
                 våre innovative banktjenester og personlige finansiell veiledning.
               </p>
