@@ -57,131 +57,67 @@ export function NavHeader() {
     auth: "/auth"
   };
 
+  // Lager en unik NavLink-komponent for å unngå duplisering
+  const NavLink = ({ 
+    href, 
+    label, 
+    active, 
+    onClick 
+  }: { 
+    href?: string, 
+    label: string, 
+    active: boolean, 
+    onClick?: () => void 
+  }) => {
+    const content = (
+      <span className={cn(
+        "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+        active ? "text-primary" : "text-muted-foreground hover:text-primary"
+      )}>
+        {label}
+        <span className={cn(
+          "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+          active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+        )}></span>
+      </span>
+    );
+
+    if (href) {
+      return (
+        <NavigationMenuItem className="relative">
+          <Link href={href}>
+            {content}
+          </Link>
+        </NavigationMenuItem>
+      );
+    }
+    
+    return (
+      <NavigationMenuItem className="relative">
+        <div onClick={onClick}>
+          {content}
+        </div>
+      </NavigationMenuItem>
+    );
+  };
+
   const NavItems = () => (
     <>
       {user ? (
         <>
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.home}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.home) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Hjem
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.home) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-          
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.tjenester}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.tjenester) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Tjenester
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.tjenester) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.loanApplication}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.loanApplication) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Søk Lån
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.loanApplication) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.dashboard}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.dashboard) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Min side
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.dashboard) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-
+          <NavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
+          <NavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
+          <NavLink href={routes.loanApplication} label="Søk Lån" active={isActive(routes.loanApplication)} />
+          <NavLink href={routes.dashboard} label="Min side" active={isActive(routes.dashboard)} />
           {user.isAdmin && (
-            <NavigationMenuItem className="relative group">
-              <Link href={routes.admin}>
-                <span className={cn(
-                  "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                  isActive(routes.admin) ? "text-primary" : "text-muted-foreground hover:text-primary"
-                )}>
-                  Administrasjon
-                  <span className={cn(
-                    "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                    isActive(routes.admin) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                  )}></span>
-                </span>
-              </Link>
-            </NavigationMenuItem>
+            <NavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
         </>
       ) : (
         <>
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.home}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.home) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Hjem
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.home) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-          
-          <NavigationMenuItem className="relative group">
-            <Link href={routes.tjenester}>
-              <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive(routes.tjenester) ? "text-primary" : "text-muted-foreground hover:text-primary"
-              )}>
-                Tjenester
-                <span className={cn(
-                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive(routes.tjenester) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                )}></span>
-              </span>
-            </Link>
-          </NavigationMenuItem>
-          
-          <NavigationMenuItem className="relative group">
-            <span 
-              className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                "text-muted-foreground hover:text-primary"
-              )}
-              onClick={handleLoanApplicationClick}
-            >
-              Søk Lån
-              <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></span>
-            </span>
-          </NavigationMenuItem>
+          <NavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
+          <NavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
+          <NavLink label="Søk Lån" active={false} onClick={handleLoanApplicationClick} />
           
           <NavigationMenuItem>
             <Link href={routes.auth}>
@@ -199,115 +135,63 @@ export function NavHeader() {
     </>
   );
 
+  // Lager en unik MobileNavLink-komponent for å unngå duplisering
+  const MobileNavLink = ({ 
+    href, 
+    label, 
+    active, 
+    onClick 
+  }: { 
+    href?: string, 
+    label: string, 
+    active: boolean, 
+    onClick?: () => void 
+  }) => {
+    const content = (
+      <div className={cn(
+        "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+        active ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+      )}>
+        {label}
+        <span className={cn(
+          "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+          active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        )}></span>
+      </div>
+    );
+
+    if (href) {
+      return (
+        <Link href={href}>
+          {content}
+        </Link>
+      );
+    }
+    
+    return (
+      <div onClick={onClick}>
+        {content}
+      </div>
+    );
+  };
+
   const MobileNavItems = () => (
     <>
       {user ? (
         <div className="flex flex-col space-y-1">
-          <Link href={routes.home}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.home) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Hjem
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.home) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
-          <Link href={routes.tjenester}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.tjenester) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Tjenester
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.tjenester) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
-          <Link href={routes.loanApplication}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.loanApplication) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Søk Lån
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.loanApplication) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
-          <Link href={routes.dashboard}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.dashboard) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Min side
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.dashboard) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
+          <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
+          <MobileNavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
+          <MobileNavLink href={routes.loanApplication} label="Søk Lån" active={isActive(routes.loanApplication)} />
+          <MobileNavLink href={routes.dashboard} label="Min side" active={isActive(routes.dashboard)} />
           {user.isAdmin && (
-            <Link href={routes.admin}>
-              <div className={cn(
-                "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-                isActive(routes.admin) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-              )}>
-                Administrasjon
-                <span className={cn(
-                  "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                  isActive(routes.admin) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                )}></span>
-              </div>
-            </Link>
+            <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
         </div>
       ) : (
         <div className="flex flex-col space-y-1">
-          <Link href={routes.home}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.home) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Hjem
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.home) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
-          <Link href={routes.tjenester}>
-            <div className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive(routes.tjenester) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}>
-              Tjenester
-              <span className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive(routes.tjenester) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              )}></span>
-            </div>
-          </Link>
-          
-          <div 
-            className={cn(
-              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-            )}
-            onClick={handleLoanApplicationClick}
-          >
-            Søk Lån
-            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full opacity-0 group-hover:opacity-100"></span>
-          </div>
+          <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
+          <MobileNavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
+          <MobileNavLink label="Søk Lån" active={false} onClick={handleLoanApplicationClick} />
           
           <Link href={routes.auth} className="mt-4">
             <Button 
