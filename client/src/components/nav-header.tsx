@@ -26,14 +26,14 @@ export function NavHeader() {
   // Funksjon for å håndtere klikk på "Søk Lån" når man ikke er innlogget
   const handleLoanApplicationClick = () => {
     // Lagre informasjon om at brukeren ønsket å søke om lån
-    localStorage.setItem("redirectAfterLogin", "/loan-application");
+    localStorage.setItem("redirectAfterLogin", routes.loanApplication);
     // Omdirigere til innloggingssiden
-    setLocation("/auth-page");
+    setLocation(routes.auth);
   };
 
   // Sjekk ved lasting om det finnes en redirect etter innlogging
   useEffect(() => {
-    if (user && location === "/auth-page") {
+    if (user && location === routes.auth) {
       const redirectPath = localStorage.getItem("redirectAfterLogin");
       if (redirectPath) {
         localStorage.removeItem("redirectAfterLogin");
@@ -62,15 +62,15 @@ export function NavHeader() {
       {user ? (
         <>
           <NavigationMenuItem className="relative group">
-            <Link href="/">
+            <Link href={routes.home}>
               <span className={cn(
                 "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                isActive(routes.home) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Hjem
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.home) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
@@ -141,30 +141,30 @@ export function NavHeader() {
       ) : (
         <>
           <NavigationMenuItem className="relative group">
-            <Link href="/">
+            <Link href={routes.home}>
               <span className={cn(
                 "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                isActive(routes.home) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Hjem
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.home) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
           </NavigationMenuItem>
           
           <NavigationMenuItem className="relative group">
-            <Link href="/how-it-works">
+            <Link href={routes.tjenester}>
               <span className={cn(
                 "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                isActive("/how-it-works") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                isActive(routes.tjenester) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Tjenester
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/how-it-works") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.tjenester) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
@@ -184,7 +184,7 @@ export function NavHeader() {
           </NavigationMenuItem>
           
           <NavigationMenuItem>
-            <Link href="/auth-page">
+            <Link href={routes.auth}>
               <Button 
                 variant="contained" 
                 color="primary"
@@ -203,68 +203,68 @@ export function NavHeader() {
     <>
       {user ? (
         <div className="flex flex-col space-y-1">
-          <Link href="/">
+          <Link href={routes.home}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.home) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Hjem
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.home) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
           
-          <Link href="/how-it-works">
+          <Link href={routes.tjenester}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/how-it-works") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.tjenester) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Tjenester
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/how-it-works") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.tjenester) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
           
-          <Link href="/loan-application">
+          <Link href={routes.loanApplication}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/loan-application") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.loanApplication) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Søk Lån
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/loan-application") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.loanApplication) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
           
-          <Link href="/dashboard">
+          <Link href={routes.dashboard}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/dashboard") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.dashboard) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Min side
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/dashboard") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.dashboard) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
           
           {user.isAdmin && (
-            <Link href="/admin-dashboard">
+            <Link href={routes.admin}>
               <div className={cn(
                 "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-                isActive("/admin-dashboard") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                isActive(routes.admin) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
               )}>
                 Administrasjon
                 <span className={cn(
                   "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                  isActive("/admin-dashboard") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  isActive(routes.admin) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 )}></span>
               </div>
             </Link>
@@ -272,28 +272,28 @@ export function NavHeader() {
         </div>
       ) : (
         <div className="flex flex-col space-y-1">
-          <Link href="/">
+          <Link href={routes.home}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.home) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Hjem
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.home) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
           
-          <Link href="/how-it-works">
+          <Link href={routes.tjenester}>
             <div className={cn(
               "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-              isActive("/how-it-works") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              isActive(routes.tjenester) ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
             )}>
               Tjenester
               <span className={cn(
                 "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-                isActive("/how-it-works") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                isActive(routes.tjenester) ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               )}></span>
             </div>
           </Link>
@@ -309,7 +309,7 @@ export function NavHeader() {
             <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full opacity-0 group-hover:opacity-100"></span>
           </div>
           
-          <Link href="/auth-page" className="mt-4">
+          <Link href={routes.auth} className="mt-4">
             <Button 
               fullWidth 
               variant="contained" 
@@ -329,7 +329,7 @@ export function NavHeader() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
-          <Link href="/">
+          <Link href={routes.home}>
             <img 
               src="/images/logo.png" 
               alt="BNKA" 
