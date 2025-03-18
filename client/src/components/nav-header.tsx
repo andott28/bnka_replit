@@ -46,15 +46,25 @@ export function NavHeader() {
   const isActive = (path: string) => {
     return location === path;
   };
+  
+  // Korrekte rutenavn fra App.tsx
+  const routes = {
+    home: "/",
+    tjenester: "/tjenester",
+    loanApplication: "/apply",
+    dashboard: "/dashboard",
+    admin: "/admin",
+    auth: "/auth"
+  };
 
   const NavItems = () => (
     <>
       {user ? (
         <>
-          <NavigationMenuItem>
+          <NavigationMenuItem className="relative group">
             <Link href="/">
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
                 isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Hjem
@@ -66,62 +76,62 @@ export function NavHeader() {
             </Link>
           </NavigationMenuItem>
           
-          <NavigationMenuItem>
-            <Link href="/how-it-works">
+          <NavigationMenuItem className="relative group">
+            <Link href={routes.tjenester}>
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-                isActive("/how-it-works") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+                isActive(routes.tjenester) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Tjenester
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/how-it-works") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.tjenester) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
           </NavigationMenuItem>
 
-          <NavigationMenuItem>
-            <Link href="/loan-application">
+          <NavigationMenuItem className="relative group">
+            <Link href={routes.loanApplication}>
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-                isActive("/loan-application") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+                isActive(routes.loanApplication) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Søk Lån
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/loan-application") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.loanApplication) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
           </NavigationMenuItem>
 
-          <NavigationMenuItem>
-            <Link href="/dashboard">
+          <NavigationMenuItem className="relative group">
+            <Link href={routes.dashboard}>
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-                isActive("/dashboard") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+                isActive(routes.dashboard) ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Min side
                 <span className={cn(
                   "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                  isActive("/dashboard") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  isActive(routes.dashboard) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                 )}></span>
               </span>
             </Link>
           </NavigationMenuItem>
 
           {user.isAdmin && (
-            <NavigationMenuItem>
-              <Link href="/admin-dashboard">
+            <NavigationMenuItem className="relative group">
+              <Link href={routes.admin}>
                 <span className={cn(
-                  "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-                  isActive("/admin-dashboard") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                  "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+                  isActive(routes.admin) ? "text-primary" : "text-muted-foreground hover:text-primary"
                 )}>
                   Administrasjon
                   <span className={cn(
                     "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
-                    isActive("/admin-dashboard") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                    isActive(routes.admin) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
                   )}></span>
                 </span>
               </Link>
@@ -130,10 +140,10 @@ export function NavHeader() {
         </>
       ) : (
         <>
-          <NavigationMenuItem>
+          <NavigationMenuItem className="relative group">
             <Link href="/">
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
                 isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Hjem
@@ -145,10 +155,10 @@ export function NavHeader() {
             </Link>
           </NavigationMenuItem>
           
-          <NavigationMenuItem>
+          <NavigationMenuItem className="relative group">
             <Link href="/how-it-works">
               <span className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
                 isActive("/how-it-works") ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}>
                 Tjenester
@@ -160,10 +170,10 @@ export function NavHeader() {
             </Link>
           </NavigationMenuItem>
           
-          <NavigationMenuItem>
+          <NavigationMenuItem className="relative group">
             <span 
               className={cn(
-                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
                 "text-muted-foreground hover:text-primary"
               )}
               onClick={handleLoanApplicationClick}
@@ -320,10 +330,15 @@ export function NavHeader() {
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
           <Link href="/">
-            <div className="h-8 font-bold text-xl flex items-center">
-              <span className="text-primary">BNK</span>
-              <span className="text-secondary">A</span>
-            </div>
+            <img 
+              src="/images/logo.png" 
+              alt="BNKA" 
+              className="h-8 cursor-pointer" 
+              style={{ 
+                objectFit: 'contain',
+                maxWidth: '140px'
+              }} 
+            />
           </Link>
         </div>
 
