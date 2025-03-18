@@ -26,14 +26,14 @@ export function NavHeader() {
   // Funksjon for å håndtere klikk på "Søk Lån" når man ikke er innlogget
   const handleLoanApplicationClick = () => {
     // Lagre informasjon om at brukeren ønsket å søke om lån
-    localStorage.setItem("redirectAfterLogin", "/apply");
+    localStorage.setItem("redirectAfterLogin", "/loan-application");
     // Omdirigere til innloggingssiden
-    setLocation("/auth");
+    setLocation("/auth-page");
   };
 
   // Sjekk ved lasting om det finnes en redirect etter innlogging
   useEffect(() => {
-    if (user && location === "/auth") {
+    if (user && location === "/auth-page") {
       const redirectPath = localStorage.getItem("redirectAfterLogin");
       if (redirectPath) {
         localStorage.removeItem("redirectAfterLogin");
@@ -42,115 +42,147 @@ export function NavHeader() {
     }
   }, [user, location, setLocation]);
 
+  // Funksjon for å sjekke om en rute er aktiv
+  const isActive = (path: string) => {
+    return location === path;
+  };
+
   const NavItems = () => (
     <>
       {user ? (
         <>
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )} 
-              onClick={() => setLocation("/")}
-            >
-              Hjem
-            </NavigationMenuLink>
+            <Link href="/">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Hjem
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
           
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )}
-              onClick={() => setLocation("/tjenester")}
-            >
-              Tjenester
-            </NavigationMenuLink>
+            <Link href="/how-it-works">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/how-it-works") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Tjenester
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/how-it-works") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )}
-              onClick={() => setLocation("/apply")}
-            >
-              Søk Lån
-            </NavigationMenuLink>
+            <Link href="/loan-application">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/loan-application") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Søk Lån
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/loan-application") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )}
-              onClick={() => setLocation("/dashboard")}
-            >
-              Min side
-            </NavigationMenuLink>
+            <Link href="/dashboard">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/dashboard") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Min side
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/dashboard") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
 
           {user.isAdmin && (
             <NavigationMenuItem>
-              <NavigationMenuLink 
-                className={cn(
-                  navigationMenuTriggerStyle(), 
-                  "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-                )}
-                onClick={() => setLocation("/admin")}
-              >
-                Administrasjon
-              </NavigationMenuLink>
+              <Link href="/admin-dashboard">
+                <span className={cn(
+                  "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                  isActive("/admin-dashboard") ? "text-primary" : "text-muted-foreground hover:text-primary"
+                )}>
+                  Administrasjon
+                  <span className={cn(
+                    "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                    isActive("/admin-dashboard") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  )}></span>
+                </span>
+              </Link>
             </NavigationMenuItem>
           )}
         </>
       ) : (
         <>
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )}
-              onClick={() => setLocation("/")}
-            >
-              Hjem
-            </NavigationMenuLink>
+            <Link href="/">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Hjem
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
+          
           <NavigationMenuItem>
-            <NavigationMenuLink 
-              className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
-              )}
-              onClick={() => setLocation("/tjenester")}
-            >
-              Tjenester
-            </NavigationMenuLink>
+            <Link href="/how-it-works">
+              <span className={cn(
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                isActive("/how-it-works") ? "text-primary" : "text-muted-foreground hover:text-primary"
+              )}>
+                Tjenester
+                <span className={cn(
+                  "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+                  isActive("/how-it-works") ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                )}></span>
+              </span>
+            </Link>
           </NavigationMenuItem>
+          
           <NavigationMenuItem>
-            <NavigationMenuLink 
+            <span 
               className={cn(
-                navigationMenuTriggerStyle(), 
-                "cursor-pointer hover:no-underline hover:bg-slate-100 hover:-translate-y-0.5 hover:shadow-md transition-all"
+                "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
+                "text-muted-foreground hover:text-primary"
               )}
               onClick={handleLoanApplicationClick}
             >
               Søk Lån
-            </NavigationMenuLink>
+              <span className="absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300 scale-x-0 group-hover:scale-x-100"></span>
+            </span>
           </NavigationMenuItem>
+          
           <NavigationMenuItem>
-            <Button 
-              variant="contained" 
-              color="primary"
-              onClick={() => setLocation("/auth")}
-            >
-              Logg inn
-            </Button>
+            <Link href="/auth-page">
+              <Button 
+                variant="contained" 
+                color="primary"
+                className="rounded-full px-4 py-2 font-medium text-sm"
+              >
+                Logg inn
+              </Button>
+            </Link>
           </NavigationMenuItem>
         </>
       )}
@@ -160,104 +192,139 @@ export function NavHeader() {
   const MobileNavItems = () => (
     <>
       {user ? (
-        <>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/")}
-          >
-            Hjem
-          </Button>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/tjenester")}
-          >
-            Tjenester
-          </Button>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/apply")}
-          >
-            Søk Lån
-          </Button>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/dashboard")}
-          >
-            Min side
-          </Button>
+        <div className="flex flex-col space-y-1">
+          <Link href="/">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Hjem
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
+          <Link href="/how-it-works">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/how-it-works") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Tjenester
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/how-it-works") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
+          <Link href="/loan-application">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/loan-application") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Søk Lån
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/loan-application") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
+          <Link href="/dashboard">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/dashboard") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Min side
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/dashboard") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
           {user.isAdmin && (
-            <Button 
-              fullWidth 
-              variant="text" 
-              sx={{ justifyContent: 'start' }}
-              onClick={() => setLocation("/admin")}
-            >
-              Administrasjon
-            </Button>
+            <Link href="/admin-dashboard">
+              <div className={cn(
+                "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+                isActive("/admin-dashboard") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+              )}>
+                Administrasjon
+                <span className={cn(
+                  "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                  isActive("/admin-dashboard") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                )}></span>
+              </div>
+            </Link>
           )}
-        </>
+        </div>
       ) : (
-        <>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/")}
-          >
-            Hjem
-          </Button>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
-            onClick={() => setLocation("/tjenester")}
-          >
-            Tjenester
-          </Button>
-          <Button 
-            fullWidth 
-            variant="text" 
-            sx={{ justifyContent: 'start' }}
+        <div className="flex flex-col space-y-1">
+          <Link href="/">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Hjem
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
+          <Link href="/how-it-works">
+            <div className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              isActive("/how-it-works") ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}>
+              Tjenester
+              <span className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
+                isActive("/how-it-works") ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+              )}></span>
+            </div>
+          </Link>
+          
+          <div 
+            className={cn(
+              "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
+              "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+            )}
             onClick={handleLoanApplicationClick}
           >
             Søk Lån
-          </Button>
-          <Button 
-            fullWidth 
-            variant="contained" 
-            color="primary"
-            onClick={() => setLocation("/auth")}
-          >
-            Logg inn
-          </Button>
-        </>
+            <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full opacity-0 group-hover:opacity-100"></span>
+          </div>
+          
+          <Link href="/auth-page" className="mt-4">
+            <Button 
+              fullWidth 
+              variant="contained" 
+              color="primary"
+              className="rounded-full py-2 font-medium text-sm"
+            >
+              Logg inn
+            </Button>
+          </Link>
+        </div>
       )}
     </>
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
-          <img 
-            src="/images/logo.png" 
-            alt="BNKA" 
-            className="h-8 cursor-pointer" 
-            style={{ 
-              objectFit: 'contain',
-              maxWidth: '140px'
-            }} 
-            onClick={() => setLocation("/")}
-          />
+          <Link href="/">
+            <div className="h-8 font-bold text-xl flex items-center">
+              <span className="text-primary">BNK</span>
+              <span className="text-secondary">A</span>
+            </div>
+          </Link>
         </div>
 
         {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}
@@ -273,7 +340,11 @@ export function NavHeader() {
         <div className="block md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="text" sx={{ minWidth: 'auto' }}>
+              <Button 
+                variant="text" 
+                sx={{ minWidth: 'auto' }}
+                className="text-primary"
+              >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>
@@ -281,7 +352,7 @@ export function NavHeader() {
               <SheetHeader>
                 <SheetTitle>Meny</SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col gap-4 mt-4">
+              <nav className="flex flex-col mt-6">
                 <MobileNavItems />
               </nav>
             </SheetContent>

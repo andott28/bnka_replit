@@ -17,7 +17,8 @@ import {
   LineChart,
   Sparkles,
   BarChart4,
-  GraduationCap
+  GraduationCap,
+  CheckCircle2
 } from "lucide-react";
 
 export default function HomePage() {
@@ -50,9 +51,9 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">
-                  Fremtidens bank{' '}
+                  Vi sier ja når{' '}
                   <span className="relative inline-block">
-                    i dag
+                    andre sier nei.
                     <span className="absolute bottom-1 left-0 w-full h-[3px] bg-secondary rounded-full"></span>
                   </span>
                 </h1>
@@ -60,7 +61,7 @@ export default function HomePage() {
                   Opplev sømløs digital banking med rask lånesøknad og
                   personlige finansielle løsninger for din hverdag.
                 </p>
-                <Link href="/loan-application">
+                <Link href="/auth-page">
                   <Button 
                     size="lg" 
                     variant="secondary" 
@@ -72,11 +73,11 @@ export default function HomePage() {
                 </Link>
               </div>
               
-              {/* MD3-inspirert illustrasjon - kun for desktop */}
-              <div className="hidden md:block md:w-1/2 relative mt-12 md:mt-0">
+              {/* MD3-inspirert illustrasjon - Synlig på både mobil og desktop med responsive justeringer */}
+              <div className="md:w-1/2 relative mt-12 md:mt-0 scale-[0.73] md:scale-100 -my-6 md:my-0">
                 <div className="relative w-full h-[350px]">
-                  {/* Kredittkort designelement */}
-                  <div className="absolute top-[20%] left-[10%] w-[220px] h-[140px] rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 transition-all duration-300 hover:rotate-0">
+                  {/* Kredittkort designelement - plassert delvis under telefonen */}
+                  <div className="absolute top-[20%] left-[25%] md:left-[18%] w-[220px] h-[140px] rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 transition-all duration-300 hover:rotate-0">
                     <div className="flex justify-between">
                       <div className="text-white font-bold">BNKA</div>
                       <div className="w-10 h-10 rounded-full bg-white/20"></div>
@@ -87,14 +88,14 @@ export default function HomePage() {
                     </div>
                   </div>
                   
-                  {/* Mobilapp design */}
-                  <div className="absolute top-[5%] right-[15%] w-[180px] h-[330px] rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20">
+                  {/* Mobilapp design - justert for synlighet og kontrast */}
+                  <div className="absolute top-[5%] right-[20%] md:right-[25%] w-[180px] h-[330px] rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20">
                     <div className="h-[60px] bg-primary p-4">
                       <div className="text-white text-sm font-medium">BNKA App</div>
                     </div>
                     <div className="p-4">
                       <div className="text-xs text-gray-500">Saldo</div>
-                      <div className="text-xl font-bold mb-6">24 560 kr</div>
+                      <div className="text-xl font-bold mb-6 text-primary">24 560 kr</div>
                       
                       <div className="space-y-3">
                         <div className="h-3 w-4/5 bg-primary/10 rounded-full"></div>
@@ -124,68 +125,68 @@ export default function HomePage() {
             
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <CreditCard className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Komplett banktjeneste</h3>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed h-full">
                   Alt fra bankkontoer og kort til lån og betalinger i én sømløs plattform
                 </p>
               </div>
               
               {/* Feature 2 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <Wallet className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Markedsledende renter</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Konkurransedyktige renter på både sparing og lån tilpasset din økonomiske situasjon
+                <p className="text-gray-600 leading-relaxed h-full">
+                  Konkurransedyktige renter på sparing og lån tilpasset din økonomi
                 </p>
               </div>
               
               {/* Feature 3 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <Clock className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Rask behandling</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Få svar på lånesøknader innen 24 timer med digital signering og rask utbetaling
+                <p className="text-gray-600 leading-relaxed h-full">
+                  Få svar på lånesøknader innen 24 timer med rask utbetaling
                 </p>
               </div>
               
               {/* Feature 4 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <Shield className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Sikker plattform</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Din sikkerhet er vår høyeste prioritet med BankID og moderne krypteringsmetoder
+                <p className="text-gray-600 leading-relaxed h-full">
+                  Din sikkerhet er vår prioritet med BankID og moderne kryptering
                 </p>
               </div>
               
               {/* Feature 5 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <Smartphone className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Mobilbanking</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Enkel tilgang til alle banktjenester fra vår brukervennlige mobilapp hvor som helst, når som helst
+                <p className="text-gray-600 leading-relaxed h-full">
+                  Tilgang til alle banktjenester fra vår app, når og hvor som helst
                 </p>
               </div>
               
               {/* Feature 6 */}
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col">
                 <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
                   <BarChart4 className="h-8 w-8" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Økonomisk innsikt</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Få oversikt over økonomien din med personlige analyser og tilpassede anbefalinger
+                <p className="text-gray-600 leading-relaxed h-full">
+                  Få oversikt over økonomien med personlige analyser og anbefalinger
                 </p>
               </div>
             </div>
@@ -273,14 +274,24 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* CTA Section - Material Design V3 */}
-        <section className="py-20 md:py-28 bg-gradient-to-br from-secondary to-secondary-700 text-white relative overflow-hidden">
-          {/* Dekorative elementer */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(255,255,255,0.1)_1%,transparent_10%),radial-gradient(circle_at_75%_30%,rgba(255,255,255,0.1)_1%,transparent_8%)] bg-[length:50px_50px]"></div>
+        {/* CTA Section - Material Design V3 med forbedret visuell tekstur */}
+        <section className="py-20 md:py-28 relative overflow-hidden">
+          {/* Bakgrunn med kompleks gradient og mønster - tilsvarende hero-seksjon */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-900 via-primary-800 to-primary-900"></div>
+          
+          {/* Dekorative elementer som matcher hero-seksjon */}
+          <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full bg-white/5"></div>
+          <div className="absolute bottom-[-15%] left-[-10%] w-[250px] h-[250px] rounded-full bg-white/3"></div>
+          
+          {/* Subtil gradient bakgrunn for bevegelse og dybde */}
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_25%,rgba(255,255,255,0.08)_50%,transparent_75%)] bg-[length:500px_500px] animate-[gradient_20s_linear_infinite]"></div>
+          
+          {/* Tillegg av pattern overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_50%,rgba(255,255,255,0.1)_1%,transparent_10%),radial-gradient(circle_at_75%_30%,rgba(255,255,255,0.1)_1%,transparent_8%)] bg-[length:50px_50px] opacity-70"></div>
           
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white">
                 Klar for å starte din finansielle reise?
               </h2>
               <p className="text-lg md:text-xl text-white/90 mb-10 leading-relaxed">
@@ -293,7 +304,7 @@ export default function HomePage() {
                   <Button 
                     size="lg" 
                     variant="default"
-                    className="group w-full sm:w-auto bg-white text-secondary hover:bg-white/90 rounded-full px-8 py-6 text-[1.1rem] font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                    className="group w-full sm:w-auto bg-white text-primary-800 hover:bg-white/90 rounded-full px-8 py-6 text-[1.1rem] font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
                   >
                     Opprett konto
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -309,6 +320,36 @@ export default function HomePage() {
                     Kontakt oss
                   </Button>
                 </Link>
+              </div>
+              
+              {/* Liste med fordeler - Ekstra visuell styrke */}
+              <div className="grid sm:grid-cols-3 gap-6 mt-16 text-left max-w-4xl mx-auto">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div className="text-white text-sm md:text-base">
+                    <p>Ingen skjulte gebyrer</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div className="text-white text-sm md:text-base">
+                    <p>Sikker og trygg plattform</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  <div className="text-white text-sm md:text-base">
+                    <p>Støtte 24/7 for alle kunder</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
