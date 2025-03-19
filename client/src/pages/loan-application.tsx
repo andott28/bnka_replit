@@ -46,13 +46,13 @@ export default function LoanApplication() {
   const [isBankIDVerified, setIsBankIDVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
-  
+
   useEffect(() => {
     // Track page view when component loads
     trackEvent(AnalyticsEvents.PAGE_VIEW, {
       page: "loan_application"
     });
-    
+
     // Track loan application start
     trackEvent(AnalyticsEvents.LOAN_APPLICATION_START);
   }, [trackEvent]);
@@ -152,21 +152,21 @@ export default function LoanApplication() {
           const errorData = await loanRes.json();
           throw new Error(errorData.error || "Feil ved innsending av lånesøknad");
         }
-        
+
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
-        
+
         // Send credit score request
         const creditRes = await apiRequest("POST", "/api/loans/credit-score", {
           ...data,
           loanApplicationId: loanData.id
         });
-        
+
         if (!creditRes.ok) {
           const errorData = await creditRes.json();
           throw new Error(errorData.error || "Feil ved beregning av kredittscoring");
         }
-        
+
         return creditRes.json();
       } catch (error) {
         console.error("Error in loan application mutation:", error);
@@ -180,7 +180,7 @@ export default function LoanApplication() {
         creditGrade: creditScore?.grade,
         purpose: form.getValues().purpose
       });
-      
+
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
       toast({
         title: "Søknad sendt",
@@ -190,14 +190,14 @@ export default function LoanApplication() {
     },
     onError: (error: Error) => {
       console.error("Mutation error:", error);
-      
+
       // Track error
       trackEvent(AnalyticsEvents.FORM_ERROR, {
         error: error.message || "Unknown error",
         action: "submit_loan_application",
         context: "loan_application_mutation"
       });
-      
+
       toast({
         title: "Feil ved innsending",
         description: error.message || "Det oppsto en feil ved innsending av lånesøknaden. Vennligst prøv igjen senere.",
@@ -215,7 +215,7 @@ export default function LoanApplication() {
         fileType: file.type,
         fileSize: Math.round(file.size / 1024) // Size in KB
       });
-      
+
       if (file.size > 10 * 1024 * 1024) {
         // Track error
         trackEvent(AnalyticsEvents.FORM_ERROR, {
@@ -223,7 +223,7 @@ export default function LoanApplication() {
           fileSize: Math.round(file.size / 1024),
           context: "loan_application_id_upload"
         });
-        
+
         toast({
           title: "Feil",
           description: "Filen er for stor. Maksimal størrelse er 10MB.",
@@ -240,7 +240,7 @@ export default function LoanApplication() {
           fileType: file.type,
           context: "loan_application_id_upload"
         });
-        
+
         toast({
           title: "Feil",
           description: "Ugyldig filformat. Kun PNG, JPG og PDF er tillatt.",
@@ -255,7 +255,7 @@ export default function LoanApplication() {
         const reader = new FileReader();
         reader.onloadend = () => {
           setPreviewUrl(reader.result as string);
-          
+
           // Track successful image preview
           trackEvent(AnalyticsEvents.BUTTON_CLICK, {
             action: "preview_id_image",
@@ -265,7 +265,7 @@ export default function LoanApplication() {
         reader.readAsDataURL(file);
       } else {
         setPreviewUrl(null);
-        
+
         // Track PDF upload (no preview)
         trackEvent(AnalyticsEvents.BUTTON_CLICK, {
           action: "upload_id_pdf",
@@ -282,13 +282,13 @@ export default function LoanApplication() {
         from: "loan_application"
       });
     }
-    
+
     // Set the hasConsented value to true to enable the submit button
     form.setValue("hasConsented", true, { shouldValidate: true });
-    
+
     // Set idVerified in the form
     form.setValue("idVerified", true, { shouldValidate: true });
-    
+
     // Update user's KYC status in the backend
     if (user?.id) {
       try {
@@ -299,7 +299,7 @@ export default function LoanApplication() {
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       } catch (error) {
         console.error("Failed to update KYC status:", error);
-        
+
         // Track error in PostHog
         if (trackEvent) {
           trackEvent(AnalyticsEvents.FORM_ERROR, {
@@ -310,11 +310,11 @@ export default function LoanApplication() {
         }
       }
     }
-    
+
     // Set verification state
     setIsBankIDVerified(true);
     setIsVerifying(false);
-    
+
     toast({
       title: "Identitet bekreftet",
       description: `Velkommen ${data.name}`,
@@ -324,7 +324,7 @@ export default function LoanApplication() {
   // Validering av skjemafelt for hvert steg
   const validateStep = async (step: number) => {
     let valid = false;
-    
+
     switch (step) {
       case 0: // PersonalInfoStep
         valid = await form.trigger(['birthDate', 'street', 'postalCode', 'city', 'employmentStatus']);
@@ -332,20 +332,20 @@ export default function LoanApplication() {
       case 1: // FinancialInfoStep
         // Valider alt i ett trinn med any - vi må unngå TypeScript-feil
         const fieldsToValidate = ['income', 'monthlyExpenses', 'outstandingDebt', 'amount', 'purpose'];
-        
+
         // Legg til valgfrie felt hvis de er aktivert
         if (hasAssets) {
           fieldsToValidate.push('assets');
         }
-        
+
         if (hasStudentLoan) {
           fieldsToValidate.push('studentLoanAmount');
         }
-        
+
         if (hasSavings) {
           fieldsToValidate.push('savingsAmount');
         }
-        
+
         valid = await form.trigger(fieldsToValidate as any);
         break;
       case 2: // VerificationStep
@@ -355,7 +355,7 @@ export default function LoanApplication() {
       default:
         valid = true;
     }
-    
+
     return valid;
   };
 
@@ -368,14 +368,14 @@ export default function LoanApplication() {
         action: "submit",
         status: "final_submit"
       });
-      
+
       form.handleSubmit((data) => mutation.mutate(data))();
       return;
     }
-    
+
     // Valider gjeldende steg før man kan gå videre
     const isStepValid = await validateStep(activeStep);
-    
+
     if (isStepValid) {
       // Track successful step completion
       trackEvent(AnalyticsEvents.LOAN_APPLICATION_STEP, {
@@ -383,7 +383,7 @@ export default function LoanApplication() {
         action: "next",
         status: "success"
       });
-      
+
       setActiveStep((prev) => prev + 1);
     } else {
       // Track validation failure
@@ -392,7 +392,7 @@ export default function LoanApplication() {
         errorType: "validation",
         context: "loan_application_step"
       });
-      
+
       // Mer diskré feilmelding som vises i toast
       toast({
         title: 'Mangler informasjon',
@@ -441,7 +441,7 @@ export default function LoanApplication() {
           </p>
         )}
       </div>
-      
+
       <TextField
         fullWidth
         label="Gateadresse *"
@@ -530,7 +530,7 @@ export default function LoanApplication() {
 
   const FinancialInfoStep = () => {
     // Enkel implementasjon uten formatering og spesialhåndtering
-    
+
     // Effects to sync state with form fields
     useEffect(() => {
       // Set hasAssets state based on form value
@@ -621,7 +621,7 @@ export default function LoanApplication() {
               Studielån
             </Typography>
           </Box>
-          
+
           <FormControl fullWidth sx={{ mb: 2 }}>
             <FormControlLabel
               control={
@@ -658,28 +658,8 @@ export default function LoanApplication() {
 
           <Box sx={{ 
             display: hasStudentLoan ? 'block' : 'none',
-            mt: 2
+            mb: 2 // Moved mb here
           }}>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <TextField
-                fullWidth
-                label="Studielån (NOK)"
-                error={!!form.formState.errors.studentLoanAmount}
-                helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
-                {...form.register("studentLoanAmount")}
-                inputMode="numeric"
-                variant="outlined"
-                InputProps={{
-                  sx: { 
-                    borderRadius: 2,
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main',
-                    },
-                  }
-                }}
-              />
-            </FormControl>
-
             <FormControl fullWidth>
                 <FormControlLabel
                   control={
@@ -697,7 +677,7 @@ export default function LoanApplication() {
                       }}
                     />
                   }
-                  label="Jeg betaler ned på studielånet mitt"
+                  label="Jeg blir å betale ned på studielånet mitt i løpet av denne perioden"
                   sx={{ 
                     width: '100%',
                     margin: 0,
@@ -707,8 +687,28 @@ export default function LoanApplication() {
                     }
                   }}
                 />
-              </FormControl>
-            </Box>
+            </FormControl>
+          </Box>
+
+          <FormControl fullWidth>
+            <TextField
+              fullWidth
+              label="Studielån (NOK)"
+              error={!!form.formState.errors.studentLoanAmount}
+              helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
+              {...form.register("studentLoanAmount")}
+              inputMode="numeric"
+              variant="outlined"
+              InputProps={{
+                sx: { 
+                  borderRadius: 2,
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'primary.main',
+                  },
+                }
+              }}
+            />
+          </FormControl>
         </Box>
 
         {/* Savings Section */}
@@ -718,7 +718,7 @@ export default function LoanApplication() {
               Sparepenger
             </Typography>
           </Box>
-          
+
           <FormControl fullWidth sx={{ mb: 2 }}>
             <FormControlLabel
               control={
@@ -784,7 +784,7 @@ export default function LoanApplication() {
               Eiendeler
             </Typography>
           </Box>
-          
+
           <FormControl fullWidth sx={{ mb: 2 }}>
             <FormControlLabel
               control={
@@ -930,7 +930,7 @@ export default function LoanApplication() {
       <Box sx={{ mb: 2 }}>
         <Button
           variant={isBankIDVerified ? "outlined" : "contained"}
-          fullWidth
+                    fullWidth
           onClick={() => {
             if (!isBankIDVerified && !isVerifying) {
               // Track BankID verification start
@@ -938,7 +938,7 @@ export default function LoanApplication() {
                 from: "loan_application",
                 step: activeStep
               });
-              
+
               setIsVerifying(true);
               setShowBankID(true);
             }
@@ -1068,7 +1068,7 @@ export default function LoanApplication() {
           </Box>
         </Box>
       )}
-      
+
       <BankIDDialog
         open={showBankID}
         onOpenChange={setShowBankID}
