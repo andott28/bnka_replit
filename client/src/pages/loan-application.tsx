@@ -504,6 +504,7 @@ export default function LoanApplication() {
           labelId="employment-status-label"
           label="Ansettelsesforhold *"
           error={!!form.formState.errors.employmentStatus}
+          defaultValue={form.getValues("employmentStatus") || ""}
           {...form.register("employmentStatus")}
           sx={{ 
             borderRadius: 2,
@@ -688,27 +689,26 @@ export default function LoanApplication() {
                   }}
                 />
             </FormControl>
+            <FormControl fullWidth sx={{ display: isPayingStudentLoan ? 'block' : 'none'}}>
+              <TextField
+                fullWidth
+                label="Studielån (NOK)"
+                error={!!form.formState.errors.studentLoanAmount}
+                helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
+                {...form.register("studentLoanAmount")}
+                inputMode="numeric"
+                variant="outlined"
+                InputProps={{
+                  sx: { 
+                    borderRadius: 2,
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                    },
+                  }
+                }}
+              />
+            </FormControl>
           </Box>
-
-          <FormControl fullWidth>
-            <TextField
-              fullWidth
-              label="Studielån (NOK)"
-              error={!!form.formState.errors.studentLoanAmount}
-              helperText={form.formState.errors.studentLoanAmount?.message || "Oppgi totalt studielån"}
-              {...form.register("studentLoanAmount")}
-              inputMode="numeric"
-              variant="outlined"
-              InputProps={{
-                sx: { 
-                  borderRadius: 2,
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'primary.main',
-                  },
-                }
-              }}
-            />
-          </FormControl>
         </Box>
 
         {/* Savings Section */}
@@ -871,6 +871,7 @@ export default function LoanApplication() {
             labelId="purpose-label"
             label="Formål med lånet *"
             error={!!form.formState.errors.purpose}
+            defaultValue={form.getValues("purpose") || ""} // Added default value
             {...form.register("purpose")}
             sx={{ 
               borderRadius: 2,
