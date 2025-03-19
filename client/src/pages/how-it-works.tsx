@@ -1,3 +1,6 @@
+
+import { Footer } from "@/components/footer";
+
 import { NavHeader } from "@/components/nav-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -204,6 +207,7 @@ export default function HowItWorks() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
