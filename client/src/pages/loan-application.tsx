@@ -504,6 +504,7 @@ export default function LoanApplication() {
           labelId="employment-status-label"
           label="Ansettelsesforhold *"
           error={!!form.formState.errors.employmentStatus}
+          value={form.getValues("employmentStatus") || ""} // Added value prop for persistence
           {...form.register("employmentStatus")}
           sx={{ 
             borderRadius: 2,
@@ -871,6 +872,7 @@ export default function LoanApplication() {
             labelId="purpose-label"
             label="Formål med lånet *"
             error={!!form.formState.errors.purpose}
+            value={form.getValues("purpose") || ""} // Added value prop for persistence
             {...form.register("purpose")}
             sx={{ 
               borderRadius: 2,
