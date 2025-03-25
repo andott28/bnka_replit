@@ -48,16 +48,15 @@ export default function HomePage() {
               <div className="md:w-1/2 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">
                   Rettferdig kreditt for{" "}
-                  <span className="relative inline-block">
-                    alle nordmenn.
-                    <span className="absolute bottom-1 left-0 w-full h-[3px] bg-secondary rounded-full"></span>
+                  <span className="font-extrabold">
+                    alle
                   </span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 opacity-90 font-light leading-relaxed">
                   Vår innovative AI-baserte kredittvurdering gir deg muligheten til
                   bedre finansielle løsninger, uansett bakgrunn og livssituasjon.
                 </p>
-                <Link href="/auth-page">
+                <Link href="/auth">
                   <Button
                     size="lg"
                     variant="secondary"
@@ -69,9 +68,14 @@ export default function HomePage() {
                 </Link>
               </div>
 
-              <div className="md:w-1/2 relative mt-12 md:mt-0 scale-[0.73] md:scale-100 -my-6 md:my-0">
-                <div className="relative w-full h-[350px]">
-                  <div className="absolute top-[20%] left-[25%] md:left-[18%] w-[220px] h-[140px] rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 transition-all duration-300 hover:rotate-0">
+              <div className="md:w-1/2 relative mt-12 md:mt-0 scale-[0.73] md:scale-90 lg:scale-100 -my-6 md:my-0">
+                <div className="relative w-full h-[350px] mx-auto max-w-[400px]">
+                  {/* Kredittkort */}
+                  <div 
+                    className="absolute top-[20%] left-[10%] sm:left-[15%] md:left-[10%] lg:left-[15%] xl:left-[18%] w-[220px] h-[140px] 
+                    rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 
+                    transition-all duration-300 hover:rotate-0"
+                  >
                     <div className="flex justify-between">
                       <div className="text-white font-bold">Styr AS</div>
                       <div className="w-10 h-10 rounded-full bg-white/20"></div>
@@ -86,16 +90,20 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="absolute top-[5%] right-[20%] md:right-[25%] w-[180px] h-[330px] rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20">
+                  {/* Mobiltelefon */}
+                  <div 
+                    className="absolute top-[5%] right-[5%] sm:right-[15%] md:right-[15%] lg:right-[20%] xl:right-[25%] w-[180px] h-[330px] 
+                    rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20"
+                  >
                     <div className="h-[60px] bg-primary p-4">
                       <div className="text-white text-sm font-medium">
                         Styr App
                       </div>
                     </div>
                     <div className="p-4">
-                      <div className="text-xs text-gray-500">Saldo</div>
+                      <div className="text-xs text-gray-500">Kredittscore</div>
                       <div className="text-xl font-bold mb-6 text-primary">
-                        24 560 kr
+                        785 <span className="text-sm text-gray-500">/ 900</span>
                       </div>
                       <div className="space-y-3">
                         <div className="h-3 w-4/5 bg-primary/10 rounded-full"></div>
@@ -264,7 +272,7 @@ export default function HomePage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/auth-page">
+                <Link href="/auth">
                   <Button
                     size="lg"
                     variant="default"
