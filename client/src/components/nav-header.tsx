@@ -9,19 +9,20 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils"; // Import cn utility
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
-import { useEffect } from "react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Menu, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTheme } from "@/hooks/use-theme";
 
 export function NavHeader() {
   const { user } = useAuth();
   const [location, setLocation] = useLocation();
+  const { theme, setTheme } = useTheme();
   
   // Funksjon for å håndtere klikk på "Søk Lån" når man ikke er innlogget
   const handleLoanApplicationClick = () => {
@@ -135,7 +136,7 @@ export function NavHeader() {
     </>
   );
 
-  // Lager en unik MobileNavLink-komponent for å unngå duplisering
+  // Lager en unik MobileNavLink-komponent for å unngå duplisering i dropdown-menyen
   const MobileNavLink = ({ 
     href, 
     label, 
@@ -149,36 +150,35 @@ export function NavHeader() {
   }) => {
     const content = (
       <div className={cn(
-        "w-full px-4 py-3 rounded-md text-sm font-medium transition-colors cursor-pointer relative group",
-        active ? "text-primary bg-primary/5" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+        "w-full px-3 py-2 text-sm font-medium transition-colors cursor-pointer flex items-center",
+        active ? "text-primary bg-primary/10" : "text-foreground hover:bg-muted hover:text-primary"
       )}>
         {label}
-        <span className={cn(
-          "absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary transform transition-all duration-300 rounded-r-full",
-          active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        )}></span>
+        {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary"></span>}
       </div>
     );
 
     if (href) {
       return (
-        <Link href={href}>
-          {content}
-        </Link>
+        <DropdownMenuItem asChild className="p-0 focus:bg-transparent" onSelect={(e) => e.preventDefault()}>
+          <Link href={href} className="w-full">
+            {content}
+          </Link>
+        </DropdownMenuItem>
       );
     }
     
     return (
-      <div onClick={onClick}>
+      <DropdownMenuItem className="p-0 focus:bg-transparent" onSelect={onClick}>
         {content}
-      </div>
+      </DropdownMenuItem>
     );
   };
 
   const MobileNavItems = () => (
     <>
       {user ? (
-        <div className="flex flex-col space-y-1">
+        <>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink href={routes.loanApplication} label="Kredittvurdering" active={isActive(routes.loanApplication)} />
@@ -186,24 +186,27 @@ export function NavHeader() {
           {user.isAdmin && (
             <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
-        </div>
+        </>
       ) : (
-        <div className="flex flex-col space-y-1">
+        <>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
-          <Link href={routes.auth} className="mt-4">
-            <Button 
-              fullWidth 
-              variant="contained" 
-              color="primary"
-              className="rounded-full py-2 font-medium text-sm"
-            >
-              Logg inn
-            </Button>
-          </Link>
-        </div>
+          <DropdownMenuItem className="mt-2 p-0" asChild>
+            <Link href={routes.auth} className="w-full">
+              <Button 
+                fullWidth 
+                variant="contained" 
+                color="primary"
+                className="rounded-md py-2 font-medium text-sm w-full"
+                sx={{ textTransform: 'none' }}
+              >
+                Logg inn
+              </Button>
+            </Link>
+          </DropdownMenuItem>
+        </>
       )}
     </>
   );
@@ -237,25 +240,22 @@ export function NavHeader() {
 
         {/* Mobile Navigation - KUN synlig på mobil/nettbrett */}
         <div className="block md:hidden">
-          <Sheet>
-            <SheetTrigger asChild>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button 
                 variant="text" 
-                sx={{ minWidth: 'auto' }}
-                className="text-primary"
+                sx={{ minWidth: 'auto', padding: '10px' }}
+                className="text-primary hover:bg-primary/10 rounded-full"
               >
-                <Menu className="h-6 w-6" />
+                <Menu className="h-8 w-8" />
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>Meny</SheetTitle>
-              </SheetHeader>
-              <nav className="flex flex-col mt-6">
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 mt-2 py-2">
+              <nav className="flex flex-col">
                 <MobileNavItems />
               </nav>
-            </SheetContent>
-          </Sheet>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
