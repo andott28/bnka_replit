@@ -74,11 +74,11 @@ export function NavHeader() {
     const content = (
       <span className={cn(
         "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-        active ? "text-primary" : "text-muted-foreground hover:text-primary"
+        active ? "text-white dark:text-white" : "text-white/90 dark:text-white/90 hover:text-white dark:hover:text-white"
       )}>
         {label}
         <span className={cn(
-          "absolute left-0 right-0 bottom-0 h-[2px] bg-primary transform origin-left transition-transform duration-300",
+          "absolute left-0 right-0 bottom-0 h-[2px] bg-white dark:bg-white transform origin-left transition-transform duration-300",
           active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
         )}></span>
       </span>
@@ -187,32 +187,12 @@ export function NavHeader() {
           {user.isAdmin && (
             <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
-          
-          <DropdownMenuItem className="px-3 py-2 flex items-center justify-between">
-            <span className="text-sm font-medium">Mørk modus</span>
-            <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </button>
-          </DropdownMenuItem>
         </>
       ) : (
         <>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
-          
-          <DropdownMenuItem className="px-3 py-2 flex items-center justify-between">
-            <span className="text-sm font-medium">Mørk modus</span>
-            <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </button>
-          </DropdownMenuItem>
           
           <DropdownMenuItem className="mt-2 p-0" asChild>
             <Link href={routes.auth} className="w-full">
@@ -233,7 +213,7 @@ export function NavHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-primary text-white dark:bg-primary backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
@@ -251,22 +231,7 @@ export function NavHeader() {
         </div>
 
         {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}
-        <div className="hidden md:flex items-center gap-4">
-          {/* Theme toggle button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full w-10 h-10"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            aria-label="Toggle theme"
-          >
-            {theme === "light" ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
-          </Button>
-          
+        <div className="hidden md:flex items-center gap-4">          
           <NavigationMenu>
             <NavigationMenuList className="gap-2">
               <NavItems />
@@ -281,7 +246,7 @@ export function NavHeader() {
               <MUIButton 
                 variant="text" 
                 sx={{ minWidth: 'auto', padding: '10px' }}
-                className="text-primary hover:bg-primary/10 rounded-full"
+                className="text-white hover:bg-white/10 rounded-full"
               >
                 <Menu className="h-8 w-8" />
               </MUIButton>

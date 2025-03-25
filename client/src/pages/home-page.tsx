@@ -242,7 +242,7 @@ export default function HomePage() {
                   <Link href="/how-it-works">
                     <Button
                       variant="outline"
-                      className="group rounded-full px-6 py-5 font-medium dark:border-primary dark:text-primary"
+                      className="group rounded-full px-6 py-5 font-medium dark:border-white dark:text-white dark:hover:bg-white/10"
                     >
                       Lær mer om våre tjenester
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
