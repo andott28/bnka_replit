@@ -47,15 +47,15 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">
-                  Vi sier ja når{" "}
+                  Rettferdig kreditt for{" "}
                   <span className="relative inline-block">
-                    andre sier nei.
+                    alle nordmenn.
                     <span className="absolute bottom-1 left-0 w-full h-[3px] bg-secondary rounded-full"></span>
                   </span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 opacity-90 font-light leading-relaxed">
-                  Opplev sømløs digital banking med rask lånesøknad og
-                  personlige finansielle løsninger for din hverdag.
+                  Vår innovative AI-baserte kredittvurdering gir deg muligheten til
+                  bedre finansielle løsninger, uansett bakgrunn og livssituasjon.
                 </p>
                 <Link href="/auth-page">
                   <Button
@@ -73,7 +73,7 @@ export default function HomePage() {
                 <div className="relative w-full h-[350px]">
                   <div className="absolute top-[20%] left-[25%] md:left-[18%] w-[220px] h-[140px] rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 transition-all duration-300 hover:rotate-0">
                     <div className="flex justify-between">
-                      <div className="text-white font-bold">BNKA</div>
+                      <div className="text-white font-bold">Styr AS</div>
                       <div className="w-10 h-10 rounded-full bg-white/20"></div>
                     </div>
                     <div className="absolute bottom-4 left-4">
@@ -89,7 +89,7 @@ export default function HomePage() {
                   <div className="absolute top-[5%] right-[20%] md:right-[25%] w-[180px] h-[330px] rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20">
                     <div className="h-[60px] bg-primary p-4">
                       <div className="text-white text-sm font-medium">
-                        BNKA App
+                        Styr App
                       </div>
                     </div>
                     <div className="p-4">
@@ -116,11 +116,11 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
-                Hvorfor velge BNKA?
+                Hvorfor velge Styr AS?
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                Vi kombinerer markedsledende teknologi med personlig service for
-                å gi deg en bedre bankopplevelse
+                Vi kombinerer markedsledende AI-teknologi med personlig service for
+                å gi deg en bedre kredittvurdering
               </p>
             </div>
 
@@ -137,11 +137,11 @@ export default function HomePage() {
                     <h3 className="text-xl font-semibold mb-3">
                       {
                         [
-                          "Komplett banktjeneste",
-                          "Markedsledende renter",
+                          "AI-drevet kredittvurdering",
+                          "Rettferdige lånemuligheter",
                           "Rask behandling",
                           "Sikker plattform",
-                          "Mobilbanking",
+                          "Digital tilgjengelighet",
                           "Økonomisk innsikt",
                         ][index]
                       }
@@ -149,12 +149,12 @@ export default function HomePage() {
                     <p className="text-gray-600 leading-relaxed h-full">
                       {
                         [
-                          "Alt fra bankkontoer og kort til lån og betalinger i én sømløs plattform",
-                          "Konkurransedyktige renter på sparing og lån tilpasset din økonomi",
-                          "Få svar på lånesøknader innen 24 timer med rask utbetaling",
+                          "Vår avanserte AI analyserer flere datapunkter enn tradisjonelle kredittsystemer",
+                          "Vi hjelper deg å oppnå bedre lånebetingelser gjennom våre partnere",
+                          "Få kredittscoren din og anbefalinger innen minutter, ikke dager",
                           "Din sikkerhet er vår prioritet med BankID og moderne kryptering",
-                          "Tilgang til alle banktjenester fra vår app, når og hvor som helst",
-                          "Få oversikt over økonomien med personlige analyser og anbefalinger",
+                          "Enkel tilgang til din kredittvurdering og anbefalinger via vår app",
+                          "Få detaljert innsikt i faktorene som påvirker din kredittscore, med personlige forbedringstips",
                         ][index]
                       }
                     </p>
