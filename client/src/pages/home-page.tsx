@@ -283,7 +283,7 @@ export default function HomePage() {
                   </Button>
                 </Link>
 
-                <Link href="/contact">
+                <Link href="/kontakt">
                   <Button
                     size="lg"
                     variant="outline"

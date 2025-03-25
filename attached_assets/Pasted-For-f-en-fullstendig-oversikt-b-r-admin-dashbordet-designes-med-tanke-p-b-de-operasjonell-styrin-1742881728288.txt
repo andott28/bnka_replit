@@ -1,0 +1,51 @@
+For å få en fullstendig oversikt bør admin-dashbordet designes med tanke på både operasjonell styring og risikohåndtering. Her er noen viktige elementer og seksjoner:
+
+1. Oversikt og KPI-er
+Sammendragspanel: Viser nøkkeltall som totalt antall søknader, godkjente/avviste lån, utlånt beløp og gjennomsnittlig kredittscore.
+
+Trend- og ytelsesgrafer: Diagrammer som illustrerer søknadsvolum, utbetalinger, mislighold og kredittscoreutvikling over tid.
+
+2. Kredittvurdering og Søknadsbehandling
+Søknadsoversikt: Liste med alle lånesøknader med status (under behandling, godkjent, avvist) og tilhørende kredittvurderingsdata.
+
+Detaljsider for kredittvurderinger: Mulighet til å se dyptgående vurderingsdetaljer for hver søknad, inkludert risikofaktorer og beslutningsgrunnlag.
+
+Automatiserte varsler: Notifikasjoner for søknader som trenger manuell inngripen, f.eks. ved uvanlige kredittscore eller mistenkelig aktivitet.
+
+3. Låneadministrasjon
+Aktiv portefølje: Oversikt over alle aktive lån med informasjon om forfall, betalingshistorikk og eventuelle avvik.
+
+Forfalls- og mislighold: Sektion for lån med forsinkede betalinger eller mislighold, med tilhørende tiltak og oppfølgingsplaner.
+
+Detaljert lånehistorikk: Logg over alle utbetalinger, endringer og kommunikasjon med låntakere.
+
+4. Bruker- og Partnerbankadministrasjon
+Brukeradministrasjon: Liste over alle kunder med relevante data som kredittscore, lånehistorikk og aktivitet.
+
+Partnerbankoversikt: Administrasjonsverktøy for partnerbanker, inkludert kontrakter, ytelsesstatistikk og kommunikasjonslogg.
+
+5. Risikostyring og Compliance
+Risikomatrise: Visualisering av risiko på tvers av kundegrupper og lånetyper, med varsler for høy risiko.
+
+Compliance-rapporter: Rapporter som sikrer at alle utlån overholder regelverk og interne retningslinjer.
+
+Logg- og revisjonsspor: Sporbarhet for endringer i systemet – hvem gjorde hva, når og hvorfor.
+
+6. Databasestyring og Integrasjoner (PostgreSQL)
+Query Interface: Mulighet til å kjøre egendefinerte spørringer mot PostgreSQL-databasen for å hente ut sanntidsdata og historiske trender.
+
+Databaseoversikt: Visualisering av databasetabeller og relasjoner for en bedre forståelse av datastrukturen.
+
+Backup og gjenoppretting: Verktøy for å sikre at dataintegriteten opprettholdes, inkludert regelmessige backup-rutiner og gjenopprettingsplaner.
+
+7. Rapporter og Eksport
+Dynamiske rapporter: Generering av skreddersydde rapporter som kan eksporteres til Excel, PDF eller andre formater.
+
+Interaktive dashboards: Filtrering og drill-down-funksjoner slik at man raskt kan få detaljert innsikt i spesifikke områder.
+
+8. Sikkerhet og Tilgangskontroll
+Brukerrettigheter: Detaljert tilgangsstyring som sikrer at sensitiv informasjon kun er tilgjengelig for autorisert personell.
+
+Aktivitetslogging: Overvåking og logging av alle administrative handlinger for å kunne spore eventuelle sikkerhetsbrudd.
+
+Integrasjon med SSO (Single Sign-On): For sikker og effektiv administrasjon av bruker- og partnerbanktilganger.
