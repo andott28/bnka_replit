@@ -15,12 +15,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Menu, Moon, Sun, ChevronDown, LogOut } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
 export function NavHeader() {
-  const { user, logoutMutation } = useAuth();
+  const { user } = useAuth();
   const [location, setLocation] = useLocation();
   const { theme, setTheme } = useTheme();
   
@@ -113,26 +113,6 @@ export function NavHeader() {
           {user.isAdmin && (
             <NavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
-          
-          <NavigationMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group text-muted-foreground hover:text-primary">
-                <div className="w-5 h-5 rounded-full bg-primary/10 mr-2 flex items-center justify-center text-primary font-medium text-xs">
-                  {user.firstName?.charAt(0) || user.username?.charAt(0).toUpperCase() || 'U'}
-                </div>
-                <span>{user.firstName || user.username}</span>
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 py-2">
-                <DropdownMenuItem className="p-0 focus:bg-transparent" onSelect={() => logoutMutation.mutate()}>
-                  <div className="w-full px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/5 flex items-center cursor-pointer">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Logg ut
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </NavigationMenuItem>
         </>
       ) : (
         <>
@@ -199,19 +179,6 @@ export function NavHeader() {
     <>
       {user ? (
         <>
-          <div className="mx-3 mb-2 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-primary/10 mr-2 flex items-center justify-center text-primary font-medium text-sm">
-              {user.firstName?.charAt(0) || user.username?.charAt(0).toUpperCase() || 'U'}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">{user.firstName || user.username}</span>
-              <span className="text-xs text-muted-foreground">Innlogget</span>
-            </div>
-          </div>
-          
-          <div className="px-3 border-t border-border my-2"></div>
-          
-          <div className="px-3 py-2 text-xs font-medium text-muted-foreground">NAVIGASJON</div>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink href={routes.loanApplication} label="Kredittvurdering" active={isActive(routes.loanApplication)} />
@@ -219,33 +186,21 @@ export function NavHeader() {
           {user.isAdmin && (
             <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
-          
-          <div className="px-3 border-t border-border my-2"></div>
-          
-          <DropdownMenuItem className="p-0 focus:bg-transparent" onSelect={() => logoutMutation.mutate()}>
-            <div className="w-full px-3 py-2 text-sm font-medium text-destructive hover:bg-destructive/5 flex items-center cursor-pointer">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logg ut
-            </div>
-          </DropdownMenuItem>
         </>
       ) : (
         <>
-          <div className="px-3 py-2 text-xs font-medium text-muted-foreground">NAVIGASJON</div>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
-          <div className="px-3 pt-3 pb-1 border-t border-border mt-2"></div>
-          
-          <DropdownMenuItem className="p-0 mt-1" asChild>
+          <DropdownMenuItem className="mt-2 p-0" asChild>
             <Link href={routes.auth} className="w-full">
               <Button 
                 fullWidth 
                 variant="contained" 
                 color="primary"
-                className="rounded-md py-2 font-medium text-sm w-full mx-2"
-                sx={{ textTransform: 'none', width: 'calc(100% - 16px)' }}
+                className="rounded-md py-2 font-medium text-sm w-full"
+                sx={{ textTransform: 'none' }}
               >
                 Logg inn
               </Button>
@@ -275,66 +230,32 @@ export function NavHeader() {
         </div>
 
         {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden md:block">
           <NavigationMenu>
             <NavigationMenuList className="gap-2">
               <NavItems />
             </NavigationMenuList>
           </NavigationMenu>
-          
-          {/* Theme toggle knapp */}
-          <Button
-            variant="text"
-            sx={{ minWidth: 'auto', padding: '8px' }}
-            className="ml-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            aria-label={theme === "dark" ? "Bytt til lyst tema" : "Bytt til mørkt tema"}
-            title={theme === "dark" ? "Bytt til lyst tema" : "Bytt til mørkt tema"}
-          >
-            {theme === "dark" ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-          </Button>
         </div>
 
         {/* Mobile Navigation - KUN synlig på mobil/nettbrett */}
         <div className="block md:hidden">
-          <div className="flex items-center gap-2">
-            {/* Theme toggle knapp for mobil */}
-            <Button
-              variant="text"
-              sx={{ minWidth: 'auto', padding: '8px' }}
-              className="text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label={theme === "dark" ? "Bytt til lyst tema" : "Bytt til mørkt tema"}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-            
-            {/* Hamburger menu dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="text" 
-                  sx={{ minWidth: 'auto', padding: '10px' }}
-                  className="text-primary hover:bg-primary/10 rounded-full"
-                >
-                  <Menu className="h-8 w-8" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 mt-2 py-2">
-                <nav className="flex flex-col">
-                  <MobileNavItems />
-                </nav>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="text" 
+                sx={{ minWidth: 'auto', padding: '10px' }}
+                className="text-primary hover:bg-primary/10 rounded-full"
+              >
+                <Menu className="h-8 w-8" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 mt-2 py-2">
+              <nav className="flex flex-col">
+                <MobileNavItems />
+              </nav>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>
