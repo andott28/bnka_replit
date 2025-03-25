@@ -56,7 +56,7 @@ function Calendar({
       month={currentMonth}
       onMonthChange={handleMonthChange}
       showOutsideDays={showOutsideDays}
-      className={cn("p-4 bg-white rounded-xl shadow-lg", className)}
+      className={cn("p-4 rounded-xl shadow-lg dark:bg-[#2A2A2A] bg-white", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
@@ -72,7 +72,7 @@ function Calendar({
         table: "w-full border-collapse space-y-1",
         head_row: "flex",
         head_cell:
-          "text-muted-foreground rounded-md w-10 font-medium text-[0.8rem] h-10 flex items-center justify-center",
+          "text-muted-foreground dark:text-gray-300 rounded-md w-10 font-medium text-[0.8rem] h-10 flex items-center justify-center",
         row: "flex w-full mt-2",
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 h-10 w-10",
@@ -80,7 +80,7 @@ function Calendar({
         ),
         day: cn(
           "h-9 w-9 p-0 font-normal rounded-full flex items-center justify-center",
-          "hover:bg-gray-100 transition-colors",
+          "hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors dark:text-white",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-25",
         ),
         day_selected:
@@ -111,7 +111,7 @@ function Calendar({
                     aria-label="Velg måned"
                     className="appearance-none bg-transparent pl-3 pr-9 py-1.5 text-sm font-medium rounded-full 
                       border-0 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-25 
-                      text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
+                      dark:text-white text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                     value={month}
                     onChange={(e) => {
                       const newDate = new Date(displayMonth);
@@ -150,7 +150,7 @@ function Calendar({
                     aria-label="Velg år"
                     className="appearance-none bg-transparent pl-3 pr-9 py-1.5 text-sm font-medium rounded-full 
                       border-0 focus:outline-none focus:ring-1 focus:ring-primary focus:ring-opacity-25 
-                      text-gray-800 hover:bg-gray-100 transition-colors cursor-pointer"
+                      dark:text-white text-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
                     value={year}
                     onChange={(e) => {
                       const newDate = new Date(displayMonth);

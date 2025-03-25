@@ -719,7 +719,7 @@ export default function LoanApplication() {
           />
         </FormControl>
 
-        <Box sx={{ border: "1px solid #e0e0e0", borderRadius: 2, p: 2 }}>
+        <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -831,7 +831,7 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box sx={{ border: "1px solid #e0e0e0", borderRadius: 2, p: 2 }}>
+        <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
