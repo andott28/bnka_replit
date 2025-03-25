@@ -19,7 +19,7 @@ import {
   Typography,
   ThemeProvider,
   createTheme,
-  useTheme,
+  CssBaseline,
 } from "@mui/material";
 import { Upload } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -28,7 +28,7 @@ import * as z from "zod";
 import { DatePicker } from "@/components/ui/date-picker";
 import { addYears, isAfter, isBefore } from "date-fns";
 import { nb } from "date-fns/locale";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { BankIDDialog } from "@/components/bankid-dialog";
 import { LoanApplicationStepper } from "@/components/loan-application-stepper";
 import { usePostHog } from "@/lib/posthog-provider";
@@ -491,7 +491,17 @@ export default function LoanApplication() {
   };
 
   const PersonalInfoStep = () => (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      gap: 3,
+      '& p.text-gray-500': {
+        color: appTheme === 'dark' ? 'rgba(209, 213, 219, 0.8)' : '',
+      },
+      '& p.text-red-500': {
+        color: '#EF4444',
+      }
+    }}>
       <div style={{ position: "relative" }}>
         <DatePicker
           label="Fødselsdato *"
@@ -625,7 +635,21 @@ export default function LoanApplication() {
     const isPayingStudentLoan = form.watch("isPayingStudentLoan");
 
     return (
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{ 
+        display: "flex", 
+        flexDirection: "column", 
+        gap: 3,
+        '& .MuiBox-root': {
+          border: appTheme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e0e0e0',
+          backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+        },
+        '& .MuiTypography-root': {
+          color: appTheme === 'dark' ? '#fff' : 'inherit',
+        },
+        '& .MuiFormControlLabel-label': {
+          color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
+        }
+      }}>
         <FormControl fullWidth>
           <TextField
             fullWidth
@@ -1315,7 +1339,7 @@ export default function LoanApplication() {
                 handleBack={handleBack}
                 isLastStep={activeStep === steps.length - 1}
                 isFormValid={!!steps[activeStep].isValid}
-          >
+              >
                 {activeStep === 0 && <PersonalInfoStep />}
                 {activeStep === 1 && <FinancialInfoStep />}
                 {activeStep === 2 && <VerificationStep />}
