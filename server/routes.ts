@@ -315,13 +315,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Step 2: Delete all loans for this user first (to maintain referential integrity)
       for (const loan of userLoans) {
-        await pool.query(`DELETE FROM loan_applications WHERE id = $1`, [loan.id]);
+        await pool.query(`DELETE FROM loan_applications WHERE id = $1;`, [loan.id]);
       }
       
       // Step 3: Delete the user
-      const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING id`, [userId]);
+      const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING id;`, [userId]);
       
-      if (result.length === 0) {
+      if (!result.rowCount || result.rowCount === 0) {
         return res.status(404).json({ error: "User not found" });
       }
       

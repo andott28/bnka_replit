@@ -419,18 +419,18 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="rounded-md border">
-                  <Table>
+                <div className="rounded-md border overflow-x-auto">
+                  <Table className="min-w-[900px]">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>Bruker</TableHead>
-                        <TableHead>Beløp</TableHead>
-                        <TableHead>Formål</TableHead>
-                        <TableHead>Kredittscore</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Dato</TableHead>
-                        <TableHead>Handlinger</TableHead>
+                        <TableHead className="w-[60px]">ID</TableHead>
+                        <TableHead className="w-[200px]">Bruker</TableHead>
+                        <TableHead className="w-[120px]">Beløp</TableHead>
+                        <TableHead className="hidden md:table-cell">Formål</TableHead>
+                        <TableHead className="w-[120px]">Kredittscore</TableHead>
+                        <TableHead className="w-[100px]">Status</TableHead>
+                        <TableHead className="hidden md:table-cell">Dato</TableHead>
+                        <TableHead className="w-[100px]">Handlinger</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -457,7 +457,7 @@ export default function AdminDashboard() {
                               {users.find(u => u.id === loan.userId)?.username || `Bruker #${loan.userId}`}
                             </TableCell>
                             <TableCell>{loan.amount} NOK</TableCell>
-                            <TableCell>{loan.purpose}</TableCell>
+                            <TableCell className="hidden md:table-cell">{loan.purpose}</TableCell>
                             <TableCell>
                               {loan.creditScore ? (
                                 <Badge variant="outline">{loan.creditScore}</Badge>
@@ -481,7 +481,7 @@ export default function AdminDashboard() {
                                  loan.status?.toUpperCase()}
                               </Badge>
                             </TableCell>
-                            <TableCell>
+                            <TableCell className="hidden md:table-cell">
                               {new Date(loan.submittedAt).toLocaleDateString('nb-NO', {
                                 year: 'numeric',
                                 month: 'short',
