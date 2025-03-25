@@ -112,12 +112,12 @@ export default function Dashboard() {
                     <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-800">
                       Verifisert med BankID
                     </Badge>
-                    <p className="text-sm text-gray-500">Din identitet er bekreftet via BankID</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Din identitet er bekreftet via BankID</p>
                   </>
                 ) : (
                   <>
                     <Badge variant="outline">Ikke verifisert</Badge>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Du kan verifisere din identitet ved å søke om lån eller gå til kontoinnstillinger
                     </p>
                     <Link to="/loan-application">
@@ -139,16 +139,16 @@ export default function Dashboard() {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <h3 className="text-sm text-gray-500">Total Saldo</h3>
-                  <p className="text-2xl font-semibold text-green-600">0 NOK</p>
+                  <h3 className="text-sm text-gray-500 dark:text-gray-400">Total Saldo</h3>
+                  <p className="text-2xl font-semibold text-green-600 dark:text-green-500">0 NOK</p>
                 </div>
                 <div>
-                  <h3 className="text-sm text-gray-500">Tilgjengelig Kreditt</h3>
-                  <p className="text-2xl font-semibold">0 NOK</p>
+                  <h3 className="text-sm text-gray-500 dark:text-gray-400">Tilgjengelig Kreditt</h3>
+                  <p className="text-2xl font-semibold dark:text-white">0 NOK</p>
                 </div>
                 <div>
-                  <h3 className="text-sm text-gray-500">Neste Forfallsdato</h3>
-                  <p className="text-2xl font-semibold">Ingen</p>
+                  <h3 className="text-sm text-gray-500 dark:text-gray-400">Neste Forfallsdato</h3>
+                  <p className="text-2xl font-semibold dark:text-white">Ingen</p>
                 </div>
               </div>
             </CardContent>
@@ -164,7 +164,7 @@ export default function Dashboard() {
             <CardContent className={loans && loans.length > 0 ? "max-h-[400px] overflow-y-auto" : ""}>
               {loans?.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-6 space-y-3">
-                  <p className="text-gray-500 text-center">
+                  <p className="text-gray-500 dark:text-gray-400 text-center">
                     Du har ingen lånesøknader ennå
                   </p>
                   <Link to="/loan-application">
@@ -178,12 +178,12 @@ export default function Dashboard() {
                   {loans?.map((loan) => (
                     <div 
                       key={loan.id} 
-                      className="flex justify-between items-center border-b pb-3 cursor-pointer hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                      className="flex justify-between items-center border-b pb-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-3 rounded-lg transition-colors"
                       onClick={() => setSelectedLoan(loan)}
                     >
                       <div>
-                        <p className="font-medium">Lånesøknad #{loan.id}</p>
-                        <p className="text-sm text-gray-500">{formatNOK(loan.amount)}</p>
+                        <p className="font-medium dark:text-white">Lånesøknad #{loan.id}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{formatNOK(loan.amount)}</p>
                       </div>
                       <Badge
                         variant={
@@ -270,8 +270,8 @@ export default function Dashboard() {
               <CardDescription>Kommer snart</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 bg-gray-100 rounded-lg">
-                <p className="text-gray-500">Kredittvurdering vil være tilgjengelig i neste oppdatering</p>
+              <div className="flex items-center justify-center h-32 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <p className="text-gray-500 dark:text-gray-400">Kredittvurdering vil være tilgjengelig i neste oppdatering</p>
               </div>
             </CardContent>
           </Card>
@@ -283,8 +283,8 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-center space-y-4">
-                <CreditCard className="h-12 w-12 mx-auto text-gray-400" />
-                <p className="text-gray-600">Du har ingen kredittkort hos oss ennå</p>
+                <CreditCard className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500" />
+                <p className="text-gray-600 dark:text-gray-400">Du har ingen kredittkort hos oss ennå</p>
                 <Button className="w-full max-w-md">
                   Søk om kredittkort nå
                 </Button>
@@ -299,7 +299,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <p className="text-gray-500 text-center py-4">
+                <p className="text-gray-500 dark:text-gray-400 text-center py-4">
                   Ingen transaksjoner å vise
                 </p>
               </div>
@@ -313,10 +313,10 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <Sun className="h-5 w-5" />
-                    <span>Tema</span>
+                    <Sun className="h-5 w-5 dark:text-gray-300" />
+                    <span className="dark:text-gray-300">Tema</span>
                   </div>
                   <Button 
                     variant="outline"
@@ -325,14 +325,14 @@ export default function Dashboard() {
                     {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
                   </Button>
                 </div>
-                <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <Lock className="h-5 w-5" />
-                    <span>Endre passord</span>
+                    <Lock className="h-5 w-5 dark:text-gray-300" />
+                    <span className="dark:text-gray-300">Endre passord</span>
                   </div>
                   <Button variant="outline">Endre</Button>
                 </div>
-                <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
                   <div 
                     className="flex items-center gap-2 cursor-pointer w-full" 
                     onClick={() => {
