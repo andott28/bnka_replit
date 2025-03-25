@@ -17,6 +17,9 @@ import {
   MenuItem,
   Select,
   Typography,
+  ThemeProvider,
+  createTheme,
+  useTheme,
 } from "@mui/material";
 import { Upload } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -25,23 +28,120 @@ import * as z from "zod";
 import { DatePicker } from "@/components/ui/date-picker";
 import { addYears, isAfter, isBefore } from "date-fns";
 import { nb } from "date-fns/locale";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { BankIDDialog } from "@/components/bankid-dialog";
 import { LoanApplicationStepper } from "@/components/loan-application-stepper";
 import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
+import { useTheme as useThemeHook } from "@/hooks/use-theme";
 
 export default function LoanApplication() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
   const { trackEvent } = usePostHog();
+  const { theme: appTheme } = useThemeHook();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showBankID, setShowBankID] = useState(false);
   const [isBankIDVerified, setIsBankIDVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  
+  // Create a MUI theme that respects our app's theme (light/dark)
+  const muiTheme = useMemo(() => 
+    createTheme({
+      palette: {
+        mode: appTheme === 'dark' ? 'dark' : 'light',
+        primary: {
+          main: '#3B82F6', // Material Design V3 primary blue
+        },
+        secondary: {
+          main: '#10B981', // Material Design V3 secondary green
+        },
+        background: {
+          default: appTheme === 'dark' ? '#1E1E1E' : '#FFFFFF',
+          paper: appTheme === 'dark' ? '#2A2A2A' : '#FFFFFF',
+        },
+        text: {
+          primary: appTheme === 'dark' ? '#FFFFFF' : '#000000',
+          secondary: appTheme === 'dark' ? '#AAAAAA' : '#666666',
+        },
+        error: {
+          main: '#EF4444', // Material Design V3 error red
+        },
+      },
+      components: {
+        MuiOutlinedInput: {
+          styleOverrides: {
+            root: {
+              borderRadius: 8,
+              backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+              '&:hover .MuiOutlinedInput-notchedOutline': {
+                borderColor: appTheme === 'dark' ? '#3B82F6' : '#3B82F6',
+              },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#3B82F6',
+              },
+            },
+            notchedOutline: {
+              borderColor: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
+            },
+          },
+        },
+        MuiFormLabel: {
+          styleOverrides: {
+            root: {
+              color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+              '&.Mui-focused': {
+                color: '#3B82F6',
+              },
+            },
+          },
+        },
+        MuiMenuItem: {
+          styleOverrides: {
+            root: {
+              '&:hover': {
+                backgroundColor: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+              },
+            },
+          },
+        },
+        MuiCheckbox: {
+          styleOverrides: {
+            root: {
+              color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+            },
+          },
+        },
+        MuiButton: {
+          styleOverrides: {
+            root: {
+              textTransform: 'none',
+              borderRadius: 8,
+            },
+            contained: {
+              boxShadow: 'none',
+              '&:hover': {
+                boxShadow: 'none',
+              },
+            },
+          },
+        },
+      },
+      shape: {
+        borderRadius: 8,
+      },
+      typography: {
+        fontFamily: 'var(--font-sans)',
+        button: {
+          textTransform: 'none',
+        },
+      },
+    }),
+    [appTheme]
+  );
 
   const form = useForm({
     resolver: zodResolver(
@@ -1197,23 +1297,39 @@ export default function LoanApplication() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen ${appTheme === 'dark' ? 'bg-gray-900' : 'bg-background'}`}>
       <NavHeader />
-      <main className="container mx-auto px-4 py-8">
-        <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
-          <LoanApplicationStepper
-            activeStep={activeStep}
-            handleNext={handleNext}
-            handleBack={handleBack}
-            isLastStep={activeStep === steps.length - 1}
-            isFormValid={!!steps[activeStep].isValid}
+      <ThemeProvider theme={muiTheme}>
+        <main className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h1 className={`text-2xl font-bold mb-2 ${appTheme === 'dark' ? 'text-white' : ''}`}>Søk om lån</h1>
+            <p className={`${appTheme === 'dark' ? 'text-gray-300' : 'text-slate-500'}`}>
+              Fyll ut skjemaet under for å søke om lån. Vi behandler søknaden så raskt som mulig.
+            </p>
+          </div>
+          <div className={`${appTheme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white'} shadow-sm rounded-lg p-6`}>
+            <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
+              <LoanApplicationStepper
+                activeStep={activeStep}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                isLastStep={activeStep === steps.length - 1}
+                isFormValid={!!steps[activeStep].isValid}
           >
-            {activeStep === 0 && <PersonalInfoStep />}
-            {activeStep === 1 && <FinancialInfoStep />}
-            {activeStep === 2 && <VerificationStep />}
-          </LoanApplicationStepper>
-        </form>
-      </main>
+                {activeStep === 0 && <PersonalInfoStep />}
+                {activeStep === 1 && <FinancialInfoStep />}
+                {activeStep === 2 && <VerificationStep />}
+              </LoanApplicationStepper>
+            </form>
+          </div>
+        </main>
+      </ThemeProvider>
+      
+      <BankIDDialog
+        open={showBankID}
+        onOpenChange={setShowBankID}
+        onSuccess={handleBankIDSuccess}
+      />
     </div>
   );
 }
