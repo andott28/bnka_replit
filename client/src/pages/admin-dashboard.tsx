@@ -329,11 +329,23 @@ export default function AdminDashboard() {
                             ]}
                             cx="50%"
                             cy="50%"
-                            labelLine={false}
+                            labelLine={true}
                             outerRadius={80}
                             fill="#8884d8"
                             dataKey="value"
-                            label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                            label={({name, percent, x, y}) => {
+                              return (
+                                <text 
+                                  x={x} 
+                                  y={y} 
+                                  fill="#888"
+                                  textAnchor={x > 200 ? "start" : "end"}
+                                  dominantBaseline="middle"
+                                >
+                                  {`${name}: ${(percent * 100).toFixed(0)}%`}
+                                </text>
+                              );
+                            }}
                           >
                             {[
                               { name: 'Pending', color: '#F59E0B' },
@@ -1073,6 +1085,36 @@ export default function AdminDashboard() {
                 </div>
               </div>
               
+              <div className="mt-6 border-t pt-4">
+                <h3 className="font-medium mb-2 text-destructive">Fare sone</h3>
+                <Button 
+                  variant="destructive" 
+                  size="sm"
+                  onClick={async () => {
+                    const confirmed = window.confirm("Er du sikker på at du vil slette denne lånesøknaden? Dette kan ikke angres.");
+                    if (!confirmed) return;
+                    
+                    try {
+                      await axios.delete(`/api/loans/${selectedLoan.id}`);
+                      setLoanDetailsOpen(false);
+                      setLoans(prevLoans => prevLoans.filter(loan => loan.id !== selectedLoan.id));
+                      toast({
+                        title: "Lånesøknad slettet",
+                        description: `Lånesøknad #${selectedLoan.id} er nå slettet`,
+                        variant: "default",
+                      });
+                    } catch (error) {
+                      toast({
+                        title: "Feil",
+                        description: "Kunne ikke slette lånesøknaden",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                >
+                  Slett lånesøknad
+                </Button>
+              </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setLoanDetailsOpen(false)}>
                   Lukk

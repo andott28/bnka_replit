@@ -226,6 +226,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(users);
   });
 
+  // Delete loan application
+  app.delete("/api/loans/:id", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+
+    const loanId = parseInt(req.params.id);
+    try {
+      await pool.query('DELETE FROM loan_applications WHERE id = $1', [loanId]);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting loan:", error);
+      res.status(500).json({ error: "Could not delete loan application" });
+    }
+  });
+
   app.patch("/api/loans/:id/status", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isAdmin) {
       return res.sendStatus(401);
