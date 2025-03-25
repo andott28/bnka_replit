@@ -523,18 +523,18 @@ export default function AdminDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="rounded-md border">
-                  <Table>
+                <div className="rounded-md border overflow-x-auto">
+                  <Table className="min-w-[900px]">
                     <TableHeader>
                       <TableRow>
-                        <TableHead>ID</TableHead>
-                        <TableHead>E-post</TableHead>
-                        <TableHead>Navn</TableHead>
-                        <TableHead>Telefon</TableHead>
-                        <TableHead>KYC Status</TableHead>
-                        <TableHead>Kryptert Passord</TableHead>
-                        <TableHead>Registrert</TableHead>
-                        <TableHead>Handlinger</TableHead>
+                        <TableHead className="w-[60px]">ID</TableHead>
+                        <TableHead className="w-[200px]">E-post</TableHead>
+                        <TableHead className="w-[180px]">Navn</TableHead>
+                        <TableHead className="hidden md:table-cell">Telefon</TableHead>
+                        <TableHead className="w-[100px]">KYC Status</TableHead>
+                        <TableHead className="hidden md:table-cell">Passord</TableHead>
+                        <TableHead className="hidden md:table-cell">Registrert</TableHead>
+                        <TableHead className="w-[120px]">Handlinger</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -545,7 +545,7 @@ export default function AdminDashboard() {
                           <TableCell>
                             {userData.firstName} {userData.lastName}
                           </TableCell>
-                          <TableCell>{userData.phoneNumber}</TableCell>
+                          <TableCell className="hidden md:table-cell">{userData.phoneNumber}</TableCell>
                           <TableCell>
                             <Badge
                               variant={
@@ -562,7 +562,7 @@ export default function AdminDashboard() {
                                userData.kycStatus?.toUpperCase()}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             <div className="flex items-center space-x-2">
                               <code 
                                 className="text-xs break-all bg-gray-100 p-1 rounded cursor-pointer"
@@ -574,14 +574,15 @@ export default function AdminDashboard() {
                               </code>
                             </div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {new Date(userData.createdAt).toLocaleDateString('nb-NO')}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
+                            <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                               <Button 
                                 variant="outline" 
                                 size="sm"
+                                className="w-full sm:w-auto"
                                 onClick={() => handleEditUser(userData)}
                               >
                                 Rediger
@@ -591,6 +592,7 @@ export default function AdminDashboard() {
                                 <Button 
                                   variant="destructive" 
                                   size="sm"
+                                  className="w-full sm:w-auto"
                                   onClick={() => {
                                     if (window.confirm(`Er du sikker på at du vil slette brukeren ${userData.username}? Dette vil også slette alle brukerens lånesøknader.`)) {
                                       axios.delete(`/api/users/${userData.id}`)
@@ -881,13 +883,17 @@ export default function AdminDashboard() {
                           <TableBody>
                             {sqlResults.map((row, rowIndex) => (
                               <TableRow key={rowIndex}>
-                                {Object.values(row).map((value: any, valIndex) => (
-                                  <TableCell key={valIndex}>
-                                    {value === null ? 'NULL' : 
-                                     typeof value === 'object' ? JSON.stringify(value) : 
-                                     String(value)}
-                                  </TableCell>
-                                ))}
+                                {Object.values(row).map((value: unknown, valIndex) => {
+                                  const displayValue = value === null ? 'NULL' : 
+                                      typeof value === 'object' ? JSON.stringify(value) : 
+                                      String(value);
+                                  
+                                  return (
+                                    <TableCell key={valIndex}>
+                                      {displayValue}
+                                    </TableCell>
+                                  );
+                                })}
                               </TableRow>
                             ))}
                           </TableBody>
@@ -993,10 +999,16 @@ export default function AdminDashboard() {
                   <h3 className="font-medium mb-2">Kredittvurdering</h3>
                   <div className="bg-gray-50 p-3 rounded text-sm">
                     <pre className="whitespace-pre-wrap overflow-x-auto">
-                      {typeof selectedLoan.creditScoreDetails === 'string' 
-                        ? JSON.stringify(JSON.parse(selectedLoan.creditScoreDetails), null, 2)
-                        : JSON.stringify(selectedLoan.creditScoreDetails, null, 2)
-                      }
+                      {(() => {
+                        try {
+                          if (typeof selectedLoan.creditScoreDetails === 'string') {
+                            return JSON.stringify(JSON.parse(selectedLoan.creditScoreDetails), null, 2);
+                          } 
+                          return JSON.stringify(selectedLoan.creditScoreDetails, null, 2);
+                        } catch (e) {
+                          return String(selectedLoan.creditScoreDetails);
+                        }
+                      })()}
                     </pre>
                   </div>
                 </div>
