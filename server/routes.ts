@@ -4,6 +4,7 @@ import { setupAuth } from "./auth";
 import { storage } from "./storage";
 import { insertLoanApplicationSchema } from "@shared/schema";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { db, pool } from "./db";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -290,6 +291,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating user:", error);
       res.status(500).json({ error: "Failed to update user information" });
+    }
+  });
+  
+  // SQL Query endpoint for admin dashboard
+  app.post("/api/admin/execute-sql", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+
+    const { query } = req.body;
+    
+    if (!query || typeof query !== 'string' || query.trim() === '') {
+      return res.status(400).json({ message: 'Ugyldig SQL spørring' });
+    }
+    
+    // Basic security check to prevent destructive operations
+    const lowerQuery = query.toLowerCase();
+    if (
+      lowerQuery.includes('drop table') || 
+      lowerQuery.includes('truncate table') ||
+      (lowerQuery.includes('delete') && !lowerQuery.includes('where')) ||
+      (lowerQuery.includes('update') && !lowerQuery.includes('where'))
+    ) {
+      return res.status(403).json({ 
+        message: 'Potensielt farlig SQL-spørring avvist. Sørg for at DELETE/UPDATE har WHERE-betingelser og at du ikke bruker DROP/TRUNCATE.' 
+      });
+    }
+
+    try {
+      console.log("Executing SQL query:", query);
+      const result = await pool.query(query);
+      res.json(result.rows);
+    } catch (error) {
+      console.error("SQL query error:", error);
+      res.status(500).json({ 
+        message: error instanceof Error ? error.message : 'Ukjent SQL-feil'
+      });
     }
   });
 
