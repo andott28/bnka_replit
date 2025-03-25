@@ -74,11 +74,11 @@ export function NavHeader() {
     const content = (
       <span className={cn(
         "relative px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer group",
-        active ? "text-white dark:text-white" : "text-white/90 dark:text-white/90 hover:text-white dark:hover:text-white"
+        active ? "text-primary dark:text-primary" : "text-muted-foreground hover:text-primary dark:text-[#E0E0E0] dark:hover:text-primary"
       )}>
         {label}
         <span className={cn(
-          "absolute left-0 right-0 bottom-0 h-[2px] bg-white dark:bg-white transform origin-left transition-transform duration-300",
+          "absolute left-0 right-0 bottom-0 h-[2px] bg-primary dark:bg-primary transform origin-left transition-transform duration-300",
           active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
         )}></span>
       </span>
@@ -213,7 +213,7 @@ export function NavHeader() {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-primary text-white dark:bg-primary backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 dark:bg-[#121212] backdrop-blur-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo - Til venstre */}
         <div className="flex-shrink-0">
@@ -246,7 +246,7 @@ export function NavHeader() {
               <MUIButton 
                 variant="text" 
                 sx={{ minWidth: 'auto', padding: '10px' }}
-                className="text-white hover:bg-white/10 rounded-full"
+                className="text-foreground dark:text-white hover:bg-muted dark:hover:bg-white/10 rounded-full"
               >
                 <Menu className="h-8 w-8" />
               </MUIButton>

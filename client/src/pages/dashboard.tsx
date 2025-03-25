@@ -93,11 +93,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#121212]">
       <NavHeader />
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Min Side</h1>
+        <h1 className="text-3xl font-bold mb-8 dark:text-[#FAFAFA]">Min Side</h1>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Verifiseringsstatus */}
