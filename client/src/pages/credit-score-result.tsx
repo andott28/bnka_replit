@@ -1,11 +1,12 @@
+
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Button, Alert, CircularProgress } from "@mui/material";
+import { Card, CardContent, CardHeader, Typography, Box, List, ListItem, ListItemIcon, ListItemText, Button, Alert, CircularProgress, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { Check, Warning, TrendingUp, TrendingDown, Lightbulb, ArrowBack } from "@mui/icons-material";
 import { useLocation } from "wouter";
 import { NavHeader } from "@/components/nav-header";
 import { usePostHog } from "@/lib/posthog-provider";
 import { AnalyticsEvents } from "@/lib/posthog-provider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const gradeColors = {
@@ -21,6 +22,14 @@ export default function CreditScoreResult() {
   const [location, setLocation] = useLocation();
   const { trackEvent } = usePostHog();
   const { toast } = useToast();
+  
+  const [showStudentLoanDetails, setShowStudentLoanDetails] = useState(false);
+  const [showSavingsDetails, setShowSavingsDetails] = useState(false);
+  const [showAssetsDetails, setShowAssetsDetails] = useState(false);
+
+  const handleStudentLoanChange = () => setShowStudentLoanDetails(!showStudentLoanDetails);
+  const handleSavingsChange = () => setShowSavingsDetails(!showSavingsDetails);
+  const handleAssetsChange = () => setShowAssetsDetails(!showAssetsDetails);
   
   const { data: creditScore, isLoading, error, isError } = useQuery({
     queryKey: ["/api/loans/latest-credit-score"],
@@ -223,7 +232,7 @@ export default function CreditScoreResult() {
                       onChange={handleAssetsChange}
                     />
                   </FormGroup>
-                </Box>aphy>
+                </Box>
               </Box>
             </Box>
 
