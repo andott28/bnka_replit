@@ -254,8 +254,9 @@ export function NavHeader() {
         <div className="hidden md:flex items-center gap-4">
           {/* Theme toggle button */}
           <Button
-            variant="text"
-            className="min-w-0 w-10 h-10 rounded-full p-0"
+            variant="ghost"
+            size="icon"
+            className="rounded-full w-10 h-10"
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             aria-label="Toggle theme"
           >
@@ -277,13 +278,13 @@ export function NavHeader() {
         <div className="block md:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
+              <MUIButton 
                 variant="text" 
                 sx={{ minWidth: 'auto', padding: '10px' }}
                 className="text-primary hover:bg-primary/10 rounded-full"
               >
                 <Menu className="h-8 w-8" />
-              </Button>
+              </MUIButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-2 py-2">
               <nav className="flex flex-col">

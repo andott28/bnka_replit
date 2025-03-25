@@ -1009,16 +1009,23 @@ export default function AdminDashboard() {
               {selectedLoan.creditScoreDetails && (
                 <div className="mt-4 border-t pt-4">
                   <h3 className="font-medium mb-2">Kredittvurdering</h3>
-                  <div className="bg-gray-50 p-3 rounded text-sm">
+                  <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded text-sm">
                     <pre className="whitespace-pre-wrap overflow-x-auto">
                       {(() => {
                         try {
                           if (typeof selectedLoan.creditScoreDetails === 'string') {
-                            return JSON.stringify(JSON.parse(selectedLoan.creditScoreDetails), null, 2);
+                            const parsed = JSON.parse(selectedLoan.creditScoreDetails);
+                            return JSON.stringify(parsed, null, 2);
                           } 
-                          return JSON.stringify(selectedLoan.creditScoreDetails, null, 2);
+                          if (selectedLoan.creditScoreDetails && typeof selectedLoan.creditScoreDetails === 'object') {
+                            return JSON.stringify(selectedLoan.creditScoreDetails, null, 2);
+                          }
+                          return String(selectedLoan.creditScoreDetails || '');
                         } catch (e) {
-                          return String(selectedLoan.creditScoreDetails);
+                          if (selectedLoan.creditScoreDetails) {
+                            return String(selectedLoan.creditScoreDetails);
+                          }
+                          return '';
                         }
                       })()}
                     </pre>

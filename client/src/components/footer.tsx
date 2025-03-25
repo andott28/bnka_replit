@@ -1,79 +1,90 @@
 import { Link as RouterLink } from 'wouter';
 import { Box, Container, Typography, Link, Grid } from '@mui/material';
 import { useAuth } from '@/hooks/use-auth';
+import { useTheme } from '@/hooks/use-theme';
 
 export function Footer() {
   const { user } = useAuth();
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   return (
-    <>
-      <Box
-        component="footer"
-        sx={{
-          py: 4,
-          px: 2,
-          mt: 'auto',
-          backgroundColor: theme => theme.palette.mode === 'light' ? 'grey.100' : 'grey.900'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={4} justifyContent="space-between">
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" color="text.primary" gutterBottom>
-                BNKA
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Din digitale bankpartner med fokus på sikkerhet, brukervennlighet og moderne løsninger.
-              </Typography>
-            </Grid>
-            
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" color="text.primary" gutterBottom>
-                Kontakt
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Storgata 1
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                0151 Oslo
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                kontakt@bnka.no
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                +47 22 12 34 56
-              </Typography>
-            </Grid>
-            
-            <Grid item xs={12} sm={4}>
-              <Typography variant="h6" color="text.primary" gutterBottom>
-                Lenker
-              </Typography>
-              <Link component={RouterLink} to="/" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
-                Hjem
-              </Link>
-              <Link component={RouterLink} to="/tjenester" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
-                Tjenester
-              </Link>
-              <Link component={RouterLink} to="/kontakt" color="text.secondary" display="block" sx={{ mb: 1, fontSize: '0.875rem' }}>
-                Kontakt oss
-              </Link>
-            </Grid>
-          </Grid>
+    <footer className={`py-16 ${isDarkMode ? 'bg-[#121212] text-white' : 'bg-gray-50 text-gray-800'}`}>
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-[#E0E0E0]' : 'text-gray-900'}`}>
+              Styr AS
+            </h3>
+            <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'} max-w-xs`}>
+              Vår innovative kredittvurdering gir deg bedre muligheter og rettferdige finansieringsalternativer.
+            </p>
+          </div>
           
-          <Box mt={5}>
-            <Typography variant="body2" color="text.secondary" align="center">
-              © {new Date().getFullYear()} BNKA | 
-              <Link component={RouterLink} to="/terms-of-service" color="text.secondary" sx={{ mx: 0.5, fontSize: '0.875rem' }}>
+          <div>
+            <h3 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-[#E0E0E0]' : 'text-gray-900'}`}>
+              Kontakt
+            </h3>
+            <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
+              Storgata 1
+            </p>
+            <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
+              0151 Oslo
+            </p>
+            <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
+              kontakt@styr.no
+            </p>
+            <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
+              +47 22 12 34 56
+            </p>
+          </div>
+          
+          <div>
+            <h3 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-[#E0E0E0]' : 'text-gray-900'}`}>
+              Lenker
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <RouterLink to="/">
+                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                    Hjem
+                  </a>
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/how-it-works">
+                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                    Hvordan det fungerer
+                  </a>
+                </RouterLink>
+              </li>
+              <li>
+                <RouterLink to="/contact">
+                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                    Kontakt oss
+                  </a>
+                </RouterLink>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className={`border-t ${isDarkMode ? 'border-[#2A2A2A]' : 'border-gray-200'} mt-12 pt-8 text-center`}>
+          <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
+            © {new Date().getFullYear()} Styr AS | 
+            <RouterLink to="/terms-of-service">
+              <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                 Brukervilkår
-              </Link> | 
-              <Link component={RouterLink} to="/privacy-policy" color="text.secondary" sx={{ mx: 0.5, fontSize: '0.875rem' }}>
-                Personvernerklæring og informasjonskapsler
-              </Link>
-            </Typography>
-          </Box>
-        </Container>
-      </Box>
-    </>
+              </a>
+            </RouterLink> | 
+            <RouterLink to="/privacy-policy">
+              <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                Personvernerklæring
+              </a>
+            </RouterLink>
+          </p>
+        </div>
+      </div>
+    </footer>
   );
 }

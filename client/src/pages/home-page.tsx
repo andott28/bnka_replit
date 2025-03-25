@@ -36,9 +36,9 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <NavHeader />
 
-      <main className="flex-1">
+      <main className="flex-1 dark:bg-[#121212]">
         {/* Hero Section */}
-        <section className="relative bg-primary text-white py-20 md:py-28 overflow-hidden">
+        <section className="relative bg-primary dark:bg-primary text-white py-20 md:py-28 overflow-hidden">
           <div className="absolute top-[-10%] right-[-5%] w-[300px] h-[300px] rounded-full bg-white/10 hidden md:block"></div>
           <div className="absolute bottom-[-15%] left-[-10%] w-[250px] h-[250px] rounded-full bg-white/5"></div>
           <div className="absolute inset-0 bg-[linear-gradient(135deg,transparent_25%,rgba(255,255,255,0.12)_50%,transparent_75%)] bg-[length:500px_500px] animate-[gradient_20s_linear_infinite]"></div>
@@ -46,13 +46,13 @@ export default function HomePage() {
           <div className="container mx-auto px-4 relative">
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 max-w-2xl">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight">
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight text-[#FAFAFA]">
                   Rettferdig kreditt for{" "}
                   <span className="font-extrabold">
                     alle
                   </span>
                 </h1>
-                <p className="text-lg md:text-xl mb-8 opacity-90 font-light leading-relaxed">
+                <p className="text-lg md:text-xl mb-8 text-[#E0E0E0] font-light leading-relaxed">
                   Vår innovative AI-baserte kredittvurdering gir deg muligheten til
                   bedre finansielle løsninger, uansett bakgrunn og livssituasjon.
                 </p>
@@ -93,7 +93,7 @@ export default function HomePage() {
                   {/* Mobiltelefon */}
                   <div 
                     className="absolute top-[5%] right-[5%] sm:right-[15%] md:right-[15%] lg:right-[20%] xl:right-[25%] w-[180px] h-[330px] 
-                    rounded-3xl bg-white shadow-xl overflow-hidden border-8 border-gray-800 z-20"
+                    rounded-3xl bg-white dark:bg-[#1E1E1E] shadow-xl overflow-hidden border-8 border-gray-800 z-20"
                   >
                     <div className="h-[60px] bg-primary p-4">
                       <div className="text-white text-sm font-medium">
@@ -101,15 +101,15 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <div className="text-xs text-gray-500">Kredittscore</div>
-                      <div className="text-xl font-bold mb-6 text-primary">
-                        785 <span className="text-sm text-gray-500">/ 900</span>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">Kredittscore</div>
+                      <div className="text-xl font-bold mb-6 text-primary dark:text-primary">
+                        785 <span className="text-sm text-gray-500 dark:text-gray-400">/ 900</span>
                       </div>
                       <div className="space-y-3">
-                        <div className="h-3 w-4/5 bg-primary/10 rounded-full"></div>
-                        <div className="h-3 w-full bg-primary/10 rounded-full"></div>
-                        <div className="h-3 w-3/5 bg-primary/10 rounded-full"></div>
-                        <div className="h-3 w-4/5 bg-primary/10 rounded-full"></div>
+                        <div className="h-3 w-4/5 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
+                        <div className="h-3 w-full bg-primary/10 dark:bg-primary/20 rounded-full"></div>
+                        <div className="h-3 w-3/5 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
+                        <div className="h-3 w-4/5 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
                       </div>
                     </div>
                   </div>
@@ -120,13 +120,13 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 md:py-28 bg-gray-50/50">
+        <section className="py-20 md:py-28 bg-gray-50/50 dark:bg-[#1E1E1E]">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight dark:text-[#FAFAFA]">
                 Hvorfor velge Styr AS?
               </h2>
-              <p className="text-gray-600 text-lg leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Vi kombinerer markedsledende AI-teknologi med personlig service for
                 å gi deg en bedre kredittvurdering
               </p>
@@ -137,12 +137,12 @@ export default function HomePage() {
                 (Icon, index) => (
                   <div
                     key={index}
-                    className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col"
+                    className="bg-white dark:bg-[#232323] p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#2A2A2A] transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col"
                   >
-                    <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 text-primary">
+                    <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 mb-6 text-primary">
                       <Icon className="h-8 w-8" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3">
+                    <h3 className="text-xl font-semibold mb-3 dark:text-[#E0E0E0]">
                       {
                         [
                           "AI-drevet kredittvurdering",
@@ -154,7 +154,7 @@ export default function HomePage() {
                         ][index]
                       }
                     </h3>
-                    <p className="text-gray-600 leading-relaxed h-full">
+                    <p className="text-gray-600 dark:text-[#B0B0B0] leading-relaxed h-full">
                       {
                         [
                           "Vår avanserte AI analyserer flere datapunkter enn tradisjonelle kredittsystemer",
@@ -174,26 +174,26 @@ export default function HomePage() {
         </section>
 
         {/* Middle Section */}
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white dark:bg-[#121212]">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-12">
               <div className="md:w-1/2">
-                <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-br from-primary-50 to-primary-100 rounded-3xl relative overflow-hidden shadow-sm">
+                <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-3xl relative overflow-hidden shadow-sm">
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 max-w-[350px]">
-                    <div className="bg-white p-6 rounded-2xl shadow-lg mb-4 transition-all hover:-translate-y-1 duration-300">
+                    <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg mb-4 transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <Sparkles className="h-6 w-6 text-primary" />
-                        <div className="font-medium">Personlig kredittscore</div>
+                        <div className="font-medium dark:text-[#E0E0E0]">Personlig kredittscore</div>
                       </div>
-                      <div className="h-2 bg-primary/10 rounded-full w-4/5 mb-2"></div>
-                      <div className="h-2 bg-primary/10 rounded-full w-full"></div>
+                      <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-4/5 mb-2"></div>
+                      <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-full"></div>
                     </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
+                    <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <LineChart className="h-6 w-6 text-primary" />
-                        <div className="font-medium">Forbedringsmuligheter</div>
+                        <div className="font-medium dark:text-[#E0E0E0]">Forbedringsmuligheter</div>
                       </div>
-                      <div className="h-20 bg-primary/10 rounded-xl flex items-end p-2">
+                      <div className="h-20 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-end p-2">
                         {[4, 3, 5, 2, 6, 3].map((height, i) => (
                           <div
                             key={i}
@@ -207,10 +207,10 @@ export default function HomePage() {
               </div>
 
               <div className="md:w-1/2">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight dark:text-[#FAFAFA]">
                   Revolusjonerende kredittvurdering, skreddersydd for deg
                 </h2>
-                <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                <p className="text-lg text-gray-600 dark:text-[#B0B0B0] mb-6 leading-relaxed">
                   Vi har utviklet en helhetlig tilnærming til kredittvurdering med fokus
                   på det som betyr mest: rettferdighet, tilgjengelighet og økonomiske
                   muligheter for alle.
@@ -219,16 +219,16 @@ export default function HomePage() {
                 <div className="space-y-4">
                   {[GraduationCap, Wallet].map((Icon, index) => (
                     <div key={index} className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
-                        <h4 className="font-medium mb-1">
+                        <h4 className="font-medium mb-1 dark:text-[#E0E0E0]">
                           {index === 0
                             ? "AI-drevet kredittvurdering"
                             : "Tilgang til bedre lånetilbud"}
                         </h4>
-                        <p className="text-gray-600">
+                        <p className="text-gray-600 dark:text-[#B0B0B0]">
                           {index === 0
                             ? "Få personlige analyser og forbedringstips basert på din unike finansielle situasjon"
                             : "Vår kredittvurdering gir deg tilgang til konkurransedyktige lånetilbud fra våre partnere"}
@@ -242,7 +242,7 @@ export default function HomePage() {
                   <Link href="/how-it-works">
                     <Button
                       variant="outline"
-                      className="group rounded-full px-6 py-5 font-medium"
+                      className="group rounded-full px-6 py-5 font-medium dark:border-primary dark:text-primary"
                     >
                       Lær mer om våre tjenester
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -262,10 +262,10 @@ export default function HomePage() {
 
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white/90">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-[#FAFAFA]">
                 Klar for bedre finansielle muligheter?
               </h2>
-              <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed">
+              <p className="text-lg md:text-xl text-[#E0E0E0] mb-10 leading-relaxed">
                 Registrer deg på under 5 minutter og få umiddelbar tilgang til
                 vår innovative kredittvurdering og personlige finansielle
                 rådgivning.
@@ -304,7 +304,7 @@ export default function HomePage() {
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">
                       <CheckCircle2 className="h-5 w-5" />
                     </div>
-                    <div className="text-white text-sm md:text-base">
+                    <div className="text-[#FAFAFA] text-sm md:text-base">
                       <p>{text}</p>
                     </div>
                   </div>
