@@ -255,11 +255,20 @@ export default function LoanApplication() {
             formData.append(key, data[key]);
           }
           formData.append("idDocument", selectedFile);
-          loanRes = await apiRequest("POST", "/api/loans/apply", formData, {
-            "Content-Type": "multipart/form-data",
+          loanRes = await apiRequest({
+            method: "POST",
+            url: "/api/loans/apply",
+            data: formData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            }
           });
         } else {
-          loanRes = await apiRequest("POST", "/api/loans/apply", data);
+          loanRes = await apiRequest({
+            method: "POST",
+            url: "/api/loans/apply",
+            data: data
+          });
         }
 
         if (!loanRes.ok) {
@@ -272,9 +281,13 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
-        const creditRes = await apiRequest("POST", "/api/loans/credit-score", {
-          ...data,
-          loanApplicationId: loanData.id,
+        const creditRes = await apiRequest({
+          method: "POST",
+          url: "/api/loans/credit-score",
+          data: {
+            ...data,
+            loanApplicationId: loanData.id,
+          }
         });
 
         if (!creditRes.ok) {
@@ -394,8 +407,12 @@ export default function LoanApplication() {
 
     if (user?.id) {
       try {
-        await apiRequest("PATCH", `/api/users/${user.id}`, {
-          kycStatus: "verified",
+        await apiRequest({
+          method: "PATCH",
+          url: `/api/users/${user.id}`,
+          data: {
+            kycStatus: "verified",
+          }
         });
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       } catch (error) {
@@ -730,7 +747,13 @@ export default function LoanApplication() {
           />
         </FormControl>
 
-        <Box>
+        <Box sx={{ 
+            p: 2, 
+            borderRadius: 2, 
+            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
+            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
+            mb: 3
+          }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -842,7 +865,13 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box>
+        <Box sx={{ 
+            p: 2, 
+            borderRadius: 2, 
+            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
+            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
+            mb: 3
+          }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -919,7 +948,13 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box>
+        <Box sx={{ 
+            p: 2, 
+            borderRadius: 2, 
+            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
+            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
+            mb: 3
+          }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
