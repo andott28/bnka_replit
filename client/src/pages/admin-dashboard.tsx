@@ -393,10 +393,10 @@ export default function AdminDashboard() {
 
           {/* LOANS TAB */}
           <TabsContent value="loans">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>Lånesøknader</CardTitle>
-                <CardDescription>
+                <CardTitle className="dark:text-white">Lånesøknader</CardTitle>
+                <CardDescription className="dark:text-gray-400">
                   Oversikt over alle lånesøknader i systemet
                 </CardDescription>
               </CardHeader>
@@ -407,42 +407,42 @@ export default function AdminDashboard() {
                       value={statusFilter}
                       onValueChange={setStatusFilter}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-[180px] dark:bg-gray-800 dark:border-gray-600 dark:text-white">
                         <SelectValue placeholder="Filter status" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Alle statuser</SelectItem>
-                        <SelectItem value="pending">Venter</SelectItem>
-                        <SelectItem value="approved">Godkjent</SelectItem>
-                        <SelectItem value="rejected">Avslått</SelectItem>
+                      <SelectContent className="dark:bg-gray-800 dark:border-gray-600">
+                        <SelectItem value="all" className="dark:text-white dark:focus:bg-gray-700">Alle statuser</SelectItem>
+                        <SelectItem value="pending" className="dark:text-white dark:focus:bg-gray-700">Venter</SelectItem>
+                        <SelectItem value="approved" className="dark:text-white dark:focus:bg-gray-700">Godkjent</SelectItem>
+                        <SelectItem value="rejected" className="dark:text-white dark:focus:bg-gray-700">Avslått</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     <Input
                       type="search"
                       placeholder="Søk..."
-                      className="pl-8 w-[250px]"
+                      className="pl-8 w-[250px] dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-400"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />
                   </div>
                 </div>
 
-                <div className="rounded-md border overflow-x-auto">
+                <div className="rounded-md border overflow-x-auto dark:border-gray-700">
                   <Table className="min-w-[900px]">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[60px]">ID</TableHead>
-                        <TableHead className="w-[200px]">Bruker</TableHead>
-                        <TableHead className="w-[120px]">Beløp</TableHead>
-                        <TableHead className="hidden md:table-cell">Formål</TableHead>
-                        <TableHead className="w-[120px]">Kredittscore</TableHead>
-                        <TableHead className="w-[100px]">Status</TableHead>
-                        <TableHead className="hidden md:table-cell">Dato</TableHead>
-                        <TableHead className="w-[100px]">Handlinger</TableHead>
+                    <TableHeader className="dark:bg-gray-800">
+                      <TableRow className="dark:border-gray-700">
+                        <TableHead className="w-[60px] dark:text-gray-300">ID</TableHead>
+                        <TableHead className="w-[200px] dark:text-gray-300">Bruker</TableHead>
+                        <TableHead className="w-[120px] dark:text-gray-300">Beløp</TableHead>
+                        <TableHead className="hidden md:table-cell dark:text-gray-300">Formål</TableHead>
+                        <TableHead className="w-[120px] dark:text-gray-300">Kredittscore</TableHead>
+                        <TableHead className="w-[100px] dark:text-gray-300">Status</TableHead>
+                        <TableHead className="hidden md:table-cell dark:text-gray-300">Dato</TableHead>
+                        <TableHead className="w-[100px] dark:text-gray-300">Handlinger</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -457,7 +457,7 @@ export default function AdminDashboard() {
                         .map((loan) => (
                           <TableRow 
                             key={loan.id} 
-                            className="cursor-pointer hover:bg-gray-50"
+                            className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
                             onClick={() => {
                               setSelectedLoan(loan);
                               setLoanDetailsOpen(true);
@@ -527,31 +527,31 @@ export default function AdminDashboard() {
 
           {/* USERS TAB */}
           <TabsContent value="users">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>Brukeroversikt</CardTitle>
-                <CardDescription>
+                <CardTitle className="dark:text-white">Brukeroversikt</CardTitle>
+                <CardDescription className="dark:text-gray-400">
                   Administrer brukere og se deres status
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="rounded-md border overflow-x-auto">
+                <div className="rounded-md border overflow-x-auto dark:border-gray-700">
                   <Table className="min-w-[900px]">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[60px]">ID</TableHead>
-                        <TableHead className="w-[200px]">E-post</TableHead>
-                        <TableHead className="w-[180px]">Navn</TableHead>
-                        <TableHead className="hidden md:table-cell">Telefon</TableHead>
-                        <TableHead className="w-[100px]">KYC Status</TableHead>
-                        <TableHead className="hidden md:table-cell">Passord</TableHead>
-                        <TableHead className="hidden md:table-cell">Registrert</TableHead>
-                        <TableHead className="w-[120px]">Handlinger</TableHead>
+                    <TableHeader className="dark:bg-gray-800">
+                      <TableRow className="dark:border-gray-700">
+                        <TableHead className="w-[60px] dark:text-gray-300">ID</TableHead>
+                        <TableHead className="w-[200px] dark:text-gray-300">E-post</TableHead>
+                        <TableHead className="w-[180px] dark:text-gray-300">Navn</TableHead>
+                        <TableHead className="hidden md:table-cell dark:text-gray-300">Telefon</TableHead>
+                        <TableHead className="w-[100px] dark:text-gray-300">KYC Status</TableHead>
+                        <TableHead className="hidden md:table-cell dark:text-gray-300">Passord</TableHead>
+                        <TableHead className="hidden md:table-cell dark:text-gray-300">Registrert</TableHead>
+                        <TableHead className="w-[120px] dark:text-gray-300">Handlinger</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {users.map((userData) => (
-                        <TableRow key={userData.id}>
+                        <TableRow key={userData.id} className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                           <TableCell>#{userData.id}</TableCell>
                           <TableCell>{userData.username}</TableCell>
                           <TableCell>
@@ -577,7 +577,7 @@ export default function AdminDashboard() {
                           <TableCell className="hidden md:table-cell">
                             <div className="flex items-center space-x-2">
                               <code 
-                                className="text-xs break-all bg-gray-100 p-1 rounded cursor-pointer"
+                                className="text-xs break-all bg-gray-100 dark:bg-gray-700 p-1 rounded cursor-pointer dark:text-gray-200"
                                 onClick={() => togglePasswordVisibility(userData.id)}
                               >
                                 {showFullPassword[userData.id] ? 
@@ -643,19 +643,19 @@ export default function AdminDashboard() {
 
           {/* ANALYTICS TAB */}
           <TabsContent value="analytics">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>Avanserte analyser</CardTitle>
-                <CardDescription>
+                <CardTitle className="dark:text-white">Avanserte analyser</CardTitle>
+                <CardDescription className="dark:text-gray-400">
                   Dybdeanalyse av lånesøknader og kredittvurderinger
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   {/* Credit Score Distribution */}
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader>
-                      <CardTitle className="text-lg">Kredittscore fordeling</CardTitle>
+                      <CardTitle className="text-lg dark:text-white">Kredittscore fordeling</CardTitle>
                     </CardHeader>
                     <CardContent className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
@@ -671,10 +671,10 @@ export default function AdminDashboard() {
                           ]}
                           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="grade" />
-                          <YAxis />
-                          <RechartTooltip />
+                          <CartesianGrid strokeDasharray="3 3" stroke={document.documentElement.classList.contains('dark') ? "#444" : "#ccc"} />
+                          <XAxis dataKey="grade" tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                          <YAxis tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                          <RechartTooltip contentStyle={{ backgroundColor: 'rgba(30, 30, 30, 0.8)', border: '1px solid #666', color: '#FFF' }} />
                           <Bar dataKey="count" name="Antall" fill="#3B82F6" />
                         </RBarChart>
                       </ResponsiveContainer>
@@ -682,9 +682,9 @@ export default function AdminDashboard() {
                   </Card>
 
                   {/* Income vs. Loan Amount */}
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader>
-                      <CardTitle className="text-lg">Inntekt vs. lånebeløp</CardTitle>
+                      <CardTitle className="text-lg dark:text-white">Inntekt vs. lånebeløp</CardTitle>
                     </CardHeader>
                     <CardContent className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
@@ -698,18 +698,21 @@ export default function AdminDashboard() {
                             }))}
                           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
+                          <CartesianGrid strokeDasharray="3 3" stroke={document.documentElement.classList.contains('dark') ? "#444" : "#ccc"} />
                           <XAxis 
                             dataKey="income" 
                             name="Inntekt" 
-                            label={{ value: "Inntekt (NOK)", position: "insideBottom", offset: -5 }} 
+                            label={{ value: "Inntekt (NOK)", position: "insideBottom", offset: -5, fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} 
+                            tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }}
                             tickFormatter={(value) => `${value / 1000}k`}
                           />
                           <YAxis 
-                            label={{ value: "Lånebeløp (NOK)", angle: -90, position: "insideLeft" }}
+                            label={{ value: "Lånebeløp (NOK)", angle: -90, position: "insideLeft", fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }}
+                            tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }}
                             tickFormatter={(value) => `${value / 1000}k`}
                           />
                           <RechartTooltip 
+                            contentStyle={{ backgroundColor: 'rgba(30, 30, 30, 0.8)', border: '1px solid #666', color: '#FFF' }}
                             formatter={(value, name) => [`${value} NOK`, name === 'amount' ? 'Lånebeløp' : 'Inntekt']}
                             labelFormatter={(income) => `Inntekt: ${income} NOK`}
                           />
@@ -727,9 +730,9 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Applications Over Time */}
-                <Card className="mb-6">
+                <Card className="mb-6 dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle className="text-lg">Lånesøknader over tid</CardTitle>
+                    <CardTitle className="text-lg dark:text-white">Lånesøknader over tid</CardTitle>
                   </CardHeader>
                   <CardContent className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
@@ -758,12 +761,12 @@ export default function AdminDashboard() {
                         }
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis yAxisId="left" />
-                        <YAxis yAxisId="right" orientation="right" />
-                        <RechartTooltip />
-                        <Legend />
+                        <CartesianGrid strokeDasharray="3 3" stroke={document.documentElement.classList.contains('dark') ? "#444" : "#ccc"} />
+                        <XAxis dataKey="month" tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                        <YAxis yAxisId="left" tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                        <YAxis yAxisId="right" orientation="right" tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                        <RechartTooltip contentStyle={{ backgroundColor: 'rgba(30, 30, 30, 0.8)', border: '1px solid #666', color: '#FFF' }} />
+                        <Legend formatter={(value) => <span style={{ color: document.documentElement.classList.contains('dark') ? '#DDD' : '#666' }}>{value}</span>} />
                         <Line 
                           yAxisId="left"
                           type="monotone" 
@@ -785,21 +788,21 @@ export default function AdminDashboard() {
                 </Card>
 
                 {/* SQL Query Interface card */}
-                <Card>
+                <Card className="dark:bg-gray-800 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle>Database Query</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="dark:text-white">Database Query</CardTitle>
+                    <CardDescription className="dark:text-gray-400">
                       Kjør egendefinerte SQL-spørringer mot databasen
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-4">
-                      <h3 className="text-sm font-medium mb-2">Eksempel spørringer:</h3>
+                      <h3 className="text-sm font-medium mb-2 dark:text-gray-300">Eksempel spørringer:</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="justify-start"
+                          className="justify-start dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-gray-200"
                           onClick={() => setSqlQuery("SELECT * FROM loan_applications ORDER BY amount DESC LIMIT 10;")}
                         >
                           SELECT * FROM loan_applications ORDER BY amount DESC LIMIT 10;
@@ -807,7 +810,7 @@ export default function AdminDashboard() {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="justify-start"
+                          className="justify-start dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-gray-200"
                           onClick={() => setSqlQuery("SELECT status, COUNT(*) FROM loan_applications GROUP BY status;")}
                         >
                           SELECT status, COUNT(*) FROM loan_applications GROUP BY status;
@@ -815,7 +818,7 @@ export default function AdminDashboard() {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="justify-start"
+                          className="justify-start dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-gray-200"
                           onClick={() => setSqlQuery("SELECT u.username, COUNT(l.id) AS loan_count FROM users u LEFT JOIN loan_applications l ON u.id = l.user_id GROUP BY u.username ORDER BY loan_count DESC;")}
                         >
                           Brukere per antall lån (topp til bunn)
@@ -823,7 +826,7 @@ export default function AdminDashboard() {
                         <Button 
                           variant="outline" 
                           size="sm" 
-                          className="justify-start"
+                          className="justify-start dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:text-gray-200"
                           onClick={() => setSqlQuery("SELECT AVG(amount) AS gjennomsnitt, MAX(amount) AS maksimum, MIN(amount) AS minimum FROM loan_applications;")}
                         >
                           Lånebeløp statistikk
@@ -831,7 +834,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <textarea 
-                      className="w-full p-2 border rounded h-32 font-mono text-sm" 
+                      className="w-full p-2 border rounded h-32 font-mono text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder:text-gray-400" 
                       placeholder="Skriv din SQL spørring her..."
                       value={sqlQuery}
                       onChange={(e) => setSqlQuery(e.target.value)}
