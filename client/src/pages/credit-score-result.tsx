@@ -168,6 +168,62 @@ export default function CreditScoreResult() {
                 }}>
                   {creditScore.explanation}
                 </Typography>
+                
+                <Box sx={{ mt: 4 }}>
+                  <Typography variant="h6" sx={{ 
+                    mb: 2,
+                    color: theme => theme.palette.mode === 'dark' ? '#E0E0E0' : undefined
+                  }}>
+                    Økonomisk informasjon
+                  </Typography>
+                  
+                  <FormGroup>
+                    <FormControlLabel 
+                      control={<Checkbox />}
+                      label={
+                        <Box>
+                          <Typography>Studielån</Typography>
+                          {showStudentLoanDetails && (
+                            <Typography variant="body2" color="text.secondary">
+                              Jeg blir å betale ned på studielånet mitt i løpet av denne perioden
+                            </Typography>
+                          )}
+                        </Box>
+                      }
+                      onChange={handleStudentLoanChange}
+                    />
+                    
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label={
+                        <Box>
+                          <Typography>Sparepenger</Typography>
+                          {showSavingsDetails && (
+                            <Typography variant="body2" color="text.secondary">
+                              Sparepenger (NOK)
+                            </Typography>
+                          )}
+                        </Box>
+                      }
+                      onChange={handleSavingsChange}
+                    />
+                    
+                    <FormControlLabel
+                      control={<Checkbox />}
+                      label={
+                        <Box>
+                          <Typography>Eiendeler</Typography>
+                          {showAssetsDetails && (
+                            <Typography variant="body2" color="text.secondary">
+                              Verdifulle eiendeler som bil, bolig, etc.
+                            </Typography>
+                          )}
+                        </Box>
+                      }
+                      onChange={handleAssetsChange}
+                    />
+                  </FormGroup>
+                </Box>aphy>
               </Box>
             </Box>
 
