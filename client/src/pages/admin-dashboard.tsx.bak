@@ -578,45 +578,13 @@ export default function AdminDashboard() {
                             {new Date(userData.createdAt).toLocaleDateString('nb-NO')}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => handleEditUser(userData)}
-                              >
-                                Rediger
-                              </Button>
-                              
-                              {userData.id !== user?.id && (
-                                <Button 
-                                  variant="destructive" 
-                                  size="sm"
-                                  onClick={() => {
-                                    if (window.confirm(`Er du sikker på at du vil slette brukeren ${userData.username}? Dette vil også slette alle brukerens lånesøknader.`)) {
-                                      axios.delete(`/api/users/${userData.id}`)
-                                        .then(() => {
-                                          setUsers(users.filter(u => u.id !== userData.id));
-                                          toast({
-                                            title: "Bruker slettet",
-                                            description: "Brukeren ble slettet permanent",
-                                            variant: "default",
-                                          });
-                                        })
-                                        .catch(err => {
-                                          console.error("Error deleting user:", err);
-                                          toast({
-                                            title: "Feil",
-                                            description: "Kunne ikke slette brukeren",
-                                            variant: "destructive",
-                                          });
-                                        });
-                                    }
-                                  }}
-                                >
-                                  Slett
-                                </Button>
-                              )}
-                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleEditUser(userData)}
+                            >
+                              Rediger
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -992,12 +960,15 @@ export default function AdminDashboard() {
                 <div className="mt-4 border-t pt-4">
                   <h3 className="font-medium mb-2">Kredittvurdering</h3>
                   <div className="bg-gray-50 p-3 rounded text-sm">
-                    <pre className="whitespace-pre-wrap overflow-x-auto">
-                      {typeof selectedLoan.creditScoreDetails === 'string' 
-                        ? JSON.stringify(JSON.parse(selectedLoan.creditScoreDetails), null, 2)
-                        : JSON.stringify(selectedLoan.creditScoreDetails, null, 2)
-                      }
-                    </pre>
+                    {typeof selectedLoan.creditScoreDetails === 'string' ? (
+                      <pre className="whitespace-pre-wrap overflow-x-auto">
+                        {JSON.stringify(JSON.parse(selectedLoan.creditScoreDetails as string), null, 2)}
+                      </pre>
+                    ) : (
+                      <pre className="whitespace-pre-wrap overflow-x-auto">
+                        {JSON.stringify(selectedLoan.creditScoreDetails as Record<string, unknown>, null, 2)}
+                      </pre>
+                    )}
                   </div>
                 </div>
               )}

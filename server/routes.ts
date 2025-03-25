@@ -294,6 +294,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delete User (Admin only)
+  app.delete("/api/users/:id", async (req, res) => {
+    if (!req.isAuthenticated() || !req.user.isAdmin) {
+      return res.sendStatus(401);
+    }
+    
+    const userId = parseInt(req.params.id);
+    
+    // Prevent deleting your own account while you're logged in
+    if (userId === req.user.id) {
+      return res.status(400).json({ 
+        error: "Cannot delete your own admin account while logged in"
+      });
+    }
+    
+    try {
+      // Step 1: Get all loans for this user
+      const userLoans = await storage.getLoansByUserId(userId);
+      
+      // Step 2: Delete all loans for this user first (to maintain referential integrity)
+      for (const loan of userLoans) {
+        await pool.query(`DELETE FROM loan_applications WHERE id = $1`, [loan.id]);
+      }
+      
+      // Step 3: Delete the user
+      const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING id`, [userId]);
+      
+      if (result.length === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      
+      res.json({ success: true, message: "User and associated data deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ 
+        error: "Failed to delete user",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+  
   // SQL Query endpoint for admin dashboard
   app.post("/api/admin/execute-sql", async (req, res) => {
     if (!req.isAuthenticated() || !req.user.isAdmin) {
