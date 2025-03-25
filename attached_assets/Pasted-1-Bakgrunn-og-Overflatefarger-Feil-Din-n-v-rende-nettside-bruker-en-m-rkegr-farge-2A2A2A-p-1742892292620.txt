@@ -1,0 +1,71 @@
+1. Bakgrunn og Overflatefarger
+🔹 Feil:
+
+Din nåværende nettside bruker en mørkegrå farge (#2A2A2A) på midtseksjonen, men Material Design V3 krever mer definerte overflateskiller.
+
+✅ Løsning:
+
+Bruk en dyp mørkegrå/svart (#121212) for hovedbakgrunnen.
+
+Bruk en mørkere grå (#1E1E1E eller #232323) for kort og seksjoner for å gi en tydelig separasjon fra bakgrunnen.
+
+Legg til en svak overlay-effekt på kortene for en subtil dybdefølelse.
+
+2. Tekstfarger og Kontrast
+🔹 Feil:
+
+Noen av de lyse tekstene er for lyse på en middels mørk bakgrunn, noe som kan gi dårlig lesbarhet i mørk modus.
+
+✅ Løsning:
+
+Bruk #E0E0E0 for primær tekst.
+
+Sekundær tekst kan være litt svakere (#B0B0B0) for mindre viktig innhold.
+
+Headings bør være nær hvit (#FAFAFA) for sterk kontrast.
+
+3. Kortdesign og Elevation
+🔹 Feil:
+
+Kortene på nettsiden din er for lyse og flate, de trenger mer dybde.
+
+✅ Løsning:
+
+Bruk #1E1E1E eller #232323 på kortene.
+
+Legg til svak skygge (elevation 1-2) i Material Design-stil.
+
+Bruk runde hjørner (4-8px) for en moderne look.
+
+4. Knappestil og CTA-er
+🔹 Feil:
+
+Nåværende knapper er for subtile i mørk modus.
+
+✅ Løsning:
+
+Primærknapper bør ha en sterk farge, f.eks. blå-lilla (#BB86FC - Material 3 primary).
+
+Sekundærknapper bør være grå med hvit tekst.
+
+Bruk hover-effekter der knappen blir litt lysere i fargen.
+
+5. Ikoner og UI-elementer
+🔹 Feil:
+
+Ikoner og symboler må ha høy kontrast for synlighet.
+
+✅ Løsning:
+
+Bruk #FAFAFA for viktige ikoner og #B0B0B0 for sekundære.
+
+Dropdown-menyen (som på bildet) bør ha en svakere bakgrunn (#2A2A2A) med litt transparens.
+
+📌 Oppsummert: Hvordan fikse nettsiden din for Material Design 3 Dark Mode
+✅ Endre bakgrunnen til #121212 (hoved) og #1E1E1E (kort/seksjoner)
+✅ Bruk mer definerte kontraster i tekst (hvit -> #FAFAFA, sekundær #B0B0B0)
+✅ CTA-knapper bør bruke Material 3-farger (lilla #BB86FC eller cyan #03DAC6)
+✅ Ikoner og UI-elementer må ha bedre synlighet (lyse farger på mørk bakgrunn)
+✅ Elevate kortene litt for å gi dem en "floating" følelse
+
+Med disse justeringene vil nettsiden din følge Material Design V3 Dark Mode perfekt! 🚀

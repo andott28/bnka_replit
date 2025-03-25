@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@mui/material";
+import { Button as MUIButton } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -15,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Menu, ChevronDown } from "lucide-react";
+import { Menu, ChevronDown, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/use-theme";
 
@@ -122,13 +123,13 @@ export function NavHeader() {
           
           <NavigationMenuItem>
             <Link href={routes.auth}>
-              <Button 
+              <MUIButton 
                 variant="contained" 
                 color="primary"
                 className="rounded-full px-4 py-2 font-medium text-sm"
               >
                 Logg inn
-              </Button>
+              </MUIButton>
             </Link>
           </NavigationMenuItem>
         </>
@@ -186,6 +187,16 @@ export function NavHeader() {
           {user.isAdmin && (
             <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
           )}
+          
+          <DropdownMenuItem className="px-3 py-2 flex items-center justify-between">
+            <span className="text-sm font-medium">Mørk modus</span>
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+          </DropdownMenuItem>
         </>
       ) : (
         <>
@@ -193,9 +204,19 @@ export function NavHeader() {
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
+          <DropdownMenuItem className="px-3 py-2 flex items-center justify-between">
+            <span className="text-sm font-medium">Mørk modus</span>
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-muted"
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
+          </DropdownMenuItem>
+          
           <DropdownMenuItem className="mt-2 p-0" asChild>
             <Link href={routes.auth} className="w-full">
-              <Button 
+              <MUIButton 
                 fullWidth 
                 variant="contained" 
                 color="primary"
@@ -203,7 +224,7 @@ export function NavHeader() {
                 sx={{ textTransform: 'none' }}
               >
                 Logg inn
-              </Button>
+              </MUIButton>
             </Link>
           </DropdownMenuItem>
         </>
@@ -230,7 +251,21 @@ export function NavHeader() {
         </div>
 
         {/* Desktop Navigation - Til høyre, KUN synlig på desktop */}
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-4">
+          {/* Theme toggle button */}
+          <Button
+            variant="text"
+            className="min-w-0 w-10 h-10 rounded-full p-0"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
+          </Button>
+          
           <NavigationMenu>
             <NavigationMenuList className="gap-2">
               <NavItems />
