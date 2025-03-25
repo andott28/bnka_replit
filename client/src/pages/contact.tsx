@@ -76,20 +76,20 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavHeader />
       
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-12">Kontakt oss</h1>
+          <h1 className="text-4xl font-bold text-center mb-12 dark:text-white">Kontakt oss</h1>
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="pt-6">
                 <div className="text-center">
                   <Phone className="h-8 w-8 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">Telefon</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold mb-2 dark:text-white">Telefon</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     +47 815 22 000
                     <br />
                     Man-Fre: 08:00-16:00
@@ -98,13 +98,13 @@ export default function Contact() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="pt-6">
                 <div className="text-center">
                   <Mail className="h-8 w-8 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">E-post</h3>
-                  <p className="text-sm text-gray-600">
-                    support@bnka.no
+                  <h3 className="font-semibold mb-2 dark:text-white">E-post</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    support@styr.no
                     <br />
                     Svar innen 24 timer
                   </p>
@@ -112,12 +112,12 @@ export default function Contact() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardContent className="pt-6">
                 <div className="text-center">
                   <MessageSquare className="h-8 w-8 mx-auto mb-4 text-primary" />
-                  <h3 className="font-semibold mb-2">Live Chat</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold mb-2 dark:text-white">Live Chat</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Tilgjengelig 24/7
                     <br />
                     Via vår app
@@ -127,10 +127,10 @@ export default function Contact() {
             </Card>
           </div>
 
-          <Card className="max-w-2xl mx-auto">
+          <Card className="max-w-2xl mx-auto dark:bg-gray-800 dark:border-gray-700">
             <CardHeader>
-              <CardTitle>Send oss en melding</CardTitle>
-              <CardDescription>
+              <CardTitle className="dark:text-white">Send oss en melding</CardTitle>
+              <CardDescription className="dark:text-gray-400">
                 Fyll ut skjemaet under, så vil vi kontakte deg så snart som mulig
               </CardDescription>
             </CardHeader>

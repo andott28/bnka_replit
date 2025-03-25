@@ -67,12 +67,15 @@ export default function CreditScoreResult() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background dark:bg-gray-900">
         <NavHeader />
         <div className="container mx-auto px-4 py-8 flex justify-center items-center" style={{ minHeight: "50vh" }}>
           <div className="text-center">
             <CircularProgress size={60} />
-            <Typography variant="h6" sx={{ mt: 2 }}>
+            <Typography variant="h6" sx={{ 
+              mt: 2,
+              color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined
+            }}>
               Henter din kredittvurdering...
             </Typography>
           </div>
@@ -84,16 +87,34 @@ export default function CreditScoreResult() {
   // Error state
   if (isError || !creditScore) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background dark:bg-gray-900">
         <NavHeader />
         <div className="container mx-auto px-4 py-8">
-          <Card sx={{ maxWidth: 800, margin: "0 auto" }}>
+          <Card sx={{ 
+            maxWidth: 800, 
+            margin: "0 auto",
+            bgcolor: theme => theme.palette.mode === 'dark' ? '#1E1E1E' : undefined,
+            borderColor: theme => theme.palette.mode === 'dark' ? '#333333' : undefined
+          }}>
             <CardHeader 
               title="Kunne ikke hente kredittvurdering"
+              titleTypographyProps={{ 
+                sx: { color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined }
+              }}
               subheader="Det oppsto en feil ved henting av din kredittvurdering"
+              subheaderTypographyProps={{ 
+                sx: { color: theme => theme.palette.mode === 'dark' ? '#AAAAAA' : undefined }
+              }}
             />
             <CardContent>
-              <Alert severity="error" sx={{ mb: 3 }}>
+              <Alert severity="error" sx={{ 
+                mb: 3,
+                bgcolor: theme => theme.palette.mode === 'dark' ? 'rgba(211, 47, 47, 0.15)' : undefined,
+                color: theme => theme.palette.mode === 'dark' ? '#f5f5f5' : undefined,
+                '& .MuiAlert-icon': {
+                  color: theme => theme.palette.mode === 'dark' ? '#f44336' : undefined
+                }
+              }}>
                 {error instanceof Error ? error.message : "En ukjent feil oppsto. Vennligst prøv igjen senere."}
               </Alert>
               <Button 
@@ -111,14 +132,25 @@ export default function CreditScoreResult() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-gray-900">
       <NavHeader />
       
       <main className="container mx-auto px-4 py-8">
-        <Card sx={{ maxWidth: 800, margin: "0 auto" }}>
+        <Card sx={{ 
+          maxWidth: 800, 
+          margin: "0 auto",
+          bgcolor: theme => theme.palette.mode === 'dark' ? '#1E1E1E' : undefined,
+          borderColor: theme => theme.palette.mode === 'dark' ? '#333333' : undefined
+        }}>
           <CardHeader 
             title="Din Kredittvurdering"
+            titleTypographyProps={{ 
+              sx: { color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined }
+            }}
             subheader="Basert på din lånesøknad og økonomiske situasjon"
+            subheaderTypographyProps={{ 
+              sx: { color: theme => theme.palette.mode === 'dark' ? '#AAAAAA' : undefined }
+            }}
           />
           <CardContent>
             <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
@@ -130,49 +162,82 @@ export default function CreditScoreResult() {
                 {creditScore.grade}
               </Typography>
               <Box sx={{ ml: 3 }}>
-                <Typography variant="body1" sx={{ mb: 1 }}>
+                <Typography variant="body1" sx={{ 
+                  mb: 1,
+                  color: theme => theme.palette.mode === 'dark' ? '#E0E0E0' : undefined
+                }}>
                   {creditScore.explanation}
                 </Typography>
               </Box>
             </Box>
 
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Dine styrker</Typography>
+              <Typography variant="h6" sx={{ 
+                mb: 2,
+                color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined
+              }}>
+                Dine styrker
+              </Typography>
               <List>
                 {creditScore.strengths?.map((strength: string, index: number) => (
                   <ListItem key={index}>
                     <ListItemIcon>
                       <Check color="success" />
                     </ListItemIcon>
-                    <ListItemText primary={strength} />
+                    <ListItemText 
+                      primary={strength} 
+                      primaryTypographyProps={{
+                        sx: { color: theme => theme.palette.mode === 'dark' ? '#E0E0E0' : undefined }
+                      }}
+                    />
                   </ListItem>
                 ))}
               </List>
             </Box>
 
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Områder for forbedring</Typography>
+              <Typography variant="h6" sx={{ 
+                mb: 2,
+                color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined
+              }}>
+                Områder for forbedring
+              </Typography>
               <List>
                 {creditScore.weaknesses?.map((weakness: string, index: number) => (
                   <ListItem key={index}>
                     <ListItemIcon>
                       <Warning color="warning" />
                     </ListItemIcon>
-                    <ListItemText primary={weakness} />
+                    <ListItemText 
+                      primary={weakness} 
+                      primaryTypographyProps={{
+                        sx: { color: theme => theme.palette.mode === 'dark' ? '#E0E0E0' : undefined }
+                      }}
+                    />
                   </ListItem>
                 ))}
               </List>
             </Box>
 
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2 }}>Anbefalinger</Typography>
+              <Typography variant="h6" sx={{ 
+                mb: 2,
+                color: theme => theme.palette.mode === 'dark' ? '#FFFFFF' : undefined
+              }}>
+                Anbefalinger
+              </Typography>
               <List>
                 {creditScore.recommendations?.map((recommendation: string, index: number) => (
                   <ListItem key={index}>
                     <ListItemIcon>
                       <Lightbulb color="info" />
                     </ListItemIcon>
-                    <ListItemText primary={recommendation} />
+                    <ListItemText 
+                      primary={recommendation} 
+                      primaryTypographyProps={{
+                        sx: { color: theme => theme.palette.mode === 'dark' ? '#E0E0E0' : undefined }
+                      }}
+                    />
                   </ListItem>
                 ))}
               </List>
