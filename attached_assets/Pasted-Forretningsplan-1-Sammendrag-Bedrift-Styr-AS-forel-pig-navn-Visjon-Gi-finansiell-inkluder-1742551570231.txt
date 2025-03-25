@@ -1,0 +1,186 @@
+Forretningsplan
+
+1. Sammendrag
+Bedrift: Styr AS (foreløpig navn).
+Visjon: Gi finansiell inkludering til underbetjente grupper i Norge og bli en digital bank innen 5 år.
+Misjon: Tilby lån og betalingsløsninger til innvandrere og studenter som ikke får lån i dag, ved hjelp av en inkluderende AI-drevet kredittvurdering.
+Mål: Oppnå banklisens innen 2029 med 55 millioner NOK i kapital.
+Tjenester: 
+År 1-3: Kredittformidling (via Solarisbank) og bankkort tilpasset målgruppen.
+År 4-5: Direkte lån og sparekontoer som bank.
+
+2. Forretningsidé
+Produkt:
+App/nettside for små lån (10 000-50 000 NOK) og bankkort (100 NOK årsgebyr).
+AI-kredittvurdering basert på alternative data (f.eks. betalingshistorikk for husleie, jobbstatus), ikke kun tradisjonell kredittsjekk.
+Målgruppe:
+Innvandrere: 41 % av innvandrere klarer ikke en uforutsett utgift på 10 000 NOK (Statistisk sentralbyrå, Levekårsundersøkelsen 2021).
+Totalt 965 113 innvandrere i Norge (SSB, 2025). Omtrent 1 miliioner per.s
+Studenter: Omtrent 300 000 studenter, hvorav mange har studielån (gjennomsnittlig 100 000 NOK, Lånekassen). Mange sliter med likviditet.
+Konkurransefordel: Inkluderende kredittvurdering, lavere terskler, rask behandling, bedre kundestøtte.
+
+3. Markedsanalyse
+Målgruppe:
+Innvandrere: 1 000 000 potensielle kunder, hvorav 410 000 (41 %) er økonomisk sårbare (SSB). Mål: 1 % markedsandel (4 100 kunder) innen år 5.
+Studenter: 300 000 potensielle kunder, hvorav 50 % (150 000) har studielån. Mål: 2 % markedsandel (3000 kunder) innen år 5.
+Konkurrenter:
+Tradisjonelle banker (høye krav), mikrofinans (høye renter), fintech som Monobank (mindre fokus på sårbare grupper).
+Trender: 
+Økende behov for finansiell inkludering, digitalisering av banktjenester.
+
+4. Forretningsmodell
+Inntektskilder:
+Provisjon på lån: 4 % (4% pga lave lånestørrelser).
+Bankkort: 100 NOK årsgebyr.
+Renter på direkte lån (år 5).
+Kostnader:
+Lisenser, markedsføring rettet mot målgruppen (f.eks. på sosiale medier og i innvandrermiljøer), ansatte, teknologi.
+Potensiell finansiering:
+Innovasjon Norge, Horisont Europa, investorer.
+
+5. Organisasjon
+Gründer: Meg selv (CEO og utvikler)
+Team:
+År 2: Salgsansvarlig (innvandrernettverk), kundeservice (flerspråklig).
+År 3-5: Finans- og compliance-eksperter.
+Lokasjon: Digitalt først, senere kontor i Oslo eller Nord-Norge.
+
+6. Strategi og implementering
+
+År 1: Lanser app/kort, målrettet markedsføring mot innvandrere og studenter.
+År 2-3: Skaler kunder, søk bærekraftstilskudd (f.eks. miljøteknologi for grønne lån).
+År 4: Forbered banklisens.
+År 5: Start bankdrift.
+
+7. Risikoanalyse
+
+Risikoer: Høy misligholdsrate, regulatoriske utfordringer, lav inntekt per kunde.
+Tiltak: Streng risikostyring, partnerskap med Solarisbank, fokus på små lån.
+
+8. Finansielle mål
+År 1: 500 kunder, break-even.
+År 5: 6000 kunder, 55 millioner NOK i kapital.
+
+Budsjett (5 år)
+Forutsetninger
+Målgruppe: Innvandrere og studenter, mindre lån (gjennomsnitt 25 000 NOK).
+Inntekt: 4 % provisjon, 100 NOK per kort.
+Teknologi: Selvlaget, 3 000 NOK/år driftkostnadder.
+
+År 1: Oppstart (2025)
+Inntekter:
+200 lån =  25 000 NOK, 4 % = 200 000 NOK.
+300 kort = 100 NOK = 30 000 NOK.
+Totalt: 230 000 NOK.
+Kostnader:
+Lisenser: 220 000 NOK.
+Markedsføring: 100 000 NOK (rettet mot innvandrermiljøer og studenter).
+Drift: 80 000 NOK.
+Teknologi: 3 000 NOK (drift).
+Totalt: 400 000 NOK (uten teknologi: 397 000 NOK).
+Finansiering:
+Oppstartstilskudd: 200 000 NOK.
+Mentortjeneste: 100 000 NOK.
+Totalt: 300 000 NOK.
+Netto: 230 000 - 400 000 + 300 000 = 130 000 NOK.
+
+År 2: Vekst (2026)
+Inntekter:
+800 lån = 800 000 NOK.
+1000 kort = 100 000 NOK.
+Totalt: 900 000 NOK.
+Kostnader:
+Teknologi: 150 000 NOK (servere).
+Markedsføring: 200 000 NOK.
+Ansatte: 500 000 NOK (2 flerspråklige).
+Drift: 150 000 NOK.
+Totalt: 1 million NOK.
+Finansiering:
+Innovasjonslån: 2 millioner NOK.
+Investorer: 5 millioner NOK.
+Totalt: 7 millioner NOK.
+Netto: 0,9 - 1 + 7 = 6,9 millioner NOK.
+
+År 3: Skalering (2027)
+
+Inntekter:
+2000 lån = 2 millioner NOK.
+5000 kort = 500 000 NOK.
+Totalt: 2,5 millioner NOK.
+Kostnader:
+Ansatte: 2 millioner NOK (5 personer).
+Teknologi: 800 000 NOK.
+Markedsføring: 800 000 NOK.
+Drift: 400 000 NOK.
+Totalt: 4 millioner NOK.
+Finansiering:
+Horisont Europa: 27,5 millioner NOK.
+Klyngeprogram: 1 million NOK.
+Totalt: 28,5 millioner NOK.
+Netto: 2,5 - 4 + 28,5 = 27 millioner NOK.
+
+År 4: Konsolidering (2028)
+Inntekter:
+4000 lån = 4 millioner NOK.
+10 000 kort = 1 million NOK.
+Totalt: 5 millioner NOK.
+Kostnader:
+Ansatte: 2,5 millioner NOK.
+Teknologi: 1,5 millioner NOK.
+Markedsføring: 1,5 millioner NOK.
+Lisensprep: 1 million NOK.
+Drift: 800 000 NOK.
+Totalt: 7,3 millioner NOK.
+Finansiering:
+Investorer: 20 millioner NOK.
+Netto: 5 - 7,3 + 20 = 17,7 millioner NOK.
+
+År 5: Banketablering (2029)
+
+Inntekter:
+6000 lån = 6 millioner NOK.
+15 000 kort = 1,5 millioner NOK.
+Banktjenester: 3 millioner NOK.
+Totalt: 10,5 millioner NOK.
+Kostnader:
+Ansatte: 4 millioner NOK.
+Teknologi: 2 millioner NOK.
+Markedsføring: 2 millioner NOK.
+Drift: 1,5 millioner NOK.
+Totalt: 9,5 millioner NOK.
+Finansiering:
+Investorer: 25 millioner NOK.
+Netto: 10,5 - 9,5 + 25 = 26 millioner NOK.
+Total kapital ved år 5: 373 000 + 7,14 + 27,24 + 17,7 + 26 = 78,45 millioner NOK (nok til 55 millioner NOK lisens).
+
+
+Dokumentasjon
+1. Forretningsbeskrivelse
+Til: Finanstilsynet, Innovasjon Norge, NAV.
+Innhold:
+Navn: Fintech AS.
+Formål: Finansielle tjenester for innvandrere (41 % økonomisk sårbare, SSB 2021) og studenter med studielån.
+Tjenester: Små lån (25 000 NOK), bankkort, AI-kredittvurdering.
+Marked: 328 000 innvandrere og 150 000 studenter.
+
+2. Forretningsplan (vedlegg)
+Innhold: Som ovenfor, med fokus på inkludering.
+
+3. Budsjett og finansiering
+Innhold: 5-års budsjett (ovenfor).
+Finansieringsplan:
+År 1: AAP (240 000 NOK), Oppstartstilskudd (200 000 NOK), Mentortjeneste (100 000 NOK).
+År 2: Innovasjonslån (2 millioner NOK), Investorer (5 millioner NOK).
+År 3: Horisont Europa (27,5 millioner NOK), Klyngeprogram (1 million NOK).
+År 4-5: Investorer (45 millioner NOK).
+
+4. Organisasjon og ledelse
+Gründer: [Ditt navn], utvikler med erfaring i inkluderende teknologi.
+Team: Flerspråklig kundeservice, finans- og compliance-eksperter.
+
+5. Teknisk dokumentasjon
+Produkt: App/nettside for små lån og kort, AI basert på alternative data.
+Utvikler: Selvlaget, kostnad 3 000 NOK/år.
+6. Risikostyring
+Risikoer: Høy mislighold pga. sårbar målgruppe, lav inntekt pr. person.
+Tiltak: Små lån, strenge kontroller, partnerskap med Solarisbank, AI kredittvurdering.

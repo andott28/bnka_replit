@@ -106,8 +106,8 @@ export function NavHeader() {
       {user ? (
         <>
           <NavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
-          <NavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
-          <NavLink href={routes.loanApplication} label="Søk Lån" active={isActive(routes.loanApplication)} />
+          <NavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
+          <NavLink href={routes.loanApplication} label="Kredittvurdering" active={isActive(routes.loanApplication)} />
           <NavLink href={routes.dashboard} label="Min side" active={isActive(routes.dashboard)} />
           {user.isAdmin && (
             <NavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
@@ -116,8 +116,8 @@ export function NavHeader() {
       ) : (
         <>
           <NavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
-          <NavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
-          <NavLink label="Søk Lån" active={false} onClick={handleLoanApplicationClick} />
+          <NavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
+          <NavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
           <NavigationMenuItem>
             <Link href={routes.auth}>
@@ -180,8 +180,8 @@ export function NavHeader() {
       {user ? (
         <div className="flex flex-col space-y-1">
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
-          <MobileNavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
-          <MobileNavLink href={routes.loanApplication} label="Søk Lån" active={isActive(routes.loanApplication)} />
+          <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
+          <MobileNavLink href={routes.loanApplication} label="Kredittvurdering" active={isActive(routes.loanApplication)} />
           <MobileNavLink href={routes.dashboard} label="Min side" active={isActive(routes.dashboard)} />
           {user.isAdmin && (
             <MobileNavLink href={routes.admin} label="Administrasjon" active={isActive(routes.admin)} />
@@ -190,8 +190,8 @@ export function NavHeader() {
       ) : (
         <div className="flex flex-col space-y-1">
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
-          <MobileNavLink href={routes.tjenester} label="Tjenester" active={isActive(routes.tjenester)} />
-          <MobileNavLink label="Søk Lån" active={false} onClick={handleLoanApplicationClick} />
+          <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
+          <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
           <Link href={routes.auth} className="mt-4">
             <Button 
@@ -216,7 +216,7 @@ export function NavHeader() {
           <Link href={routes.home}>
             <img 
               src="/images/logo.png" 
-              alt="BNKA" 
+              alt="Styr AS" 
               className="h-8 cursor-pointer" 
               style={{ 
                 objectFit: 'contain',
