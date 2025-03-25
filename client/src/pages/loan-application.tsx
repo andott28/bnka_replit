@@ -83,6 +83,17 @@ export default function LoanApplication() {
               '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 borderColor: '#3B82F6',
               },
+              '& input:-webkit-autofill': {
+                WebkitBoxShadow: appTheme === 'dark' 
+                  ? '0 0 0 100px #1A365D inset' // Mørkere blå i dark mode
+                  : '0 0 0 100px #EBF8FF inset', // Lysere blå i light mode
+                WebkitTextFillColor: appTheme === 'dark' ? '#FFFFFF' : '#000000',
+              },
+              '& input:-webkit-autofill:focus': {
+                WebkitBoxShadow: appTheme === 'dark' 
+                  ? '0 0 0 100px #1E40AF inset' // Mørkere blå focus i dark mode
+                  : '0 0 0 100px #EBF8FF inset', // Lysere blå focus i light mode
+              },
             },
             notchedOutline: {
               borderColor: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
@@ -908,7 +919,7 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box sx={{ border: "1px solid #e0e0e0", borderRadius: 2, p: 2 }}>
+        <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
