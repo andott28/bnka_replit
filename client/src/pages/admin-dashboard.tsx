@@ -188,72 +188,72 @@ export default function AdminDashboard() {
 
   if (loansLoading || usersLoading) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen dark:bg-gray-900">
         <NavHeader />
         <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-          <Loader2 className="h-8 w-8 animate-spin" />
+          <Loader2 className="h-8 w-8 animate-spin dark:text-white" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavHeader />
 
       <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Administrasjonspanel</h1>
+        <h1 className="text-3xl font-bold mb-6 dark:text-white">Administrasjonspanel</h1>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full md:w-[700px] grid-cols-4">
-            <TabsTrigger value="overview">Oversikt</TabsTrigger>
-            <TabsTrigger value="loans">Lånesøknader</TabsTrigger>
-            <TabsTrigger value="users">Brukere</TabsTrigger>
-            <TabsTrigger value="analytics">Analyser</TabsTrigger>
+          <TabsList className="grid w-full md:w-[700px] grid-cols-4 dark:bg-gray-800">
+            <TabsTrigger value="overview" className="dark:data-[state=active]:bg-gray-700">Oversikt</TabsTrigger>
+            <TabsTrigger value="loans" className="dark:data-[state=active]:bg-gray-700">Lånesøknader</TabsTrigger>
+            <TabsTrigger value="users" className="dark:data-[state=active]:bg-gray-700">Brukere</TabsTrigger>
+            <TabsTrigger value="analytics" className="dark:data-[state=active]:bg-gray-700">Analyser</TabsTrigger>
           </TabsList>
 
           {/* OVERSIKT DASHBORD */}
           <TabsContent value="overview">
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
               <CardHeader>
-                <CardTitle>KPI Oversikt</CardTitle>
-                <CardDescription>
+                <CardTitle className="dark:text-white">KPI Oversikt</CardTitle>
+                <CardDescription className="dark:text-gray-400">
                   Nøkkeltall og statistikk for plattformen
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Totalt antall brukere
                       </CardTitle>
-                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <Users className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{users.length}</div>
+                      <div className="text-2xl font-bold dark:text-white">{users.length}</div>
                     </CardContent>
                   </Card>
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Totalt antall lån
                       </CardTitle>
-                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      <CreditCard className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{loans.length}</div>
+                      <div className="text-2xl font-bold dark:text-white">{loans.length}</div>
                     </CardContent>
                   </Card>
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Gjennomsnittlig lånebeløp
                       </CardTitle>
-                      <DollarSign className="h-4 w-4 text-muted-foreground" />
+                      <DollarSign className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold dark:text-white">
                         {loans.length
                           ? `${Math.round(
                               loans.reduce((acc, loan) => acc + loan.amount, 0) /
@@ -264,15 +264,15 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Godkjennelsesrate
                       </CardTitle>
-                      <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                      <CheckCircle className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold dark:text-white">
                         {loans.length
                           ? `${Math.round(
                               (loans.filter(loan => loan.status === 'approved').length / 
@@ -283,15 +283,15 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Totalt lånebeløp
                       </CardTitle>
-                      <Wallet className="h-4 w-4 text-muted-foreground" />
+                      <Wallet className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">
+                      <div className="text-2xl font-bold dark:text-white">
                         {loans.length
                           ? `${loans.reduce((acc, loan) => acc + loan.amount, 0)} NOK`
                           : "0 NOK"}
@@ -299,24 +299,24 @@ export default function AdminDashboard() {
                     </CardContent>
                   </Card>
                   
-                  <Card>
+                  <Card className="dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
+                      <CardTitle className="text-sm font-medium dark:text-white">
                         Gj.snitt behandlingstid
                       </CardTitle>
-                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <Clock className="h-4 w-4 text-muted-foreground dark:text-gray-400" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">24 timer</div>
+                      <div className="text-2xl font-bold dark:text-white">24 timer</div>
                     </CardContent>
                   </Card>
                 </div>
 
                 {/* Loan Applications Distribution Graph */}
                 <div className="grid gap-4 md:grid-cols-2 mt-8">
-                  <Card className="col-span-1">
+                  <Card className="col-span-1 dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader>
-                      <CardTitle>Lånesøknader etter status</CardTitle>
+                      <CardTitle className="dark:text-white">Lånesøknader etter status</CardTitle>
                     </CardHeader>
                     <CardContent className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
@@ -338,7 +338,7 @@ export default function AdminDashboard() {
                                 <text 
                                   x={x} 
                                   y={y} 
-                                  fill="#888"
+                                  fill={document.documentElement.classList.contains('dark') ? "#CCC" : "#888"}
                                   textAnchor={x > 200 ? "start" : "end"}
                                   dominantBaseline="middle"
                                 >
@@ -355,16 +355,16 @@ export default function AdminDashboard() {
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
-                          <RechartTooltip />
-                          <Legend />
+                          <RechartTooltip contentStyle={{ backgroundColor: 'rgba(30, 30, 30, 0.8)', border: '1px solid #666', color: '#FFF' }} />
+                          <Legend formatter={(value) => <span style={{ color: document.documentElement.classList.contains('dark') ? '#DDD' : '#666' }}>{value}</span>} />
                         </RPieChart>
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
 
-                  <Card className="col-span-1">
+                  <Card className="col-span-1 dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader>
-                      <CardTitle>Lånebeløpsfordeling</CardTitle>
+                      <CardTitle className="dark:text-white">Lånebeløpsfordeling</CardTitle>
                     </CardHeader>
                     <CardContent className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
@@ -377,10 +377,10 @@ export default function AdminDashboard() {
                           ]}
                           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="range" />
-                          <YAxis />
-                          <RechartTooltip />
+                          <CartesianGrid strokeDasharray="3 3" stroke={document.documentElement.classList.contains('dark') ? "#444" : "#ccc"} />
+                          <XAxis dataKey="range" tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                          <YAxis tick={{ fill: document.documentElement.classList.contains('dark') ? "#CCC" : "#666" }} />
+                          <RechartTooltip contentStyle={{ backgroundColor: 'rgba(30, 30, 30, 0.8)', border: '1px solid #666', color: '#FFF' }} />
                           <Bar dataKey="count" fill="#8884d8" name="Antall lån" />
                         </RBarChart>
                       </ResponsiveContainer>
