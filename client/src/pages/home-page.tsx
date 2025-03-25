@@ -175,7 +175,7 @@ export default function HomePage() {
                     <div className="bg-white p-6 rounded-2xl shadow-lg mb-4 transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <Sparkles className="h-6 w-6 text-primary" />
-                        <div className="font-medium">Personlige tilbud</div>
+                        <div className="font-medium">Personlig kredittscore</div>
                       </div>
                       <div className="h-2 bg-primary/10 rounded-full w-4/5 mb-2"></div>
                       <div className="h-2 bg-primary/10 rounded-full w-full"></div>
@@ -183,7 +183,7 @@ export default function HomePage() {
                     <div className="bg-white p-6 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <LineChart className="h-6 w-6 text-primary" />
-                        <div className="font-medium">Økonomisk oversikt</div>
+                        <div className="font-medium">Forbedringsmuligheter</div>
                       </div>
                       <div className="h-20 bg-primary/10 rounded-xl flex items-end p-2">
                         {[4, 3, 5, 2, 6, 3].map((height, i) => (
@@ -200,12 +200,12 @@ export default function HomePage() {
 
               <div className="md:w-1/2">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">
-                  Smidig bankopplevelse, skreddersydd for deg
+                  Revolusjonerende kredittvurdering, skreddersydd for deg
                 </h2>
                 <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                  Vi har redesignet hele bankopplevelsen fra bunnen av med fokus
-                  på det som betyr mest: din tid, komfort og økonomiske
-                  trygghet.
+                  Vi har utviklet en helhetlig tilnærming til kredittvurdering med fokus
+                  på det som betyr mest: rettferdighet, tilgjengelighet og økonomiske
+                  muligheter for alle.
                 </p>
 
                 <div className="space-y-4">
@@ -217,13 +217,13 @@ export default function HomePage() {
                       <div>
                         <h4 className="font-medium mb-1">
                           {index === 0
-                            ? "Intelligente finansielle råd"
-                            : "Fleksible betalingsløsninger"}
+                            ? "AI-drevet kredittvurdering"
+                            : "Tilgang til bedre lånetilbud"}
                         </h4>
                         <p className="text-gray-600">
                           {index === 0
-                            ? "Få personlige anbefalinger basert på dine forbruksmønstre"
-                            : "Betal hvor som helst, når som helst med våre mobile betalingsløsninger"}
+                            ? "Få personlige analyser og forbedringstips basert på din unike finansielle situasjon"
+                            : "Vår kredittvurdering gir deg tilgang til konkurransedyktige lånetilbud fra våre partnere"}
                         </p>
                       </div>
                     </div>
@@ -255,12 +255,12 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-white/90">
-                Klar for å starte din finansielle reise?
+                Klar for bedre finansielle muligheter?
               </h2>
               <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed">
                 Registrer deg på under 5 minutter og få umiddelbar tilgang til
-                våre innovative banktjenester og personlige finansiell
-                veiledning.
+                vår innovative kredittvurdering og personlige finansielle
+                rådgivning.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
