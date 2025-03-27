@@ -173,7 +173,7 @@ export default function AuthPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from" style={{ background: 'linear-gradient(to bottom right, hsl(216, 71%, 95%), white)' }}>
       <NavHeader />
       <div className="flex-1 flex">
-        <div className="flex-1 flex items-center justify-center p-8">
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 md:px-8">
           <Card className="w-full max-w-md">
             <CardHeader className="space-y-2">
               <div className="flex items-center gap-2 mb-2">
@@ -283,7 +283,7 @@ export default function AuthPage() {
                       })}
                       className="space-y-6"
                     >
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <FormField
                           control={registerForm.control}
                           name="firstName"
@@ -341,8 +341,14 @@ export default function AuthPage() {
                         name="phoneNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <div className="flex flex-col sm:flex-row w-full gap-3">
-                              <MuiFormControl sx={{ width: { xs: '100%', sm: '40%' } }} className="min-w-[120px]">
+                            {/* Material Design V3 stacked layout for smaller screens */}
+                            <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-3">
+                              <MuiFormControl 
+                                sx={{ 
+                                  width: { xs: '100%', sm: '40%' }, 
+                                  maxWidth: { xs: '100%', sm: '130px' }
+                                }}
+                              >
                                 <Select
                                   value={countryCode}
                                   onChange={(e) => {
@@ -360,53 +366,91 @@ export default function AuthPage() {
                                       style: {
                                         maxHeight: 300
                                       }
-                                    }
+                                    },
+                                    // Forbedret mobilvisning
+                                    anchorOrigin: {
+                                      vertical: 'bottom',
+                                      horizontal: 'left',
+                                    },
+                                    transformOrigin: {
+                                      vertical: 'top',
+                                      horizontal: 'left',
+                                    },
                                   }}
                                   sx={{ 
-                                    height: '56px', // Match TextField height
+                                    height: '56px',
                                     '& .MuiOutlinedInput-notchedOutline': {
                                       borderColor: 'rgba(0, 0, 0, 0.23)'
+                                    },
+                                    '& .MuiSelect-select': {
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      fontWeight: 'medium'
                                     }
                                   }}
                                 >
-                                  <Box px={2} py={1}>
+                                  {/* Integrated søk som følger Material Design V3 */}
+                                  <MenuItem dense disabled>
                                     <TextField
                                       size="small"
-                                      autoFocus
                                       placeholder="Søk land..."
+                                      variant="standard"
                                       fullWidth
                                       value={searchTerm}
                                       InputProps={{
-                                        sx: { fontSize: 14 }
+                                        disableUnderline: true,
+                                        startAdornment: (
+                                          <InputAdornment position="start">
+                                            <div className="text-gray-500">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                            </div>
+                                          </InputAdornment>
+                                        ),
+                                        sx: { 
+                                          fontSize: 14,
+                                          padding: '4px 0'
+                                        }
+                                      }}
+                                      sx={{
+                                        '& .MuiInput-root': {
+                                          padding: 0
+                                        }
                                       }}
                                       onChange={(e) => setSearchTerm(e.target.value)}
+                                      onClick={(e) => e.stopPropagation()}
                                       onKeyDown={(e) => {
-                                        // Hindre at Enter-tasten lukker dropdown-menyen
                                         if (e.key === 'Enter') {
                                           e.stopPropagation();
                                           e.preventDefault();
                                         }
                                       }}
                                     />
-                                  </Box>
-                                  <div id="country-search" data-search="" style={{ overflow: 'auto', maxHeight: '250px' }}>
-                                    {countryCodes.map((item) => (
-                                      <MenuItem 
-                                        key={item.code} 
-                                        value={item.code}
-                                        sx={{
-                                          display: 'flex !important',
-                                          justifyContent: 'flex-start',
-                                          alignItems: 'center',
-                                          padding: '8px 16px',
-                                          fontSize: '0.875rem'
-                                        }}
-                                        data-country={item.country.toLowerCase()}
-                                        data-code={item.code.substring(1).toLowerCase()}
-                                      >
-                                        <span>{item.code}</span> <span style={{ marginLeft: 5, color: '#666', fontSize: '0.85em' }}>({item.country})</span>
-                                      </MenuItem>
-                                    ))}
+                                  </MenuItem>
+                                  <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
+                                    {countryCodes
+                                      .filter(item => 
+                                        searchTerm === '' || 
+                                        item.country.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                        item.code.includes(searchTerm)
+                                      )
+                                      .map((item) => (
+                                        <MenuItem 
+                                          key={item.code} 
+                                          value={item.code}
+                                          sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            padding: '8px 12px',
+                                            fontSize: '0.875rem'
+                                          }}
+                                        >
+                                          <span style={{ fontWeight: '500' }}>{item.code}</span> 
+                                          <span style={{ marginLeft: 6, color: '#666', fontSize: '0.85em' }}>
+                                            ({item.country})
+                                          </span>
+                                        </MenuItem>
+                                      ))
+                                    }
                                   </div>
                                 </Select>
                               </MuiFormControl>
@@ -420,6 +464,10 @@ export default function AuthPage() {
                                 error={!!registerForm.formState.errors.phoneNumber}
                                 helperText={registerForm.formState.errors.phoneNumber?.message?.toString()}
                                 sx={{ flex: 1 }}
+                                inputProps={{
+                                  inputMode: 'numeric', // Viser numerisk tastatur på mobil
+                                  pattern: '[0-9]*' // Bare tillater tall
+                                }}
                               />
                             </div>
                           </FormItem>
