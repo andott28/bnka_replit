@@ -178,7 +178,7 @@ export default function HomePage() {
         </section>
 
         {/* Middle Section */}
-        <section className="py-6 md:py-10 bg-white dark:bg-[#121212]">
+        <section className="py-2 md:py-10 bg-white dark:bg-[#121212]">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="md:w-1/2">
