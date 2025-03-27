@@ -124,9 +124,9 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 md:py-24 bg-gray-50/50 dark:bg-[#1E1E1E]">
+        <section className="py-12 md:py-16 bg-gray-50/50 dark:bg-[#1E1E1E]">
           <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-12">
+            <div className="text-center max-w-3xl mx-auto mb-8">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight dark:text-[#FAFAFA]">
                 Hvorfor velge Styr AS?
               </h2>
@@ -136,17 +136,17 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {[CreditCard, Wallet, Clock, Shield, Smartphone, BarChart4].map(
                 (Icon, index) => (
                   <div
                     key={index}
-                    className="bg-white dark:bg-[#232323] p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-[#2A2A2A] transition-all duration-300 hover:-translate-y-2 hover:shadow-md flex flex-col"
+                    className="bg-white dark:bg-[#232323] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-[#2A2A2A] transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col"
                   >
-                    <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 mb-6 text-primary">
-                      <Icon className="h-8 w-8" />
+                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 dark:bg-primary/20 mb-3 text-primary">
+                      <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3 dark:text-[#E0E0E0]">
+                    <h3 className="text-lg font-semibold mb-2 dark:text-[#E0E0E0]">
                       {
                         [
                           "AI-drevet kredittvurdering",
@@ -158,7 +158,7 @@ export default function HomePage() {
                         ][index]
                       }
                     </h3>
-                    <p className="text-gray-600 dark:text-[#B0B0B0] leading-relaxed h-full">
+                    <p className="text-sm text-gray-600 dark:text-[#B0B0B0] leading-relaxed h-full">
                       {
                         [
                           "Vår avanserte AI analyserer flere datapunkter enn tradisjonelle kredittsystemer",
@@ -178,30 +178,30 @@ export default function HomePage() {
         </section>
 
         {/* Middle Section */}
-        <section className="py-12 md:py-16 bg-white dark:bg-[#121212]">
+        <section className="py-6 md:py-10 bg-white dark:bg-[#121212]">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center gap-10">
+            <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="md:w-1/2">
-                <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-3xl relative overflow-hidden shadow-sm">
+                <div className="w-full h-[250px] md:h-[350px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-2xl relative overflow-hidden shadow-sm">
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 max-w-[350px]">
-                    <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg mb-4 transition-all hover:-translate-y-1 duration-300">
-                      <div className="flex items-center gap-4 mb-3">
-                        <Sparkles className="h-6 w-6 text-primary" />
-                        <div className="font-medium dark:text-[#E0E0E0]">
+                    <div className="bg-white dark:bg-[#232323] p-4 rounded-2xl shadow-lg mb-3 transition-all hover:-translate-y-1 duration-300">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                        <div className="font-medium dark:text-[#E0E0E0] text-sm">
                           Personlig kredittscore
                         </div>
                       </div>
-                      <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-4/5 mb-2"></div>
+                      <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-4/5 mb-1"></div>
                       <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-full"></div>
                     </div>
-                    <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
-                      <div className="flex items-center gap-4 mb-3">
-                        <LineChart className="h-6 w-6 text-primary" />
-                        <div className="font-medium dark:text-[#E0E0E0]">
+                    <div className="bg-white dark:bg-[#232323] p-4 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
+                      <div className="flex items-center gap-3 mb-2">
+                        <LineChart className="h-5 w-5 text-primary" />
+                        <div className="font-medium dark:text-[#E0E0E0] text-sm">
                           Forbedringsmuligheter
                         </div>
                       </div>
-                      <div className="h-20 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-end p-2">
+                      <div className="h-16 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-end p-2">
                         {[4, 3, 5, 2, 6, 3].map((height, i) => (
                           <div
                             key={i}
@@ -215,28 +215,28 @@ export default function HomePage() {
               </div>
 
               <div className="md:w-1/2">
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight dark:text-[#FAFAFA]">
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight dark:text-[#FAFAFA]">
                   Revolusjonerende kredittvurdering, skreddersydd for deg
                 </h2>
-                <p className="text-lg text-gray-600 dark:text-[#B0B0B0] mb-6 leading-relaxed">
+                <p className="text-base text-gray-600 dark:text-[#B0B0B0] mb-4 leading-relaxed">
                   Vi har utviklet en helhetlig tilnærming til kredittvurdering
                   med fokus på det som betyr mest: rettferdighet,
                   tilgjengelighet og økonomiske muligheter for alle.
                 </p>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {[GraduationCap, Wallet].map((Icon, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
-                        <Icon className="h-5 w-5" />
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary">
+                        <Icon className="h-4 w-4" />
                       </div>
                       <div>
-                        <h4 className="font-medium mb-1 dark:text-[#E0E0E0]">
+                        <h4 className="font-medium mb-1 text-sm dark:text-[#E0E0E0]">
                           {index === 0
                             ? "AI-drevet kredittvurdering"
                             : "Tilgang til bedre lånetilbud"}
                         </h4>
-                        <p className="text-gray-600 dark:text-[#B0B0B0]">
+                        <p className="text-sm text-gray-600 dark:text-[#B0B0B0]">
                           {index === 0
                             ? "Få personlige analyser og forbedringstips basert på din unike finansielle situasjon"
                             : "Vår kredittvurdering gir deg tilgang til konkurransedyktige lånetilbud fra våre partnere"}
@@ -246,14 +246,14 @@ export default function HomePage() {
                   ))}
                 </div>
 
-                <div className="mt-8">
+                <div className="mt-5">
                   <Link href="/how-it-works">
                     <Button
                       variant="outline"
-                      className="group rounded-full px-6 py-5 font-medium dark:border-white dark:text-white dark:hover:bg-white/10"
+                      className="group rounded-full px-4 py-2 text-sm font-medium dark:border-white dark:text-white dark:hover:bg-white/10"
                     >
                       Lær mer om våre tjenester
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover:translate-x-1" />
                     </Button>
                   </Link>
                 </div>
