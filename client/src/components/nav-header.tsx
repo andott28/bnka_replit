@@ -190,21 +190,19 @@ export function NavHeader() {
         </>
       ) : (
         <>
+          <div className="mb-1 px-3 py-1 text-xs font-medium text-gray-500 uppercase">Meny</div>
           <MobileNavLink href={routes.home} label="Hjem" active={isActive(routes.home)} />
           <MobileNavLink href={routes.tjenester} label="Våre tjenester" active={isActive(routes.tjenester)} />
           <MobileNavLink label="Kredittvurdering" active={false} onClick={handleLoanApplicationClick} />
           
-          <DropdownMenuItem className="mt-2 p-0" asChild>
+          <div className="border-t my-2"></div>
+          
+          <div className="px-3 py-1 text-xs font-medium text-gray-500 uppercase">Konto</div>
+          <DropdownMenuItem className="p-0 focus:bg-transparent" onSelect={(e) => e.preventDefault()}>
             <Link href={routes.auth} className="w-full">
-              <MUIButton 
-                fullWidth 
-                variant="contained" 
-                color="primary"
-                className="rounded-md py-2 font-medium text-sm w-full"
-                sx={{ textTransform: 'none' }}
-              >
+              <div className="w-full px-3 py-2 text-sm font-medium transition-colors cursor-pointer flex items-center text-primary">
                 Logg inn
-              </MUIButton>
+              </div>
             </Link>
           </DropdownMenuItem>
         </>

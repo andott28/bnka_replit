@@ -173,8 +173,8 @@ export default function AuthPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from" style={{ background: 'linear-gradient(to bottom right, hsl(216, 71%, 95%), white)' }}>
       <NavHeader />
       <div className="flex-1 flex">
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 md:px-8">
-          <Card className="w-full max-w-md">
+        <div className="flex-1 flex items-center justify-center px-3 sm:px-6 md:px-8">
+          <Card className="w-full max-w-[94vw] sm:max-w-md">
             <CardHeader className="space-y-2">
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="h-6 w-6 text-primary" />
@@ -343,117 +343,111 @@ export default function AuthPage() {
                           <FormItem>
                             {/* Material Design V3 stacked layout for smaller screens */}
                             <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-3">
+                              {/* Country code selector with improved mobile-friendliness */}
                               <MuiFormControl 
                                 sx={{ 
                                   width: { xs: '100%', sm: '40%' }, 
-                                  maxWidth: { xs: '100%', sm: '130px' }
+                                  maxWidth: { xs: '100%', sm: '120px' }
                                 }}
                               >
-                                <Select
-                                  value={countryCode}
-                                  onChange={(e) => {
-                                    setCountryCode(e.target.value);
-                                    // Oppdater telefonnummer i skjemaet med ny landskode
-                                    if (phoneNumber) {
-                                      registerForm.setValue('phoneNumber', `${e.target.value}${phoneNumber}`);
-                                    }
-                                  }}
-                                  displayEmpty
+                                <TextField
+                                  label="Landskode"
                                   variant="outlined"
-                                  renderValue={(value) => <>{value}</>}
-                                  MenuProps={{
-                                    PaperProps: {
-                                      style: {
-                                        maxHeight: 300
-                                      }
-                                    },
-                                    // Forbedret mobilvisning
-                                    anchorOrigin: {
-                                      vertical: 'bottom',
-                                      horizontal: 'left',
-                                    },
-                                    transformOrigin: {
-                                      vertical: 'top',
-                                      horizontal: 'left',
-                                    },
+                                  value={countryCode}
+                                  onClick={() => {
+                                    const dialog = document.getElementById('country-selector-dialog') as HTMLDialogElement;
+                                    dialog?.showModal();
                                   }}
-                                  sx={{ 
-                                    height: '56px',
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                      borderColor: 'rgba(0, 0, 0, 0.23)'
-                                    },
-                                    '& .MuiSelect-select': {
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      fontWeight: 'medium'
+                                  InputProps={{
+                                    readOnly: true,
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <div className="text-gray-500">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                        </div>
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                      cursor: 'pointer'
                                     }
                                   }}
-                                >
-                                  {/* Integrated søk som følger Material Design V3 */}
-                                  <MenuItem dense disabled>
-                                    <TextField
-                                      size="small"
-                                      placeholder="Søk land..."
-                                      variant="standard"
-                                      fullWidth
-                                      value={searchTerm}
-                                      InputProps={{
-                                        disableUnderline: true,
-                                        startAdornment: (
-                                          <InputAdornment position="start">
-                                            <div className="text-gray-500">
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                                            </div>
-                                          </InputAdornment>
-                                        ),
-                                        sx: { 
-                                          fontSize: 14,
-                                          padding: '4px 0'
-                                        }
+                                  fullWidth
+                                />
+                              </MuiFormControl>
+                              
+                              {/* Native HTML dialog for country selection - better for mobile */}
+                              <dialog 
+                                id="country-selector-dialog" 
+                                className="rounded-md shadow-lg border border-gray-200 p-0 w-[90vw] max-w-md"
+                                onClick={(e) => {
+                                  // Close when clicking outside the dialog content
+                                  if (e.target === e.currentTarget) {
+                                    (e.target as HTMLDialogElement).close();
+                                  }
+                                }}
+                              >
+                                <div className="p-4 border-b">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <h3 className="text-lg font-medium">Velg landskode</h3>
+                                    <button 
+                                      className="text-gray-500 hover:text-gray-700"
+                                      onClick={() => {
+                                        const dialog = document.getElementById('country-selector-dialog') as HTMLDialogElement;
+                                        dialog?.close();
                                       }}
-                                      sx={{
-                                        '& .MuiInput-root': {
-                                          padding: 0
-                                        }
-                                      }}
-                                      onChange={(e) => setSearchTerm(e.target.value)}
-                                      onClick={(e) => e.stopPropagation()}
-                                      onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                          e.stopPropagation();
-                                          e.preventDefault();
-                                        }
-                                      }}
-                                    />
-                                  </MenuItem>
-                                  <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
-                                    {countryCodes
-                                      .filter(item => 
-                                        searchTerm === '' || 
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                    </button>
+                                  </div>
+                                  <TextField
+                                    size="small"
+                                    placeholder="Søk land eller kode..."
+                                    variant="outlined"
+                                    fullWidth
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    InputProps={{
+                                      startAdornment: (
+                                        <InputAdornment position="start">
+                                          <div className="text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                          </div>
+                                        </InputAdornment>
+                                      )
+                                    }}
+                                  />
+                                </div>
+                                <div style={{ maxHeight: '60vh', overflowY: 'auto' }} className="p-1">
+                                  {countryCodes
+                                    .filter(item => {
+                                      if (searchTerm === '') return true;
+                                      return (
                                         item.country.toLowerCase().includes(searchTerm.toLowerCase()) || 
                                         item.code.includes(searchTerm)
-                                      )
-                                      .map((item) => (
-                                        <MenuItem 
-                                          key={item.code} 
-                                          value={item.code}
-                                          sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            padding: '8px 12px',
-                                            fontSize: '0.875rem'
-                                          }}
-                                        >
-                                          <span style={{ fontWeight: '500' }}>{item.code}</span> 
-                                          <span style={{ marginLeft: 6, color: '#666', fontSize: '0.85em' }}>
-                                            ({item.country})
-                                          </span>
-                                        </MenuItem>
-                                      ))
-                                    }
-                                  </div>
-                                </Select>
-                              </MuiFormControl>
+                                      );
+                                    })
+                                    .map((item) => (
+                                      <div 
+                                        key={item.code}
+                                        className="flex items-center p-3 hover:bg-gray-100 cursor-pointer rounded-md"
+                                        onClick={() => {
+                                          setCountryCode(item.code);
+                                          if (phoneNumber) {
+                                            registerForm.setValue('phoneNumber', `${item.code}${phoneNumber}`);
+                                          }
+                                          const dialog = document.getElementById('country-selector-dialog') as HTMLDialogElement;
+                                          dialog?.close();
+                                        }}
+                                      >
+                                        <div className="font-medium">{item.code}</div>
+                                        <div className="ml-3 text-gray-600">{item.country}</div>
+                                      </div>
+                                    ))
+                                  }
+                                </div>
+                              </dialog>
                               
                               <TextField
                                 label="Telefonnummer"
