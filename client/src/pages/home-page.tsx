@@ -124,9 +124,9 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 md:py-28 bg-gray-50/50 dark:bg-[#1E1E1E]">
+        <section className="py-16 md:py-24 bg-gray-50/50 dark:bg-[#1E1E1E]">
           <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="text-center max-w-3xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight dark:text-[#FAFAFA]">
                 Hvorfor velge Styr AS?
               </h2>
@@ -178,9 +178,9 @@ export default function HomePage() {
         </section>
 
         {/* Middle Section */}
-        <section className="py-20 bg-white dark:bg-[#121212]">
+        <section className="py-12 md:py-16 bg-white dark:bg-[#121212]">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center gap-12">
+            <div className="flex flex-col md:flex-row items-center gap-10">
               <div className="md:w-1/2">
                 <div className="w-full h-[300px] md:h-[400px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-3xl relative overflow-hidden shadow-sm">
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 max-w-[350px]">
