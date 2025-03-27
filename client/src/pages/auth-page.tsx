@@ -341,8 +341,8 @@ export default function AuthPage() {
                         name="phoneNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <div className="flex items-start space-x-2">
-                              <MuiFormControl sx={{ width: '40%' }}>
+                            <div className="flex flex-col sm:flex-row w-full gap-3">
+                              <MuiFormControl sx={{ width: { xs: '100%', sm: '40%' } }} className="min-w-[120px]">
                                 <Select
                                   value={countryCode}
                                   onChange={(e) => {
@@ -360,6 +360,12 @@ export default function AuthPage() {
                                       style: {
                                         maxHeight: 300
                                       }
+                                    }
+                                  }}
+                                  sx={{ 
+                                    height: '56px', // Match TextField height
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: 'rgba(0, 0, 0, 0.23)'
                                     }
                                   }}
                                 >
@@ -388,16 +394,12 @@ export default function AuthPage() {
                                       <MenuItem 
                                         key={item.code} 
                                         value={item.code}
-                                        style={{
-                                          display: 'block'
-                                        }}
                                         sx={{
-                                          '&.MuiMenuItem-root': {
-                                            display: 'flex'
-                                          },
-                                          '&.MuiButtonBase-root': {
-                                            display: 'flex'
-                                          }
+                                          display: 'flex !important',
+                                          justifyContent: 'flex-start',
+                                          alignItems: 'center',
+                                          padding: '8px 16px',
+                                          fontSize: '0.875rem'
                                         }}
                                         data-country={item.country.toLowerCase()}
                                         data-code={item.code.substring(1).toLowerCase()}
@@ -417,6 +419,7 @@ export default function AuthPage() {
                                 onChange={handlePhoneNumberChange}
                                 error={!!registerForm.formState.errors.phoneNumber}
                                 helperText={registerForm.formState.errors.phoneNumber?.message?.toString()}
+                                sx={{ flex: 1 }}
                               />
                             </div>
                           </FormItem>
