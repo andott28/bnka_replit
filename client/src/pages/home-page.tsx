@@ -180,9 +180,9 @@ export default function HomePage() {
         {/* Middle Section */}
         <section className="py-2 md:py-10 bg-white dark:bg-[#121212]">
           <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="md:w-1/2">
-                <div className="w-full h-[250px] md:h-[350px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-2xl relative overflow-hidden shadow-sm">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-6">
+              <div className="md:w-1/2 mt-2 md:mt-0">
+                <div className="w-full h-[200px] md:h-[350px] bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary/20 dark:to-primary/10 rounded-2xl relative overflow-hidden shadow-sm">
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 max-w-[350px]">
                     <div className="bg-white dark:bg-[#232323] p-4 rounded-2xl shadow-lg mb-3 transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-3 mb-2">
