@@ -48,13 +48,12 @@ export default function HomePage() {
               <div className="md:w-1/2 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight text-[#FAFAFA]">
                   Rettferdig kreditt for{" "}
-                  <span className="font-extrabold">
-                    alle
-                  </span>
+                  <span className="font-extrabold">ALLE</span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 text-[#E0E0E0] font-light leading-relaxed">
-                  Vår innovative AI-baserte kredittvurdering gir deg muligheten til
-                  bedre finansielle løsninger, uansett bakgrunn og livssituasjon.
+                  Vår innovative AI-baserte kredittvurdering gir deg muligheten
+                  til bedre finansielle løsninger, uansett bakgrunn og
+                  livssituasjon.
                 </p>
                 <Link href="/auth">
                   <Button
@@ -71,7 +70,7 @@ export default function HomePage() {
               <div className="md:w-1/2 relative mt-12 md:mt-0 scale-[0.73] md:scale-90 lg:scale-100 -my-6 md:my-0">
                 <div className="relative w-full h-[350px] mx-auto max-w-[400px]">
                   {/* Kredittkort */}
-                  <div 
+                  <div
                     className="absolute top-[20%] left-[10%] sm:left-[15%] md:left-[10%] lg:left-[15%] xl:left-[18%] w-[220px] h-[140px] 
                     rounded-xl bg-gradient-to-br from-secondary-900 to-secondary-600 transform -rotate-12 shadow-xl p-4 z-10 
                     transition-all duration-300 hover:rotate-0"
@@ -91,7 +90,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Mobiltelefon */}
-                  <div 
+                  <div
                     className="absolute top-[5%] right-[5%] sm:right-[15%] md:right-[15%] lg:right-[20%] xl:right-[25%] w-[180px] h-[330px] 
                     rounded-3xl bg-white dark:bg-[#1E1E1E] shadow-xl overflow-hidden border-8 border-gray-800 z-20"
                   >
@@ -101,9 +100,14 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <div className="text-xs text-gray-500 dark:text-gray-400">Kredittscore</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Kredittscore
+                      </div>
                       <div className="text-xl font-bold mb-6 text-primary dark:text-primary">
-                        785 <span className="text-sm text-gray-500 dark:text-gray-400">/ 900</span>
+                        785{" "}
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          / 900
+                        </span>
                       </div>
                       <div className="space-y-3">
                         <div className="h-3 w-4/5 bg-primary/10 dark:bg-primary/20 rounded-full"></div>
@@ -127,8 +131,8 @@ export default function HomePage() {
                 Hvorfor velge Styr AS?
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                Vi kombinerer markedsledende AI-teknologi med personlig service for
-                å gi deg en bedre kredittvurdering
+                Vi kombinerer markedsledende AI-teknologi med personlig service
+                for å gi deg en bedre kredittvurdering
               </p>
             </div>
 
@@ -183,7 +187,9 @@ export default function HomePage() {
                     <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg mb-4 transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <Sparkles className="h-6 w-6 text-primary" />
-                        <div className="font-medium dark:text-[#E0E0E0]">Personlig kredittscore</div>
+                        <div className="font-medium dark:text-[#E0E0E0]">
+                          Personlig kredittscore
+                        </div>
                       </div>
                       <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-4/5 mb-2"></div>
                       <div className="h-2 bg-primary/10 dark:bg-primary/20 rounded-full w-full"></div>
@@ -191,7 +197,9 @@ export default function HomePage() {
                     <div className="bg-white dark:bg-[#232323] p-6 rounded-2xl shadow-lg transition-all hover:-translate-y-1 duration-300">
                       <div className="flex items-center gap-4 mb-3">
                         <LineChart className="h-6 w-6 text-primary" />
-                        <div className="font-medium dark:text-[#E0E0E0]">Forbedringsmuligheter</div>
+                        <div className="font-medium dark:text-[#E0E0E0]">
+                          Forbedringsmuligheter
+                        </div>
                       </div>
                       <div className="h-20 bg-primary/10 dark:bg-primary/20 rounded-xl flex items-end p-2">
                         {[4, 3, 5, 2, 6, 3].map((height, i) => (
@@ -211,9 +219,9 @@ export default function HomePage() {
                   Revolusjonerende kredittvurdering, skreddersydd for deg
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-[#B0B0B0] mb-6 leading-relaxed">
-                  Vi har utviklet en helhetlig tilnærming til kredittvurdering med fokus
-                  på det som betyr mest: rettferdighet, tilgjengelighet og økonomiske
-                  muligheter for alle.
+                  Vi har utviklet en helhetlig tilnærming til kredittvurdering
+                  med fokus på det som betyr mest: rettferdighet,
+                  tilgjengelighet og økonomiske muligheter for alle.
                 </p>
 
                 <div className="space-y-4">
