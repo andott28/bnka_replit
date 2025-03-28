@@ -30,13 +30,24 @@ interface CreditScoreData {
   };
 }
 
+// Farger for grader, med støtte for både lyst og mørkt tema
 const gradeColors = {
-  A: "#4CAF50",
-  B: "#8BC34A",
-  C: "#FFC107",
-  D: "#FF9800",
-  E: "#FF5722",
-  F: "#F44336"
+  light: {
+    A: "#2E7D32", // Mørkere grønn
+    B: "#558B2F", // Mørkere lime grønn
+    C: "#F57F17", // Mørkere amber
+    D: "#E65100", // Mørkere oransje
+    E: "#C62828", // Mørkere rød
+    F: "#B71C1C"  // Dypere rød
+  },
+  dark: {
+    A: "#81C784", // Lysere grønn
+    B: "#AED581", // Lysere lime grønn
+    C: "#FFD54F", // Lysere amber
+    D: "#FFB74D", // Lysere oransje
+    E: "#E57373", // Lysere rød
+    F: "#F44336"  // Standard rød
+  }
 };
 
 export default function CreditScoreResult() {
@@ -95,64 +106,173 @@ export default function CreditScoreResult() {
 
   // Hjelpefunksjon for å vise faktorer med passende ikon
   const renderFaktor = (navn: string, verdi: number, ikon: JSX.Element) => {
-    const faktorScore = Math.round(verdi * 10); // Konverterer 0-10 skala til prosent
+    // Verdi er på en skala fra 0 til 10, vi konverterer til prosent for progressbar
+    const faktorScore = verdi; // Verdien er allerede på skala 0-10
+    const prosentVerdi = verdi * 10; // Konverter til prosent for progressbar (0-100)
+    
     return (
-      <Grid item xs={12} sm={6} md={4} key={navn}>
+      <Grid item xs={12} sm={6} key={navn}>
         <Paper 
-          elevation={1} 
+          elevation={3} 
           sx={{ 
-            p: 2, 
+            p: 2.5, 
             height: '100%',
-            backgroundColor: isDarkMode ? 'rgba(66, 66, 66, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '12px',
             border: '1px solid',
-            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            borderColor: isDarkMode ? 'rgba(81, 81, 81, 0.5)' : 'rgba(0, 0, 0, 0.08)',
+            boxShadow: isDarkMode 
+              ? '0 4px 20px rgba(0, 0, 0, 0.5)' 
+              : '0 4px 20px rgba(0, 0, 0, 0.05)',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': {
+              transform: 'translateY(-2px)',
+              boxShadow: isDarkMode 
+                ? '0 6px 25px rgba(0, 0, 0, 0.65)' 
+                : '0 6px 25px rgba(0, 0, 0, 0.1)',
+            }
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Box sx={{ 
-              p: 1, 
-              borderRadius: '50%', 
-              backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
-              mr: 1.5
+              p: 1.5, 
+              borderRadius: '12px', 
+              backgroundColor: isDarkMode 
+                ? 'rgba(255, 255, 255, 0.05)' 
+                : theme.palette.primary.main + '15',
+              mr: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
               {ikon}
             </Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+            <Typography 
+              variant="subtitle1" 
+              sx={{ 
+                fontWeight: 600,
+                fontSize: '1.05rem',
+                color: isDarkMode ? '#E0E0E0' : 'text.primary'
+              }}
+            >
               {navn}
             </Typography>
           </Box>
-          <Box sx={{ width: '100%', mt: 2 }}>
-            <LinearProgress 
-              variant="determinate" 
-              value={faktorScore * 10} 
-              sx={{ 
-                height: 8, 
-                borderRadius: 4,
-                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: faktorScore >= 7 ? '#4CAF50' : 
-                                  faktorScore >= 5 ? '#FFC107' : '#F44336',
-                  borderRadius: 4
-                }
-              }} 
-            />
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
-              <Typography variant="body2" color="text.secondary">
-                0
+          
+          <Box sx={{ width: '100%', mt: 1.5 }}>
+            <Box sx={{ 
+              mb: 0.5, 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center' 
+            }}>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                  fontWeight: 500
+                }}
+              >
+                Vurdering
               </Typography>
               <Typography 
                 variant="body2" 
                 sx={{ 
                   fontWeight: 'bold',
-                  color: faktorScore >= 7 ? '#4CAF50' : 
-                        faktorScore >= 5 ? '#FFC107' : '#F44336'
+                  color: faktorScore >= 7 
+                    ? isDarkMode ? '#66BB6A' : '#2E7D32' 
+                    : faktorScore >= 5 
+                      ? isDarkMode ? '#FFCA28' : '#F57F17' 
+                      : isDarkMode ? '#EF5350' : '#C62828'
                 }}
               >
-                {faktorScore}
+                {faktorScore}/10
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                10
-              </Typography>
+            </Box>
+            
+            <LinearProgress 
+              variant="determinate" 
+              value={prosentVerdi} 
+              sx={{ 
+                height: 10, 
+                borderRadius: 5,
+                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)',
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: faktorScore >= 7 
+                    ? isDarkMode ? '#4CAF50' : '#2E7D32' 
+                    : faktorScore >= 5 
+                      ? isDarkMode ? '#FFC107' : '#F57F17' 
+                      : isDarkMode ? '#F44336' : '#C62828',
+                  borderRadius: 5,
+                  transition: 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)'
+                }
+              }} 
+            />
+            
+            <Box sx={{ 
+              mt: 1, 
+              display: 'flex', 
+              justifyContent: 'space-between' 
+            }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box 
+                  sx={{ 
+                    width: 8, 
+                    height: 8, 
+                    borderRadius: '50%', 
+                    backgroundColor: isDarkMode ? '#F44336' : '#C62828',
+                    mr: 0.5
+                  }} 
+                />
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+                  }}
+                >
+                  Svak
+                </Typography>
+              </Box>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box 
+                  sx={{ 
+                    width: 8, 
+                    height: 8, 
+                    borderRadius: '50%', 
+                    backgroundColor: isDarkMode ? '#FFC107' : '#F57F17',
+                    mr: 0.5
+                  }} 
+                />
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+                  }}
+                >
+                  Middels
+                </Typography>
+              </Box>
+              
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box 
+                  sx={{ 
+                    width: 8, 
+                    height: 8, 
+                    borderRadius: '50%', 
+                    backgroundColor: isDarkMode ? '#4CAF50' : '#2E7D32',
+                    mr: 0.5
+                  }} 
+                />
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+                  }}
+                >
+                  God
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Paper>
@@ -329,14 +449,24 @@ export default function CreditScoreResult() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: `${gradeColors[creditScore.score as keyof typeof gradeColors]}15`,
+                    backgroundColor: isDarkMode 
+                      ? `${gradeColors.dark[creditScore.score as keyof typeof gradeColors.dark]}15`
+                      : `${gradeColors.light[creditScore.score as keyof typeof gradeColors.light]}15`,
                     borderRadius: '50%',
-                    border: `6px solid ${gradeColors[creditScore.score as keyof typeof gradeColors]}`
+                    border: `6px solid ${isDarkMode 
+                      ? gradeColors.dark[creditScore.score as keyof typeof gradeColors.dark]
+                      : gradeColors.light[creditScore.score as keyof typeof gradeColors.light]}`,
+                    transition: 'all 0.3s ease',
+                    boxShadow: isDarkMode 
+                      ? `0 4px 20px ${gradeColors.dark[creditScore.score as keyof typeof gradeColors.dark]}30`
+                      : `0 4px 20px ${gradeColors.light[creditScore.score as keyof typeof gradeColors.light]}30`,
                   }}>
                     <Typography variant="h1" sx={{ 
                       fontSize: "4.5rem",
                       fontWeight: "bold",
-                      color: gradeColors[creditScore.score as keyof typeof gradeColors]
+                      color: isDarkMode 
+                        ? gradeColors.dark[creditScore.score as keyof typeof gradeColors.dark]
+                        : gradeColors.light[creditScore.score as keyof typeof gradeColors.light]
                     }}>
                       {creditScore.score}
                     </Typography>
@@ -418,34 +548,110 @@ export default function CreditScoreResult() {
                 expanded={expandedSection === 'styrker'} 
                 onChange={handleAccordionChange('styrker')}
                 sx={{ 
-                  mb: 2,
-                  backgroundColor: isDarkMode ? '#1E1E1E' : '#ffffff',
-                  boxShadow: 1,
+                  mb: 2.5,
+                  backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  boxShadow: isDarkMode 
+                    ? '0 4px 20px rgba(0, 0, 0, 0.3)'
+                    : '0 4px 20px rgba(0, 0, 0, 0.07)',
+                  border: '1px solid',
+                  borderColor: isDarkMode ? 'rgba(76, 175, 80, 0.3)' : 'rgba(76, 175, 80, 0.2)',
+                  transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+                  '&:hover': {
+                    boxShadow: isDarkMode 
+                      ? '0 6px 25px rgba(0, 0, 0, 0.4)'
+                      : '0 6px 25px rgba(0, 0, 0, 0.15)',
+                    transform: 'translateY(-2px)'
+                  },
                   '&:before': {
                     display: 'none',
+                  },
+                  '& .MuiAccordionSummary-root': {
+                    borderBottom: expandedSection === 'styrker' ? '1px solid' : 'none', 
+                    borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={
+                    <ExpandMoreIcon sx={{ 
+                      color: isDarkMode ? '#66BB6A' : '#2E7D32',
+                      transition: 'transform 0.3s',
+                      transform: expandedSection === 'styrker' ? 'rotate(180deg)' : 'rotate(0)'
+                    }} />
+                  }
                   sx={{ 
-                    backgroundColor: isDarkMode ? 'rgba(76, 175, 80, 0.1)' : 'rgba(76, 175, 80, 0.05)',
-                    borderLeft: '4px solid #4CAF50'
+                    backgroundColor: isDarkMode ? 'rgba(76, 175, 80, 0.15)' : 'rgba(76, 175, 80, 0.08)',
+                    borderLeft: '5px solid',
+                    borderColor: isDarkMode ? '#66BB6A' : '#2E7D32',
+                    transition: 'background-color 0.3s',
+                    '&:hover': {
+                      backgroundColor: isDarkMode ? 'rgba(76, 175, 80, 0.25)' : 'rgba(76, 175, 80, 0.12)',
+                    }
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Check sx={{ color: '#4CAF50', mr: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: 500 }}>Dine styrker</Typography>
+                    <Box sx={{ 
+                      mr: 2,
+                      backgroundColor: isDarkMode ? 'rgba(102, 187, 106, 0.2)' : 'rgba(46, 125, 50, 0.1)',
+                      borderRadius: '8px',
+                      p: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <Check sx={{ 
+                        color: isDarkMode ? '#66BB6A' : '#2E7D32', 
+                        fontSize: '1.3rem' 
+                      }} />
+                    </Box>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600,
+                        color: isDarkMode ? '#FAFAFA' : '#333333',
+                        fontSize: { xs: '1rem', sm: '1.15rem' }
+                      }}
+                    >
+                      Dine styrker
+                    </Typography>
                   </Box>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <List>
+                <AccordionDetails sx={{ 
+                  p: 0, 
+                  backgroundColor: isDarkMode ? 'rgba(38, 50, 56, 0.4)' : 'rgba(250, 250, 250, 0.7)'
+                }}>
+                  <List sx={{ py: 0 }}>
                     {creditScore.styrker.map((styrke: string, index: number) => (
-                      <ListItem key={index} alignItems="flex-start">
+                      <ListItem 
+                        key={index} 
+                        alignItems="flex-start"
+                        sx={{ 
+                          borderBottom: index < creditScore.styrker.length - 1 ? '1px solid' : 'none',
+                          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                          py: 1.5
+                        }}
+                      >
                         <ListItemIcon>
-                          <Check sx={{ color: '#4CAF50' }} />
+                          <Check sx={{ 
+                            color: isDarkMode ? '#66BB6A' : '#2E7D32',
+                            backgroundColor: isDarkMode ? 'rgba(102, 187, 106, 0.12)' : 'rgba(46, 125, 50, 0.08)',
+                            borderRadius: '50%',
+                            p: 0.5
+                          }} />
                         </ListItemIcon>
-                        <ListItemText primary={styrke} />
+                        <ListItemText 
+                          primary={styrke} 
+                          primaryTypographyProps={{ 
+                            sx: { 
+                              fontWeight: 500,
+                              fontSize: '0.95rem',
+                              color: isDarkMode ? '#E0E0E0' : '#333333',
+                              lineHeight: 1.5
+                            } 
+                          }}
+                        />
                       </ListItem>
                     ))}
                   </List>
@@ -456,34 +662,110 @@ export default function CreditScoreResult() {
                 expanded={expandedSection === 'svakheter'} 
                 onChange={handleAccordionChange('svakheter')}
                 sx={{ 
-                  mb: 2,
-                  backgroundColor: isDarkMode ? '#1E1E1E' : '#ffffff',
-                  boxShadow: 1,
+                  mb: 2.5,
+                  backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  boxShadow: isDarkMode 
+                    ? '0 4px 20px rgba(0, 0, 0, 0.3)'
+                    : '0 4px 20px rgba(0, 0, 0, 0.07)',
+                  border: '1px solid',
+                  borderColor: isDarkMode ? 'rgba(255, 183, 77, 0.3)' : 'rgba(245, 124, 0, 0.2)',
+                  transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+                  '&:hover': {
+                    boxShadow: isDarkMode 
+                      ? '0 6px 25px rgba(0, 0, 0, 0.4)'
+                      : '0 6px 25px rgba(0, 0, 0, 0.15)',
+                    transform: 'translateY(-2px)'
+                  },
                   '&:before': {
                     display: 'none',
+                  },
+                  '& .MuiAccordionSummary-root': {
+                    borderBottom: expandedSection === 'svakheter' ? '1px solid' : 'none', 
+                    borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={
+                    <ExpandMoreIcon sx={{ 
+                      color: isDarkMode ? '#FFB74D' : '#E65100',
+                      transition: 'transform 0.3s',
+                      transform: expandedSection === 'svakheter' ? 'rotate(180deg)' : 'rotate(0)'
+                    }} />
+                  }
                   sx={{ 
-                    backgroundColor: isDarkMode ? 'rgba(255, 152, 0, 0.1)' : 'rgba(255, 152, 0, 0.05)',
-                    borderLeft: '4px solid #FF9800'
+                    backgroundColor: isDarkMode ? 'rgba(255, 152, 0, 0.15)' : 'rgba(255, 152, 0, 0.08)',
+                    borderLeft: '5px solid',
+                    borderColor: isDarkMode ? '#FFB74D' : '#E65100',
+                    transition: 'background-color 0.3s',
+                    '&:hover': {
+                      backgroundColor: isDarkMode ? 'rgba(255, 152, 0, 0.25)' : 'rgba(255, 152, 0, 0.12)',
+                    }
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Warning sx={{ color: '#FF9800', mr: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: 500 }}>Forbedringsområder</Typography>
+                    <Box sx={{ 
+                      mr: 2,
+                      backgroundColor: isDarkMode ? 'rgba(255, 183, 77, 0.2)' : 'rgba(230, 81, 0, 0.1)',
+                      borderRadius: '8px',
+                      p: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <Warning sx={{ 
+                        color: isDarkMode ? '#FFB74D' : '#E65100', 
+                        fontSize: '1.3rem' 
+                      }} />
+                    </Box>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600,
+                        color: isDarkMode ? '#FAFAFA' : '#333333',
+                        fontSize: { xs: '1rem', sm: '1.15rem' }
+                      }}
+                    >
+                      Forbedringsområder
+                    </Typography>
                   </Box>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <List>
+                <AccordionDetails sx={{ 
+                  p: 0, 
+                  backgroundColor: isDarkMode ? 'rgba(38, 50, 56, 0.4)' : 'rgba(250, 250, 250, 0.7)'
+                }}>
+                  <List sx={{ py: 0 }}>
                     {creditScore.svakheter.map((svakhet: string, index: number) => (
-                      <ListItem key={index} alignItems="flex-start">
+                      <ListItem 
+                        key={index} 
+                        alignItems="flex-start"
+                        sx={{ 
+                          borderBottom: index < creditScore.svakheter.length - 1 ? '1px solid' : 'none',
+                          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                          py: 1.5
+                        }}
+                      >
                         <ListItemIcon>
-                          <Warning sx={{ color: '#FF9800' }} />
+                          <Warning sx={{ 
+                            color: isDarkMode ? '#FFB74D' : '#E65100',
+                            backgroundColor: isDarkMode ? 'rgba(255, 183, 77, 0.12)' : 'rgba(230, 81, 0, 0.08)',
+                            borderRadius: '50%',
+                            p: 0.5
+                          }} />
                         </ListItemIcon>
-                        <ListItemText primary={svakhet} />
+                        <ListItemText 
+                          primary={svakhet} 
+                          primaryTypographyProps={{ 
+                            sx: { 
+                              fontWeight: 500,
+                              fontSize: '0.95rem',
+                              color: isDarkMode ? '#E0E0E0' : '#333333',
+                              lineHeight: 1.5
+                            } 
+                          }}
+                        />
                       </ListItem>
                     ))}
                   </List>
@@ -494,33 +776,110 @@ export default function CreditScoreResult() {
                 expanded={expandedSection === 'anbefalinger'} 
                 onChange={handleAccordionChange('anbefalinger')}
                 sx={{ 
-                  backgroundColor: isDarkMode ? '#1E1E1E' : '#ffffff',
-                  boxShadow: 1,
+                  mb: 1,
+                  backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
+                  boxShadow: isDarkMode 
+                    ? '0 4px 20px rgba(0, 0, 0, 0.3)'
+                    : '0 4px 20px rgba(0, 0, 0, 0.07)',
+                  border: '1px solid',
+                  borderColor: isDarkMode ? 'rgba(79, 195, 247, 0.3)' : 'rgba(2, 119, 189, 0.2)',
+                  transition: 'box-shadow 0.3s ease, transform 0.2s ease',
+                  '&:hover': {
+                    boxShadow: isDarkMode 
+                      ? '0 6px 25px rgba(0, 0, 0, 0.4)'
+                      : '0 6px 25px rgba(0, 0, 0, 0.15)',
+                    transform: 'translateY(-2px)'
+                  },
                   '&:before': {
                     display: 'none',
+                  },
+                  '& .MuiAccordionSummary-root': {
+                    borderBottom: expandedSection === 'anbefalinger' ? '1px solid' : 'none', 
+                    borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
+                  expandIcon={
+                    <ExpandMoreIcon sx={{ 
+                      color: isDarkMode ? '#4FC3F7' : '#0277BD',
+                      transition: 'transform 0.3s',
+                      transform: expandedSection === 'anbefalinger' ? 'rotate(180deg)' : 'rotate(0)'
+                    }} />
+                  }
                   sx={{ 
-                    backgroundColor: isDarkMode ? 'rgba(33, 150, 243, 0.1)' : 'rgba(33, 150, 243, 0.05)',
-                    borderLeft: '4px solid #2196F3'
+                    backgroundColor: isDarkMode ? 'rgba(33, 150, 243, 0.15)' : 'rgba(33, 150, 243, 0.08)',
+                    borderLeft: '5px solid',
+                    borderColor: isDarkMode ? '#4FC3F7' : '#0277BD',
+                    transition: 'background-color 0.3s',
+                    '&:hover': {
+                      backgroundColor: isDarkMode ? 'rgba(33, 150, 243, 0.25)' : 'rgba(33, 150, 243, 0.12)',
+                    }
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Lightbulb sx={{ color: '#2196F3', mr: 1 }} />
-                    <Typography variant="h6" sx={{ fontWeight: 500 }}>Personlige anbefalinger</Typography>
+                    <Box sx={{ 
+                      mr: 2,
+                      backgroundColor: isDarkMode ? 'rgba(79, 195, 247, 0.2)' : 'rgba(2, 119, 189, 0.1)',
+                      borderRadius: '8px',
+                      p: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <Lightbulb sx={{ 
+                        color: isDarkMode ? '#4FC3F7' : '#0277BD', 
+                        fontSize: '1.3rem' 
+                      }} />
+                    </Box>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        fontWeight: 600,
+                        color: isDarkMode ? '#FAFAFA' : '#333333',
+                        fontSize: { xs: '1rem', sm: '1.15rem' }
+                      }}
+                    >
+                      Personlige anbefalinger
+                    </Typography>
                   </Box>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <List>
+                <AccordionDetails sx={{ 
+                  p: 0, 
+                  backgroundColor: isDarkMode ? 'rgba(38, 50, 56, 0.4)' : 'rgba(250, 250, 250, 0.7)'
+                }}>
+                  <List sx={{ py: 0 }}>
                     {creditScore.anbefalinger.map((anbefaling: string, index: number) => (
-                      <ListItem key={index} alignItems="flex-start">
+                      <ListItem 
+                        key={index} 
+                        alignItems="flex-start"
+                        sx={{ 
+                          borderBottom: index < creditScore.anbefalinger.length - 1 ? '1px solid' : 'none',
+                          borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+                          py: 1.5
+                        }}
+                      >
                         <ListItemIcon>
-                          <Lightbulb sx={{ color: '#2196F3' }} />
+                          <Lightbulb sx={{ 
+                            color: isDarkMode ? '#4FC3F7' : '#0277BD',
+                            backgroundColor: isDarkMode ? 'rgba(79, 195, 247, 0.12)' : 'rgba(2, 119, 189, 0.08)',
+                            borderRadius: '50%',
+                            p: 0.5
+                          }} />
                         </ListItemIcon>
-                        <ListItemText primary={anbefaling} />
+                        <ListItemText 
+                          primary={anbefaling} 
+                          primaryTypographyProps={{ 
+                            sx: { 
+                              fontWeight: 500,
+                              fontSize: '0.95rem',
+                              color: isDarkMode ? '#E0E0E0' : '#333333',
+                              lineHeight: 1.5
+                            } 
+                          }}
+                        />
                       </ListItem>
                     ))}
                   </List>
@@ -528,18 +887,35 @@ export default function CreditScoreResult() {
               </Accordion>
             </Box>
             
-            <Box sx={{ p: 3, textAlign: 'center', borderTop: '1px solid', borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)' }}>
+            <Box sx={{ 
+              p: 4, 
+              textAlign: 'center', 
+              borderTop: '1px solid', 
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+              mt: 2
+            }}>
               <Button 
                 variant="contained" 
                 size="large"
                 startIcon={<ArrowBack />}
                 onClick={handleBackToDashboard}
                 sx={{ 
-                  px: 4,
+                  px: { xs: 3, sm: 4 },
                   py: 1.5,
                   borderRadius: '8px',
                   textTransform: 'none',
-                  fontWeight: 500
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  boxShadow: isDarkMode 
+                    ? '0 4px 12px rgba(0, 0, 0, 0.4)'
+                    : '0 4px 12px rgba(0, 0, 0, 0.15)',
+                  '&:hover': {
+                    boxShadow: isDarkMode 
+                      ? '0 6px 16px rgba(0, 0, 0, 0.6)'
+                      : '0 6px 16px rgba(0, 0, 0, 0.25)',
+                    transform: 'translateY(-2px)'
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 Tilbake til dashbord
