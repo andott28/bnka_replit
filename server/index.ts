@@ -5,11 +5,25 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Enkel CORS-konfigurasjon som alltid fungerer
+// Forenklet CORS-konfigurasjon som er mer kompatibel
 app.use(cors({
-  origin: "*", // Tillat alle opprinnelser
-  credentials: true // Viktig for autentisering
+  origin: "*", // Tillat alle opprinnelser (fungerer ikke med credentials=true)
+  credentials: false // Deaktiver credentials midlertidig for å løse konflikt med origin="*"
 }));
+
+// Legg til egne CORS-headere for å omgå problemer
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  
+  // Håndter preflight-forespørsler
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

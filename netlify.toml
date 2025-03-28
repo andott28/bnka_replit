@@ -1,8 +1,15 @@
 [build]
-  command = "npm run build"
+  command = "vite build"
   publish = "dist"
 
-# Håndter SPA routing for React
+# API-redirigering til backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://krivo-api.replit.app/api/:splat"
+  status = 200
+  force = true
+
+# Håndter SPA routing for React (må være sist)
 [[redirects]]
   from = "/*"
   to = "/index.html"

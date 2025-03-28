@@ -9,11 +9,8 @@ async function throwIfResNotOk(res: Response) {
 
 // Funksjon for å hente API base URL basert på miljø
 function getApiBaseUrl(): string {
-  // Sjekk om vi er i produksjonsmiljø (Netlify)
-  if (import.meta.env.PROD) {
-    return 'https://krivo-api.replit.app'; // Erstatt med din faktiske backend URL
-  }
-  // I utviklingsmiljø, bruk relativ URL
+  // Når vi kjører på Netlify, bruker vi netlify.toml redirect,
+  // så vi trenger ikke å endre API-banen
   return '';
 }
 
