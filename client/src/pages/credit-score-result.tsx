@@ -8,6 +8,7 @@ import { AnalyticsEvents } from "@/lib/posthog-provider";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme as useMuiTheme } from "@mui/material/styles";
+import { useTheme } from "@/hooks/use-theme"; // Legg til vår egen theme hook
 import { LinearProgress, Grid, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -54,8 +55,9 @@ export default function CreditScoreResult() {
   const [location, setLocation] = useLocation();
   const { trackEvent } = usePostHog();
   const { toast } = useToast();
-  const theme = useMuiTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
+  const muiTheme = useMuiTheme();
+  const { theme } = useTheme(); // Henter tema fra vår egen ThemeProvider
+  const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [expandedSection, setExpandedSection] = useState<string | false>('styrker');
   
   const handleAccordionChange = (section: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -139,7 +141,7 @@ export default function CreditScoreResult() {
               borderRadius: '12px', 
               backgroundColor: isDarkMode 
                 ? 'rgba(255, 255, 255, 0.05)' 
-                : theme.palette.primary.main + '15',
+                : muiTheme.palette.primary.main + '15',
               mr: 2,
               display: 'flex',
               alignItems: 'center',
@@ -295,7 +297,7 @@ export default function CreditScoreResult() {
               bgcolor: isDarkMode ? '#1E1E1E' : undefined,
               boxShadow: 3
             }}>
-              <CircularProgress size={60} sx={{ color: theme.palette.primary.main }} />
+              <CircularProgress size={60} sx={{ color: muiTheme.palette.primary.main }} />
               <Typography variant="h6" sx={{ mt: 3, fontWeight: 500 }}>
                 Henter din kredittvurdering...
               </Typography>
@@ -352,9 +354,9 @@ export default function CreditScoreResult() {
                 onClick={handleBackToDashboard}
                 sx={{ 
                   mt: 2,
-                  bgcolor: theme.palette.primary.main,
+                  bgcolor: muiTheme.palette.primary.main,
                   '&:hover': {
-                    bgcolor: theme.palette.primary.dark
+                    bgcolor: muiTheme.palette.primary.dark
                   }
                 }}
               >
@@ -388,7 +390,7 @@ export default function CreditScoreResult() {
           fontWeight: 600,
           color: isDarkMode ? '#FAFAFA' : '#333333',
           borderBottom: '4px solid',
-          borderColor: theme.palette.primary.main,
+          borderColor: muiTheme.palette.primary.main,
           pb: 1,
           display: 'inline-block'
         }}>
@@ -509,7 +511,7 @@ export default function CreditScoreResult() {
                 <Typography variant="h6" gutterBottom sx={{ 
                   fontWeight: 600,
                   borderBottom: '2px solid',
-                  borderColor: theme.palette.primary.main,
+                  borderColor: muiTheme.palette.primary.main,
                   pb: 1,
                   display: 'inline-block'
                 }}>

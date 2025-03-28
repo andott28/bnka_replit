@@ -36,7 +36,9 @@ export async function kredittvurdering(
   // Lage en detaljert prompt til AI-modellen
   const prompt = `
     Analyser følgende finansielle og personlige data og gi en kredittscore (A, B, C, D, E, eller F) med detaljert forklaring.
-    Analysen skal særlig ta hensyn til at personen er en innvandrer eller utlending i Norge:
+    Analysen skal være positiv, empatisk og støttende i tonen, samtidig som den gir en realistisk vurdering.
+    Bruk en vennlig og oppmuntrende kommunikasjonsstil, selv ved lavere score. 
+    Fokuser på muligheter og fremtidspotensial fremfor mangler.
 
     Personopplysninger:
     - Navn: ${navn}
@@ -61,19 +63,24 @@ export async function kredittvurdering(
 
     Legg vekt på:
     - Finansiell stabilitet (både innenlands og global inntekt)
-    - Tilpasningsevne til det norske arbeidsmarkedet
+    - Tilpasningsevne og potensial i arbeidsmarkedet
     - Langsiktig kredittverdig potensiale
-    - Spesielle hensyn for innvandrere/utlendinger
-    - Balanse mellom tradisjonelle kredittmetrikker og tilpasningsfaktorer
+    - Balanse mellom tradisjonelle kredittmetrikker og personlige faktorer
+    - Oppmuntrende tone som fremhever styrker og muligheter
+    - Konstruktive anbefalinger formulert på en støttende måte
+
+    VIKTIG: Formuleringer skal være positive og ressursorienterte, ikke strenge eller negative.
+    For lavere score (D-F), fokuser på det konkrete forbedringspotensial og muligheter for fremtiden,
+    unngå kritiske eller nedsettende formuleringer.
 
     Formater svaret som JSON med følgende struktur:
     {
       "score": "A-F",
       "numerisk_score": 0-100,
-      "forklaring": "Detaljert forklaring av vurderingen",
-      "styrker": ["Liste med finansielle styrker"],
-      "svakheter": ["Liste med forbedringsområder"],
-      "anbefalinger": ["Spesifikke anbefalinger"],
+      "forklaring": "Positiv og støttende forklaring av vurderingen som fokuserer på muligheter",
+      "styrker": ["Liste med finansielle styrker og personlige ressurser"],
+      "svakheter": ["Liste med forbedringsområder, positivt formulert som muligheter"],
+      "anbefalinger": ["Oppmuntrende og spesifikke anbefalinger"],
       "faktorer": {
         "inntektsstabilitet": 0-10,
         "gjeldsbelastning": 0-10,
