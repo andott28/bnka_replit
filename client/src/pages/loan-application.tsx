@@ -255,20 +255,17 @@ export default function LoanApplication() {
             formData.append(key, data[key]);
           }
           formData.append("idDocument", selectedFile);
-          loanRes = await apiRequest({
-            method: "POST",
-            url: "/api/loans/apply",
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            }
-          });
+          loanRes = await apiRequest(
+            "POST",
+            "/api/loans/apply",
+            formData
+          );
         } else {
-          loanRes = await apiRequest({
-            method: "POST",
-            url: "/api/loans/apply",
-            data: data
-          });
+          loanRes = await apiRequest(
+            "POST",
+            "/api/loans/apply",
+            data
+          );
         }
 
         if (!loanRes.ok) {
@@ -281,14 +278,14 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
-        const creditRes = await apiRequest({
-          method: "POST",
-          url: "/api/loans/credit-score",
-          data: {
+        const creditRes = await apiRequest(
+          "POST",
+          "/api/loans/credit-score",
+          {
             ...data,
             loanApplicationId: loanData.id,
           }
-        });
+        );
 
         if (!creditRes.ok) {
           const errorData = await creditRes.json();
@@ -819,6 +816,13 @@ export default function LoanApplication() {
                       form.setValue("isPayingStudentLoan", e.target.checked, {
                         shouldValidate: true,
                       });
+                      
+                      // Sett studentlån til 0 hvis ikke betalende
+                      if (!e.target.checked) {
+                        form.setValue("studentLoanAmount", "0", {
+                          shouldValidate: true,
+                        });
+                      }
                     }}
                     sx={{
                       "&.Mui-checked": { color: "primary.main" },

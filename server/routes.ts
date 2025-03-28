@@ -76,22 +76,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const dti = (monthlyExpenses + outstandingDebt) / monthlyIncome;
 
       const prompt = `
-        Analyze the following financial data and provide a credit score grade (A, B, C, D, E, or F) with detailed explanation:
+        Analyser følgende finansielle data og gi en kredittscore (A, B, C, D, E, eller F) med en grundig forklaring:
 
-        Monthly Income: ${monthlyIncome} NOK
-        Employment Status: ${employmentStatus}
-        Monthly Expenses: ${monthlyExpenses} NOK
-        Outstanding Debt: ${outstandingDebt} NOK
-        Debt-to-Income Ratio: ${dti.toFixed(2)}
-        Assets: ${assets}
+        Månedlig inntekt: ${monthlyIncome} NOK
+        Ansettelsesforhold: ${employmentStatus}
+        Månedlige utgifter: ${monthlyExpenses} NOK
+        Utestående gjeld: ${outstandingDebt} NOK
+        Gjeld-til-inntekt-forhold: ${dti.toFixed(2)}
+        Eiendeler: ${assets}
 
-        Please format the response as JSON with the following structure:
+        Gi en bokstavkarakter (A-F) basert på dataene ovenfor. Husk at en score utenfor det vanlige må begrunnes godt.
+        Forklaringen bør være detaljert men ikke for spesifikk.
+
+        Vær vennlig å formatere svaret som JSON med følgende struktur:
         {
-          "grade": "A-F",
-          "explanation": "Detailed explanation of the grade",
-          "strengths": ["List of financial strengths"],
-          "weaknesses": ["List of areas for improvement"],
-          "recommendations": ["Specific recommendations"]
+          "score": "A-F",
+          "numerisk_score": 0-100,
+          "forklaring": "Grundig forklaring av vurderingen",
+          "styrker": ["Liste med finansielle styrker"],
+          "svakheter": ["Liste med forbedringsområder"],
+          "anbefalinger": ["Spesifikke anbefalinger"]
         }
       `;
 
@@ -118,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Store the credit score in the database
         await storage.updateLoanApplicationCreditScore(
           loanApplicationId,
-          creditAssessment.grade,
+          creditAssessment.score,
           creditAssessment
         );
 
