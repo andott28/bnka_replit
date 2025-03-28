@@ -1,4 +1,5 @@
 import { NavHeader } from "@/components/nav-header";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -55,7 +56,7 @@ export default function Contact() {
         body: JSON.stringify({
           to: "andreas.ottem@icloud.com",
           from: data.email,
-          subject: `BNKA Support: ${data.subject}`,
+          subject: `Krivo Support: ${data.subject}`,
           text: `Fra: ${data.name}\nE-post: ${data.email}\n\nMelding:\n${data.message}`,
         }),
       });
@@ -104,7 +105,7 @@ export default function Contact() {
                   <Mail className="h-8 w-8 mx-auto mb-4 text-primary" />
                   <h3 className="font-semibold mb-2 dark:text-white">E-post</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    support@styr.no
+                    support@krivo.no
                     <br />
                     Svar innen 24 timer
                   </p>
@@ -131,7 +132,7 @@ export default function Contact() {
             <CardHeader>
               <CardTitle className="dark:text-white">Send oss en melding</CardTitle>
               <CardDescription className="dark:text-gray-400">
-                Fyll ut skjemaet under, så vil vi kontakte deg så snart som mulig
+                Fyll ut skjemaet under for å komme i kontakt med vårt kredittvurderingsteam. Vi svarer normalt innen én virkedag.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -144,7 +145,11 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>Navn</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input 
+                            {...field} 
+                            placeholder="Skriv ditt fulle navn"
+                            className="border-primary/20 focus:border-primary"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -158,7 +163,12 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>E-post</FormLabel>
                         <FormControl>
-                          <Input type="email" {...field} />
+                          <Input 
+                            type="email" 
+                            {...field} 
+                            placeholder="din.epost@eksempel.no"
+                            className="border-primary/20 focus:border-primary"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -172,7 +182,11 @@ export default function Contact() {
                       <FormItem>
                         <FormLabel>Emne</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <Input 
+                            {...field} 
+                            placeholder="Hva gjelder henvendelsen?" 
+                            className="border-primary/20 focus:border-primary"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -188,7 +202,8 @@ export default function Contact() {
                         <FormControl>
                           <Textarea
                             {...field}
-                            className="min-h-[120px]"
+                            placeholder="Beskriv hva vi kan hjelpe deg med..."
+                            className="min-h-[120px] border-primary/20 focus:border-primary resize-y"
                           />
                         </FormControl>
                         <FormMessage />
@@ -198,11 +213,13 @@ export default function Contact() {
 
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full group transition-all duration-200 bg-primary hover:bg-primary/90 hover:shadow-md"
                     disabled={form.formState.isSubmitting}
                   >
-                    {form.formState.isSubmitting && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {form.formState.isSubmitting ? (
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    ) : (
+                      <Mail className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />
                     )}
                     Send melding
                   </Button>
@@ -212,6 +229,7 @@ export default function Contact() {
           </Card>
         </div>
       </main>
+    <Footer />
     </div>
   );
 }

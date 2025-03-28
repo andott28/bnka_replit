@@ -31,7 +31,7 @@ export default function HowItWorks() {
           {/* Services Introduction */}
           <div className="text-center mb-12">
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-              Styr AS tilbyr avansert kredittvurdering designet for å gi alle en
+              Krivo tilbyr avansert kredittvurdering designet for å gi alle en
               rettferdig vurdering av deres lånemuligheter. Vår AI-drevne
               plattform gir deg bedre innsikt i din finansielle situasjon.
             </p>
@@ -173,7 +173,7 @@ export default function HowItWorks() {
 
               <AccordionItem value="item-2" className="dark:border-gray-700">
                 <AccordionTrigger className="dark:text-gray-200 text-sm sm:text-base">
-                  Hvordan beregnes min kredittscore hos Styr AS?
+                  Hvordan beregnes min kredittscore hos Krivo?
                 </AccordionTrigger>
                 <AccordionContent className="dark:text-gray-300 text-sm sm:text-base">
                   Vår AI-drevne teknologi analyserer flere datapunkter enn

@@ -17,7 +17,7 @@ export function Footer() {
               Krivo
             </h3>
             <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'} max-w-xs`}>
-              Vår innovative kredittvurdering gir innvandrere og studenter bedre muligheter og rettferdige finansieringsalternativer.
+              Vår innovative kredittvurdering gir alle bedre muligheter og rettferdige finansieringsalternativer.
             </p>
           </div>
           
