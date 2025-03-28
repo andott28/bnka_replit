@@ -47,13 +47,13 @@ export default function HomePage() {
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 max-w-2xl">
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight tracking-tight text-[#FAFAFA]">
-                  Rettferdig kreditt for{" "}
+                  Rettferdig kredittvurdering for{" "}
                   <span className="font-extrabold">ALLE</span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 text-[#E0E0E0] font-light leading-relaxed">
-                  Vår innovative AI-baserte kredittvurdering gir deg muligheten
-                  til bedre finansielle løsninger, uansett bakgrunn og
-                  livssituasjon.
+                  Vår innovative AI-baserte kredittvurdering gir innvandrere og studenter 
+                  muligheten til bedre lånetilbud gjennom våre finansielle partnere, 
+                  uansett bakgrunn og livssituasjon.
                 </p>
                 <Link href="/auth">
                   <Button
@@ -76,7 +76,7 @@ export default function HomePage() {
                     transition-all duration-300 hover:rotate-0"
                   >
                     <div className="flex justify-between">
-                      <div className="text-white font-bold">Styr AS</div>
+                      <div className="text-white font-bold">Krivo</div>
                       <div className="w-10 h-10 rounded-full bg-white/20"></div>
                     </div>
                     <div className="absolute bottom-4 left-4">
@@ -96,7 +96,7 @@ export default function HomePage() {
                   >
                     <div className="h-[60px] bg-primary p-4">
                       <div className="text-white text-sm font-medium">
-                        Styr App
+                        Krivo App
                       </div>
                     </div>
                     <div className="p-4">
@@ -128,11 +128,11 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-8">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight dark:text-[#FAFAFA]">
-                Hvorfor velge Styr AS?
+                Hvorfor velge Krivo?
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Vi kombinerer markedsledende AI-teknologi med personlig service
-                for å gi deg en bedre kredittvurdering
+                for å gi innvandrere og studenter en mer rettferdig kredittvurdering
               </p>
             </div>
 
@@ -161,12 +161,12 @@ export default function HomePage() {
                     <p className="text-sm text-gray-600 dark:text-[#B0B0B0] leading-relaxed h-full">
                       {
                         [
-                          "Vår avanserte AI analyserer flere datapunkter enn tradisjonelle kredittsystemer",
-                          "Vi hjelper deg å oppnå bedre lånebetingelser gjennom våre partnere",
-                          "Få kredittscoren din og anbefalinger innen minutter, ikke dager",
-                          "Din sikkerhet er vår prioritet med BankID og moderne kryptering",
-                          "Enkel tilgang til din kredittvurdering og anbefalinger via vår app",
-                          "Få detaljert innsikt i faktorene som påvirker din kredittscore, med personlige forbedringstips",
+                          "Vår avanserte AI vurderer flere faktorer enn tradisjonelle kredittsystemer, spesielt tilpasset innvandrere og studenter",
+                          "Vi hjelper innvandrere og studenter å få bedre lånebetingelser gjennom Solarisbank og andre partnere",
+                          "Få kredittscoren din og personlige anbefalinger innen minutter, ikke dager",
+                          "Din sikkerhet er vår prioritet med BankID-verifisering og moderne kryptering",
+                          "Enkel tilgang til din kredittvurdering og forbedringsforslag via vår app",
+                          "Få detaljert innsikt i faktorer som utdanning, språkferdigheter og nettverk som påvirker din kredittscore",
                         ][index]
                       }
                     </p>
@@ -216,12 +216,13 @@ export default function HomePage() {
 
               <div className="md:w-1/2">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight dark:text-[#FAFAFA]">
-                  Revolusjonerende kredittvurdering, skreddersydd for deg
+                  Inkluderende kredittvurdering for innvandrere og studenter
                 </h2>
                 <p className="text-base text-gray-600 dark:text-[#B0B0B0] mb-4 leading-relaxed">
-                  Vi har utviklet en helhetlig tilnærming til kredittvurdering
-                  med fokus på det som betyr mest: rettferdighet,
-                  tilgjengelighet og økonomiske muligheter for alle.
+                  Vi har utviklet en helt ny tilnærming til kredittvurdering
+                  som tar hensyn til utdanning, språkferdigheter og nettverk – 
+                  faktorer som er særlig viktige for innvandrere og studenter
+                  som ofte overses av tradisjonelle kredittsystemer.
                 </p>
 
                 <div className="space-y-3">
@@ -271,12 +272,12 @@ export default function HomePage() {
           <div className="container mx-auto px-4 text-center relative z-10">
             <div className="max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight text-[#FAFAFA]">
-                Klar for bedre finansielle muligheter?
+                Klar for en rettferdig kredittvurdering?
               </h2>
               <p className="text-lg md:text-xl text-[#E0E0E0] mb-10 leading-relaxed">
                 Registrer deg på under 5 minutter og få umiddelbar tilgang til
-                vår innovative kredittvurdering og personlige finansielle
-                rådgivning.
+                vår innovative kredittvurdering som gir innvandrere og studenter
+                tilgang til lån gjennom våre partnere, inkludert Solarisbank.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -304,9 +305,9 @@ export default function HomePage() {
 
               <div className="grid sm:grid-cols-3 gap-6 mt-16 text-left max-w-4xl mx-auto">
                 {[
-                  "Ingen skjulte gebyrer",
-                  "Sikker og trygg plattform",
-                  "Støtte 24/7 for alle kunder",
+                  "Rettferdig vurdering for innvandrere og studenter",
+                  "Lån via Solarisbank ved godkjent kredittvurdering",
+                  "Personlig oppfølging for alle brukere",
                 ].map((text, index) => (
                   <div key={index} className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white">

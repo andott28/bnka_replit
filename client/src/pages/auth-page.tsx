@@ -178,10 +178,10 @@ export default function AuthPage() {
             <CardHeader className="space-y-2">
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="h-6 w-6 text-primary" />
-                <CardTitle className="text-2xl">Velkommen til BNKA</CardTitle>
+                <CardTitle className="text-2xl">Velkommen til Krivo</CardTitle>
               </div>
               <CardDescription className="text-base">
-                Din pålitelige partner for digital bankvirksomhet
+                Din pålitelige partner for rettferdig kredittvurdering
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -521,27 +521,27 @@ export default function AuthPage() {
         </div>
         <div className="hidden lg:flex flex-1 bg-primary items-center justify-center p-8">
           <div className="max-w-lg text-white space-y-6">
-            <h1 className="text-4xl font-bold">Smart bank for fremtiden</h1>
+            <h1 className="text-4xl font-bold">Rettferdig kredittvurdering for alle</h1>
             <div className="space-y-4">
               <p className="text-lg opacity-90">
-                Opplev sømløs digital banking med BNKA. Vi tilbyr:
+                Opplev banebrytende kredittvurdering med Krivo. Vi tilbyr:
               </p>
               <ul className="space-y-3">
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Digitale bankkontoer med IBAN
+                  Alternative kredittvurderinger for innvandrere og studenter
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Debet- og kredittkort
+                  Tilgang til lån gjennom Solarisbank og andre partnere
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Raske betalinger via SEPA
+                  Kredittscore basert på utdanning, språk og nettverk
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1 w-1 rounded-full bg-white"></div>
-                  Sikker kundeidentifikasjon
+                  Personlig veiledning for å forbedre din finansielle situasjon
                 </li>
               </ul>
             </div>
