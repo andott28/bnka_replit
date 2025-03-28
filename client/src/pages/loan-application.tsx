@@ -248,6 +248,17 @@ export default function LoanApplication() {
     mutationFn: async (data: any) => {
       try {
         console.log("Sending loan application with data:", data);
+        
+        // Sjekk og sett standardverdier for påkrevde felt
+        if (!data.assets || data.assets.trim() === '') {
+          data.assets = "Ingen eiendeler oppgitt";
+        }
+        
+        // Sett studentlån til 0 hvis brukeren ikke betaler det ned
+        if (data.hasStudentLoan && !data.isPayingStudentLoan) {
+          data.studentLoanAmount = 0;
+        }
+        
         let loanRes;
         if (selectedFile) {
           const formData = new FormData();
@@ -278,13 +289,22 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
+        // Besørg at vi sender alle påkrevde data til kredittscoreendepunktet
+        const creditData = {
+          loanApplicationId: loanData.id,
+          income: data.income,
+          employmentStatus: data.employmentStatus,
+          monthlyExpenses: data.monthlyExpenses,
+          outstandingDebt: data.outstandingDebt || 0, // Sørg for at dette aldri er udefinert
+          assets: data.assets || "Ingen eiendeler oppgitt" // Sørg for at dette aldri er tomt
+        };
+        
+        console.log("Sending credit score request with data:", creditData);
+        
         const creditRes = await apiRequest(
           "POST",
           "/api/loans/credit-score",
-          {
-            ...data,
-            loanApplicationId: loanData.id,
-          }
+          creditData
         );
 
         if (!creditRes.ok) {
@@ -303,7 +323,7 @@ export default function LoanApplication() {
     onSuccess: (creditScore) => {
       trackEvent(AnalyticsEvents.LOAN_APPLICATION_COMPLETE, {
         status: "success",
-        creditGrade: creditScore?.grade,
+        creditGrade: creditScore?.score,
         purpose: form.getValues().purpose,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/loans"] });
