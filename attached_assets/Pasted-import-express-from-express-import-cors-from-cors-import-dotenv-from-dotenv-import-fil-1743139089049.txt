@@ -1,0 +1,144 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+import axios from 'axios';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config();
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serverer statiske filer fra dist-mappen
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Justerte vektverdier for en bankvennlig vurdering
+const VEKTING = {
+    "jobbstatus": 120,
+    "norsk_inntekt": 200,
+    "global_inntekt": 200,
+    "arbeidstilbud": 100,
+    "utdanning": 70,
+    "oppholdstid": 100,
+    "gjeld": -250,
+    "betalingshistorikk": 150,
+    "språkkunnskaper": 50,
+    "nettverk_i_norge": 50,
+};
+
+// Hjelpefunksjon for sikker bruk av .toLowerCase()
+function safeToLowerCase(value) {
+    if (value && typeof value.toLowerCase === 'function') {
+        return value.toLowerCase();
+    }
+    return '';
+}
+
+// Funksjon for å beregne kredittscore med runding
+function beregn_kredittscore(jobbstatus, norsk_inntekt, global_inntekt, arbeidstilbud, utdanning,
+                             oppholdstid, gjeld, betalingshistorikk, språkkunnskaper, nettverk_i_norge) {
+    const faktorer = {};
+
+    faktorer["jobbstatus"] = VEKTING["jobbstatus"] ? 
+        (["fast jobb", "egen bedrift"].includes(safeToLowerCase(jobbstatus)) ? VEKTING["jobbstatus"] : 30)
+        : 0;
+
+    faktorer["norsk_inntekt"] = Math.round(Math.min(norsk_inntekt / 375, 200));
+    faktorer["global_inntekt"] = Math.round(Math.min(global_inntekt / 750, 200));
+
+    faktorer["arbeidstilbud"] = safeToLowerCase(arbeidstilbud) === "ja" ? VEKTING["arbeidstilbud"] : 0;
+
+    const utdanning_poeng = {
+        "ingen utdanning": 0, 
+        "videregående": 40, 
+        "bachelor": 55, 
+        "master": 70
+    };
+    faktorer["utdanning"] = utdanning_poeng[safeToLowerCase(utdanning)] || 0;
+
+    const oppholdstid_poeng = {
+        "6 mnd": 20, 
+        "1 år": 50, 
+        "3+ år": 80, 
+        "permanent": 100
+    };
+    faktorer["oppholdstid"] = oppholdstid_poeng[safeToLowerCase(oppholdstid)] || 0;
+
+    faktorer["gjeld"] = Math.round(Math.max(-250, -gjeld / 5000 * 250));
+
+    const betalingshistorikk_poeng = {
+        "ingen forsinkelser": 150, 
+        "noen forsinkelser": 75, 
+        "mange forsinkelser": 0
+    };
+    faktorer["betalingshistorikk"] = betalingshistorikk_poeng[safeToLowerCase(betalingshistorikk)] || 0;
+
+    const språkkunnskaper_poeng = {
+        "ingen": 0, 
+        "litt": 25, 
+        "flytende": 50
+    };
+    faktorer["språkkunnskaper"] = språkkunnskaper_poeng[safeToLowerCase(språkkunnskaper)] || 0;
+
+    const nettverk_poeng = {
+        "ingen": 0, 
+        "venner": 25, 
+        "familie": 40, 
+        "profesjonelt nettverk": 50
+    };
+    faktorer["nettverk_i_norge"] = nettverk_poeng[safeToLowerCase(nettverk_i_norge)] || 0;
+
+    let score = Object.values(faktorer).reduce((a, b) => a + b, 0);
+    score = Math.round(score);
+
+    return { score, faktorer };
+}
+
+async function kredittvurdering(navn, alder, bosted, jobbstatus, norsk_inntekt, global_inntekt, 
+                               arbeidstilbud, utdanning, oppholdstid, gjeld, betalingshistorikk, 
+                               språkkunnskaper, nettverk_i_norge) {
+    const { score, faktorer } = beregn_kredittscore(
+        jobbstatus, norsk_inntekt, global_inntekt, arbeidstilbud, utdanning, oppholdstid, gjeld, betalingshistorikk, språkkunnskaper, nettverk_i_norge
+    );
+
+    const prompt = `Vurder følgende lånesøker basert på deres kredittverdighet:\n\nNavn: ${navn}\nAlder: ${alder}\nBosted: ${bosted}\n\nFaktorpoeng:\n${JSON.stringify(faktorer, null, 2)}\n\nTotal kredittscore: ${score}\n\nGi en kort vurdering av søkerens lånemuligheter.`;
+
+    let assessment = "";
+    try {
+        const response = await axios.post('https://api.github.com/v1/engines/deepseek-r1/completions', {
+            prompt,
+            max_tokens: 250
+        }, {
+            headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+        });
+
+        assessment = response.data.choices[0].text.trim();
+    } catch (error) {
+        console.error('Feil ved API-kall:', error);
+        assessment = "Beklager, vi kunne ikke generere en detaljert vurdering på dette tidspunktet.";
+    }
+
+    return { score, faktorer, assessment };
+}
+
+app.post('/api/kredittvurdering', async (req, res) => {
+    try {
+        const resultat = await kredittvurdering(...Object.values(req.body));
+        res.json(resultat);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
