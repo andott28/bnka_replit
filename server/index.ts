@@ -5,19 +5,33 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Forenklet CORS-konfigurasjon som er mer kompatibel
+// Dynamisk CORS-konfigurasjon basert på miljø
+const allowedOrigins = [
+  'http://localhost:5000',
+  'https://krivo.netlify.app',
+  'https://krivo-api.replit.app',
+  'https://krivo.no'
+];
+
 app.use(cors({
-  origin: "*", // Tillat alle opprinnelser (fungerer ikke med credentials=true)
-  credentials: false // Deaktiver credentials midlertidig for å løse konflikt med origin="*"
+  origin: function(origin, callback) {
+    // Tillat forespørsler uten origin header (f.eks. mobile apper, REST tools)
+    if (!origin) return callback(null, true);
+    
+    // Sjekk om origin er i listen over tillatte origins
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Legg til egne CORS-headere for å omgå problemer
+// Håndter preflight-forespørsler
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  
-  // Håndter preflight-forespørsler
   if (req.method === 'OPTIONS') {
     res.sendStatus(200);
   } else {

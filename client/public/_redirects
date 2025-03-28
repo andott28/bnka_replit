@@ -1,0 +1,5 @@
+# API-redirigering med bevaring av cookies og headers
+/api/*  https://krivo-api.replit.app/api/:splat  200!
+
+# SPA fallback
+/*       /index.html                       200

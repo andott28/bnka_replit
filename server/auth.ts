@@ -32,18 +32,24 @@ export function setupAuth(app: Express) {
   // Sjekk om vi er i produksjon for å endre cookie-innstillinger
   const isProduction = process.env.NODE_ENV === 'production';
   
+  // Konfigurer session dynamisk basert på miljø og request origin
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || 'krivo-session-secret', // Fallback hvis ingen miljøvariabel
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
+    proxy: true, // Viktig for proxy-miljøer som Netlify
     cookie: {
-      // I produksjon, tillat kun sikre cookies
+      // I produksjon, tillat kun sikre cookies hvis vi er bak HTTPS
       secure: isProduction,
       // Tillat cookies på tvers av domener (for Netlify)
       sameSite: isProduction ? 'none' : 'lax',
       // Max alder på 7 dager
-      maxAge: 7 * 24 * 60 * 60 * 1000
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      // HttpOnly er false slik at klienten kan se cookies for debugging
+      httpOnly: false,
+      // La nettleseren håndtere domene automatisk
+      domain: undefined
     }
   };
 
@@ -90,7 +96,7 @@ export function setupAuth(app: Express) {
     // Logger innloggingsforsøk
     console.log(`Innloggingsforsøk for: ${req.body.username}`);
     
-    passport.authenticate("local", function(err, user, info) {
+    passport.authenticate("local", function(err: any, user: Express.User | false, info: any) {
       if (err) {
         console.error("Autentiseringsfeil:", err);
         return next(err);

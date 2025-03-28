@@ -2,12 +2,20 @@
   command = "vite build"
   publish = "dist"
 
-# API-redirigering til backend
+# API-redirigering til backend med CORS-støtte
 [[redirects]]
   from = "/api/*"
   to = "https://krivo-api.replit.app/api/:splat"
   status = 200
   force = true
+  headers = {
+    # Tillat cookies på tvers av domener
+    Access-Control-Allow-Credentials = "true",
+    # Videresend viktige headere
+    Access-Control-Allow-Headers = "Authorization, X-Requested-With, Content-Type, Accept",
+    # Tillat alle HTTP-metoder
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+  }
 
 # Håndter SPA routing for React (må være sist)
 [[redirects]]
