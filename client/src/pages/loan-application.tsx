@@ -407,13 +407,13 @@ export default function LoanApplication() {
 
     if (user?.id) {
       try {
-        await apiRequest({
-          method: "PATCH",
-          url: `/api/users/${user.id}`,
-          data: {
+        await apiRequest(
+          "PATCH",
+          `/api/users/${user.id}`,
+          {
             kycStatus: "verified",
           }
-        });
+        );
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       } catch (error) {
         console.error("Failed to update KYC status:", error);
