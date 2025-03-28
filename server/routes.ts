@@ -5,10 +5,14 @@ import { storage } from "./storage";
 import { insertLoanApplicationSchema } from "@shared/schema";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { db, pool } from "./db";
+import kredittvurderingRouter from "./routes/kredittvurdering";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
+  
+  // Registrer den forbedrede kredittvurderingsruten
+  app.use(kredittvurderingRouter);
 
   // Mock BankID endpoints
   app.post("/api/mock-bankid/init", async (req, res) => {
