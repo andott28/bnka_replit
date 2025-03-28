@@ -49,8 +49,8 @@ function Router() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/tjenester" component={HowItWorks} />
         <Route path="/kontakt" component={Contact} />
-        <Route path="/privacy-policy" component={PrivacyPolicy} />
-        <Route path="/terms-of-service" component={TermsOfService} />
+        <Route path="/personvern" component={PrivacyPolicy} />
+        <Route path="/brukervilkar" component={TermsOfService} />
         <ProtectedRoute path="/dashboard" component={Dashboard} />
         <ProtectedRoute path="/apply" component={LoanApplication} />
         <ProtectedRoute path="/admin" component={AdminDashboard} />

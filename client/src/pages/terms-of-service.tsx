@@ -20,8 +20,8 @@ export default function TermsOfService() {
             1. Innledning
           </Typography>
           <Typography paragraph>
-            Disse brukervilkårene ("Vilkårene") regulerer din bruk av nettstedet bnka.no og tjenestene som 
-            tilbys av BNKA ("vi", "oss", eller "vår"). Ved å bruke nettstedet vårt eller våre tjenester, 
+            Disse brukervilkårene ("Vilkårene") regulerer din bruk av nettstedet krivo.no og tjenestene som 
+            tilbys av Krivo ("vi", "oss", eller "vår"). Ved å bruke nettstedet vårt eller våre tjenester, 
             aksepterer du disse Vilkårene i sin helhet. Hvis du ikke aksepterer disse Vilkårene, må du ikke 
             bruke nettstedet eller tjenestene våre.
           </Typography>
@@ -31,7 +31,7 @@ export default function TermsOfService() {
           </Typography>
           <Typography paragraph>
             <strong>"Tjenestene"</strong> refererer til alle produkter, tjenester, innhold, funksjoner, teknologier eller funksjoner 
-            som tilbys av BNKA på nettsiden vår.
+            som tilbys av Krivo på nettsiden vår, inkludert kredittvurdering og kredittscoretjenester.
           </Typography>
           <Typography paragraph>
             <strong>"Bruker"</strong> refererer til en person som har registrert seg på nettsiden vår og opprettet en konto.
@@ -79,34 +79,40 @@ export default function TermsOfService() {
           </Typography>
 
           <Typography variant="h6" gutterBottom>
-            4. Låneavtaler og finansielle tjenester
+            4. Kredittvurdering og finansielle tjenester
           </Typography>
           <Typography paragraph>
-            Når du søker om eller inngår en låneavtale gjennom vår plattform:
+            Når du søker om kredittvurdering eller låneformidling gjennom vår plattform:
           </Typography>
           <List>
             <ListItem>
               <ListItemText 
-                primary="Lånevilkår" 
-                secondary="Alle låneavtaler er underlagt egne spesifikke vilkår og betingelser som vil bli presentert for deg før du inngår avtalen."
+                primary="Kredittvurderingsresultat" 
+                secondary="Vår kredittvurdering er kun et estimat og garanterer ikke at du vil få innvilget lån hos finansinstitusjoner vi samarbeider med."
               />
             </ListItem>
             <ListItem>
               <ListItemText 
-                primary="Kredittvurdering" 
-                secondary="Du samtykker til at vi kan utføre kredittsjekk og hente inn finansiell informasjon om deg for å vurdere lånesøknaden din."
+                primary="Alternative data" 
+                secondary="Du samtykker til at vi kan bruke både tradisjonelle og alternative data (som betalingshistorikk for husleie, jobbstatus, utdanning) for å vurdere din kredittverdighet."
               />
             </ListItem>
             <ListItem>
               <ListItemText 
                 primary="Informasjonsnøyaktighet" 
-                secondary="Du er ansvarlig for å gi nøyaktig og riktig økonomisk informasjon i lånesøknadsprosessen."
+                secondary="Du er ansvarlig for å gi nøyaktig og riktig økonomisk informasjon i kredittvurderingsprosessen."
               />
             </ListItem>
             <ListItem>
               <ListItemText 
                 primary="Dokumentasjon" 
-                secondary="Du må fremlegge all nødvendig dokumentasjon når dette kreves for å verifisere informasjonen i lånesøknaden."
+                secondary="Du må fremlegge all nødvendig dokumentasjon når dette kreves for å verifisere informasjonen du har gitt."
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText 
+                primary="Partnerskap" 
+                secondary="Krivo er ikke en bank og tilbyr ikke lån direkte. Vi formidler lån gjennom våre samarbeidspartnere, og deres vilkår vil gjelde for lånet."
               />
             </ListItem>
           </List>
@@ -127,7 +133,7 @@ export default function TermsOfService() {
             <ListItem>
               <ListItemText 
                 primary="Falsk informasjon" 
-                secondary="Gi falsk eller villedende informasjon i lånesøknader eller under kontoregistrering."
+                secondary="Gi falsk eller villedende informasjon i kredittvurderingsprosessen eller under kontoregistrering."
               />
             </ListItem>
             <ListItem>
@@ -149,7 +155,7 @@ export default function TermsOfService() {
           </Typography>
           <Typography paragraph>
             Alt innhold på nettsiden vår, inkludert, men ikke begrenset til tekst, grafikk, logoer, ikoner, 
-            bilder, lydklipp, digitale nedlastinger og programvare, eies av BNKA eller våre innholdsleverandører 
+            bilder, lydklipp, digitale nedlastinger og programvare, eies av Krivo eller våre innholdsleverandører 
             og er beskyttet av norsk og internasjonal opphavsrett og varemerkelovgivning. Dette innholdet kan 
             ikke kopieres, reproduseres, modifiseres, publiseres, lastes opp, postes, overføres eller distribueres 
             på noen måte uten vårt uttrykkelige skriftlige samtykke.
@@ -161,26 +167,27 @@ export default function TermsOfService() {
           <Typography paragraph>
             Våre tjenester leveres "som de er" og "som tilgjengelige" uten noen garantier, verken uttrykte eller 
             underforståtte. Vi påtar oss ikke ansvar for nøyaktigheten, påliteligheten eller tilgjengeligheten 
-            av innholdet på nettsiden vår. I den grad det er tillatt av loven, fraskriver BNKA seg alle garantier, 
+            av innholdet på nettsiden vår. I den grad det er tillatt av loven, fraskriver Krivo seg alle garantier, 
             inkludert, men ikke begrenset til, underforståtte garantier om salgbarhet, egnethet for et bestemt formål 
-            og ikke-krenkelse.
+            og ikke-krenkelse. Kredittvurderingene våre er estimater og ingen garanti for innvilgelse av lån.
           </Typography>
 
           <Typography variant="h6" gutterBottom>
             8. Ansvarsbegrensning
           </Typography>
           <Typography paragraph>
-            BNKA og våre ledere, direktører, ansatte og agenter vil ikke være ansvarlige for indirekte, tilfeldige, 
+            Krivo og våre ledere, direktører, ansatte og agenter vil ikke være ansvarlige for indirekte, tilfeldige, 
             spesielle, følge- eller straffbare skader, inkludert, men ikke begrenset til tap av profitt, data, bruk, 
             goodwill eller andre immaterielle tap som følge av din tilgang til eller bruk av, eller manglende evne 
-            til å få tilgang til eller bruke tjenestene.
+            til å få tilgang til eller bruke tjenestene. Vi er heller ikke ansvarlige for endelige lånebeslutninger tatt 
+            av våre bankpartnere.
           </Typography>
 
           <Typography variant="h6" gutterBottom>
             9. Skadesløsholdelse
           </Typography>
           <Typography paragraph>
-            Du samtykker i å holde BNKA og våre ledere, direktører, ansatte og agenter skadesløse for eventuelle krav, 
+            Du samtykker i å holde Krivo og våre ledere, direktører, ansatte og agenter skadesløse for eventuelle krav, 
             forpliktelser, skader, tap og utgifter, inkludert, uten begrensning, rimelige advokathonorarer og kostnader, 
             som oppstår som følge av din bruk av tjenestene, ditt brudd på disse Vilkårene eller ditt brudd på 
             tredjeparts rettigheter.
@@ -220,16 +227,16 @@ export default function TermsOfService() {
             Hvis du har spørsmål om disse Vilkårene, kan du kontakte oss på:
           </Typography>
           <Typography paragraph>
-            BNKA<br />
+            Krivo<br />
             Storgata 1<br />
             0151 Oslo<br />
-            E-post: support@bnka.no<br />
+            E-post: kontakt@krivo.no<br />
             Telefon: +47 22 12 34 56
           </Typography>
 
           <Divider sx={{ my: 3 }} />
           <Typography variant="body2" color="text.secondary" align="center">
-            © {new Date().getFullYear()} BNKA | Alle rettigheter forbeholdt
+            © {new Date().getFullYear()} Krivo | Alle rettigheter forbeholdt
           </Typography>
         </Paper>
       </Container>

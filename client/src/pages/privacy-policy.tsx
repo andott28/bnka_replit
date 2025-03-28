@@ -50,8 +50,8 @@ export default function PrivacyPolicy() {
             1. Innledning
           </Typography>
           <Typography paragraph>
-            Denne personvernerklæringen beskriver hvordan BNKA ("vi", "oss" eller "vår") samler inn, bruker og deler
-            personopplysninger når du bruker vår nettside bnka.no og våre tjenester. Vi er opptatt av å beskytte ditt
+            Denne personvernerklæringen beskriver hvordan Krivo ("vi", "oss" eller "vår") samler inn, bruker og deler
+            personopplysninger når du bruker vår nettside krivo.no og våre tjenester. Vi er opptatt av å beskytte ditt
             personvern og behandler dine personopplysninger i samsvar med personvernforordningen (GDPR) og annen
             relevant lovgivning.
           </Typography>
@@ -60,8 +60,8 @@ export default function PrivacyPolicy() {
             2. Behandlingsansvarlig
           </Typography>
           <Typography paragraph>
-            BNKA er behandlingsansvarlig for personopplysningene som samles inn gjennom vår nettside.
-            For henvendelser vedrørende personvern, kontakt oss på: privacy@bnka.no
+            Krivo er behandlingsansvarlig for personopplysningene som samles inn gjennom vår nettside.
+            For henvendelser vedrørende personvern, kontakt oss på: personvern@krivo.no
           </Typography>
 
           <Typography variant="h6" gutterBottom>
@@ -80,7 +80,7 @@ export default function PrivacyPolicy() {
             <ListItem>
               <ListItemText 
                 primary="Identifikasjons- og finansiell informasjon" 
-                secondary="Fødselsdato, personnummer (ved BankID-verifisering), inntektsopplysninger, arbeidsforhold og andre økonomiske opplysninger for å vurdere lånesøknader."
+                secondary="Fødselsdato, personnummer (ved BankID-verifisering), inntektsopplysninger, arbeidsforhold, utdanningsbakgrunn, språkferdigheter og andre økonomiske opplysninger for å gjennomføre vår alternative kredittvurdering."
               />
             </ListItem>
             <ListItem>
@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
             <ListItem>
               <ListItemText 
                 primary="Tilby og forbedre tjenestene" 
-                secondary="For å levere våre finansielle tjenester, behandle lånesøknader og forbedre funksjonaliteten på nettsiden vår."
+                secondary="For å levere våre kredittvurderingstjenester, utføre alternative kredittvurderinger, formidle lånesøknader til våre partnere og forbedre funksjonaliteten på nettsiden vår."
               />
             </ListItem>
             <ListItem>
@@ -187,7 +187,7 @@ export default function PrivacyPolicy() {
             </ListItem>
           </List>
           <Typography paragraph>
-            For å utøve dine rettigheter, send oss en e-post til privacy@bnka.no.
+            For å utøve dine rettigheter, send oss en e-post til personvern@krivo.no.
           </Typography>
 
           <Typography variant="h6" gutterBottom>
@@ -195,8 +195,10 @@ export default function PrivacyPolicy() {
           </Typography>
           <Typography paragraph>
             Vi vil ikke oppbevare personopplysningene dine lenger enn det som er nødvendig for de formålene de ble samlet inn for, 
-            inkludert for å oppfylle juridiske, regnskapsmessige eller rapporteringskrav. For lånesøknader og kundeforhold 
+            inkludert for å oppfylle juridiske, regnskapsmessige eller rapporteringskrav. For kredittvurderinger og kundeforhold 
             er lovpålagt oppbevaringstid 5 år etter at kundeforholdet er avsluttet, i henhold til bokføringsloven og hvitvaskingsloven.
+            For data brukt i alternative kredittvurderinger, som utdanningsinformasjon og språkferdigheter, lagres disse i samme periode
+            for å sikre konsistens i vår kredittvurderingsmodell.
           </Typography>
 
           <Typography variant="h6" gutterBottom>
@@ -260,7 +262,7 @@ export default function PrivacyPolicy() {
 
           <Divider sx={{ my: 3 }} />
           <Typography variant="body2" color="text.secondary" align="center">
-            © BNKA {new Date().getFullYear()} | Alle rettigheter forbeholdt
+            © Krivo {new Date().getFullYear()} | Alle rettigheter forbeholdt
           </Typography>
         </Paper>
       </Container>

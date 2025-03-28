@@ -14,10 +14,10 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-[#E0E0E0]' : 'text-gray-900'}`}>
-              Styr AS
+              Krivo
             </h3>
             <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'} max-w-xs`}>
-              Vår innovative kredittvurdering gir deg bedre muligheter og rettferdige finansieringsalternativer.
+              Vår innovative kredittvurdering gir innvandrere og studenter bedre muligheter og rettferdige finansieringsalternativer.
             </p>
           </div>
           
@@ -32,7 +32,7 @@ export function Footer() {
               0151 Oslo
             </p>
             <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
-              kontakt@styr.no
+              kontakt@krivo.no
             </p>
             <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
               +47 22 12 34 56
@@ -52,14 +52,14 @@ export function Footer() {
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/how-it-works">
+                <RouterLink to="/tjenester">
                   <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                     Hvordan det fungerer
                   </a>
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/contact">
+                <RouterLink to="/kontakt">
                   <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                     Kontakt oss
                   </a>
@@ -71,13 +71,13 @@ export function Footer() {
         
         <div className={`border-t ${isDarkMode ? 'border-[#2A2A2A]' : 'border-gray-200'} mt-12 pt-8 text-center`}>
           <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
-            © {new Date().getFullYear()} Styr AS | 
-            <RouterLink to="/terms-of-service">
+            © {new Date().getFullYear()} Krivo | 
+            <RouterLink to="/brukervilkar">
               <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                 Brukervilkår
               </a>
             </RouterLink> | 
-            <RouterLink to="/privacy-policy">
+            <RouterLink to="/personvern">
               <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                 Personvernerklæring
               </a>
