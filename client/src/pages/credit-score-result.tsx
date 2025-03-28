@@ -31,6 +31,17 @@ interface CreditScoreData {
   };
 }
 
+// Forklaringer for hver faktor
+const faktorBeskrivelser: Record<string, string> = {
+  "Inntektsstabilitet": "Måler hvor stabil og forutsigbar din inntekt har vært over tid. Høy stabilitet gir bedre kredittrangering.",
+  "Gjeldsbelastning": "Viser forholdet mellom din gjeld og inntekt. Lavere gjeldsbelastning indikerer bedre økonomisk balanse.",
+  "Betalingshistorikk": "Evaluerer din historikk med å betale regninger og lån til rett tid. God betalingshistorikk styrker kredittverdigheten.",
+  "Tilpasningsevne": "Vurderer evnen til å tilpasse deg økonomiske endringer og håndtere uforutsette utgifter.",
+  "Utdanningsrelevans": "Analyserer hvor relevant din utdanning er i forhold til dagens arbeidsmarked og fremtidige muligheter.",
+  "Språkferdigheter": "Vurderer hvordan språkferdigheter påvirker din posisjon i arbeidsmarkedet og inntjeningsevne.",
+  "Nettverk": "Evaluerer ditt profesjonelle og sosiale nettverk som kan gi økonomisk stabilitet og muligheter."
+};
+
 // Farger for grader, med støtte for både lyst og mørkt tema
 const gradeColors = {
   light: {
@@ -59,9 +70,18 @@ export default function CreditScoreResult() {
   const { theme } = useTheme(); // Henter tema fra vår egen ThemeProvider
   const isDarkMode = theme === 'dark' || (theme === 'system' && window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [expandedSection, setExpandedSection] = useState<string | false>('styrker');
+  // Vi bruker et objekt for å holde styr på hvilke faktorer som viser tooltips
+  const [faktorsWithTooltip, setFaktorsWithTooltip] = useState<Record<string, boolean>>({});
   
   const handleAccordionChange = (section: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpandedSection(isExpanded ? section : false);
+  };
+  
+  const toggleTooltip = (faktorNavn: string) => {
+    setFaktorsWithTooltip(prev => ({
+      ...prev,
+      [faktorNavn]: !prev[faktorNavn]
+    }));
   };
   
   const { data: creditScore, isLoading, error, isError } = useQuery<CreditScoreData>({
@@ -111,6 +131,7 @@ export default function CreditScoreResult() {
     // Verdi er på en skala fra 0 til 10, vi konverterer til prosent for progressbar
     const faktorScore = verdi; // Verdien er allerede på skala 0-10
     const prosentVerdi = verdi * 10; // Konverter til prosent for progressbar (0-100)
+    const showTooltip = faktorsWithTooltip[navn] || false;
     
     return (
       <Grid item xs={12} sm={6} key={navn}>
@@ -132,34 +153,111 @@ export default function CreditScoreResult() {
               boxShadow: isDarkMode 
                 ? '0 6px 25px rgba(0, 0, 0, 0.65)' 
                 : '0 6px 25px rgba(0, 0, 0, 0.1)',
-            }
+            },
+            position: 'relative'
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Box sx={{ 
-              p: 1.5, 
-              borderRadius: '12px', 
-              backgroundColor: isDarkMode 
-                ? 'rgba(255, 255, 255, 0.05)' 
-                : muiTheme.palette.primary.main + '15',
-              mr: 2,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              {ikon}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ 
+                p: 1.5, 
+                borderRadius: '12px', 
+                backgroundColor: isDarkMode 
+                  ? 'rgba(255, 255, 255, 0.05)' 
+                  : muiTheme.palette.primary.main + '15',
+                mr: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {ikon}
+              </Box>
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  fontWeight: 600,
+                  fontSize: '1.05rem',
+                  color: isDarkMode ? '#E0E0E0' : 'text.primary'
+                }}
+              >
+                {navn}
+              </Typography>
             </Box>
-            <Typography 
-              variant="subtitle1" 
+            
+            <Box 
+              component="button"
+              onClick={() => toggleTooltip(navn)}
               sx={{ 
-                fontWeight: 600,
-                fontSize: '1.05rem',
-                color: isDarkMode ? '#E0E0E0' : 'text.primary'
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+                width: 28,
+                height: 28,
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                '&:hover': {
+                  backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
+                }
               }}
             >
-              {navn}
-            </Typography>
+              ?
+            </Box>
           </Box>
+          
+          {showTooltip && (
+            <Box sx={{ 
+              position: 'absolute',
+              top: 70,
+              left: 10,
+              right: 10,
+              backgroundColor: isDarkMode ? 'rgba(45, 45, 45, 0.98)' : 'rgba(255, 255, 255, 0.98)',
+              padding: 2,
+              borderRadius: '8px',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.15)',
+              border: '1px solid',
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+              zIndex: 10,
+              mt: 1,
+              maxWidth: '100%'
+            }}>
+              <Typography sx={{ 
+                fontSize: '0.85rem', 
+                lineHeight: 1.5,
+                color: isDarkMode ? '#E0E0E0' : '#333333' 
+              }}>
+                {faktorBeskrivelser[navn]}
+              </Typography>
+              <Box 
+                component="button"
+                onClick={() => toggleTooltip(navn)}
+                sx={{ 
+                  position: 'absolute',
+                  top: 6,
+                  right: 6,
+                  backgroundColor: 'transparent',
+                  color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+                  width: 20,
+                  height: 20,
+                  borderRadius: '50%',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover': {
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.8)',
+                  }
+                }}
+              >
+                ✕
+              </Box>
+            </Box>
+          )}
           
           <Box sx={{ width: '100%', mt: 1.5 }}>
             <Box sx={{ 
