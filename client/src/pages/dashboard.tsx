@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { usePostHog, AnalyticsEvents } from "@/lib/posthog-provider";
+import { CreditScoreWidget } from "@/components/credit-score-widget";
 
 export default function Dashboard() {
   const { data: loans, isLoading } = useQuery<LoanApplication[]>({
@@ -267,12 +268,36 @@ export default function Dashboard() {
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Min Kredittvurdering</CardTitle>
-              <CardDescription>Kommer snart</CardDescription>
+              <CardDescription>Din siste kredittvurdering basert på lånesøknader</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <p className="text-gray-500 dark:text-gray-400">Kredittvurdering vil være tilgjengelig i neste oppdatering</p>
-              </div>
+              {isLoading ? (
+                <div className="flex items-center justify-center h-32">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : !loans || loans.length === 0 ? (
+                <div className="text-center space-y-4 py-4">
+                  <p className="text-gray-500 dark:text-gray-400">
+                    Du har ingen kredittvurdering ennå. Søk om lån for å få en analyse av din kredittverdighet.
+                  </p>
+                  <Link to="/loan-application">
+                    <Button>
+                      Søk om lån nå
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <CreditScoreWidget />
+                  <div className="text-right">
+                    <Link to="/credit-score-result">
+                      <Button variant="outline" size="sm">
+                        Se full rapport
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
