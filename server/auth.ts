@@ -86,8 +86,33 @@ export function setupAuth(app: Express) {
     });
   });
 
-  app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).json(req.user);
+  app.post("/api/login", (req, res, next) => {
+    // Logger innloggingsforsøk
+    console.log(`Innloggingsforsøk for: ${req.body.username}`);
+    
+    passport.authenticate("local", function(err, user, info) {
+      if (err) {
+        console.error("Autentiseringsfeil:", err);
+        return next(err);
+      }
+      
+      if (!user) {
+        console.log(`Innlogging mislyktes for: ${req.body.username}`);
+        return res.status(401).json({ 
+          message: "Feil brukernavn eller passord" 
+        });
+      }
+      
+      req.login(user, function(loginErr) {
+        if (loginErr) {
+          console.error("Session-feil ved innlogging:", loginErr);
+          return next(loginErr);
+        }
+        
+        console.log(`Innlogging vellykket for: ${user.username} (ID: ${user.id})`);
+        return res.status(200).json(user);
+      });
+    })(req, res, next);
   });
 
   app.post("/api/logout", (req, res, next) => {
@@ -98,7 +123,11 @@ export function setupAuth(app: Express) {
   });
 
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) return res.sendStatus(401);
+    if (!req.isAuthenticated()) {
+      console.log("Uautorisert forsøk på å få brukerinfo");
+      return res.status(401).json({ message: "Ikke pålogget" });
+    }
+    console.log(`Brukerinfo forespurt for bruker: ${req.user?.id}`);
     res.json(req.user);
   });
 }

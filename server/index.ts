@@ -5,17 +5,12 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Konfigurer CORS
+// Konfigurer CORS med bedre støtte for ulike miljøer
 app.use(cors({
-  origin: [
-    "http://localhost:5000", 
-    "https://krivo.netlify.app",   // Legg til Netlify-domenet ditt her
-    "https://krivo-dev.netlify.app", // Utviklings-/staging-domene hvis du har det
-    /\.netlify\.app$/  // Tilpass for alle Netlify-subdomener hvis nødvendig
-  ],
+  origin: true, // Tillat alle opprinnelser midlertidig for feilsøking
   credentials: true,  // Viktig for at cookies skal sendes med forespørsler
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json());
