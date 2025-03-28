@@ -1,8 +1,23 @@
 import express, { type Request, Response, NextFunction } from "express";
+import cors from "cors";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Konfigurer CORS
+app.use(cors({
+  origin: [
+    "http://localhost:5000", 
+    "https://krivo.netlify.app",   // Legg til Netlify-domenet ditt her
+    "https://krivo-dev.netlify.app", // Utviklings-/staging-domene hvis du har det
+    /\.netlify\.app$/  // Tilpass for alle Netlify-subdomener hvis nødvendig
+  ],
+  credentials: true,  // Viktig for at cookies skal sendes med forespørsler
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

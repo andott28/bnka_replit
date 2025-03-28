@@ -29,11 +29,22 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
+  // Sjekk om vi er i produksjon for å endre cookie-innstillinger
+  const isProduction = process.env.NODE_ENV === 'production';
+  
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET!,
+    secret: process.env.SESSION_SECRET || 'krivo-session-secret', // Fallback hvis ingen miljøvariabel
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
+    cookie: {
+      // I produksjon, tillat kun sikre cookies
+      secure: isProduction,
+      // Tillat cookies på tvers av domener (for Netlify)
+      sameSite: isProduction ? 'none' : 'lax',
+      // Max alder på 7 dager
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    }
   };
 
   app.set("trust proxy", 1);

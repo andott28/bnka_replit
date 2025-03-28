@@ -7,12 +7,24 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Funksjon for å hente API base URL basert på miljø
+function getApiBaseUrl(): string {
+  // Sjekk om vi er i produksjonsmiljø (Netlify)
+  if (import.meta.env.PROD) {
+    return 'https://krivo-api.replit.app'; // Erstatt med din faktiske backend URL
+  }
+  // I utviklingsmiljø, bruk relativ URL
+  return '';
+}
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const apiUrl = `${getApiBaseUrl()}${url}`;
+  
+  const res = await fetch(apiUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -29,7 +41,10 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    const url = queryKey[0] as string;
+    const apiUrl = `${getApiBaseUrl()}${url}`;
+    
+    const res = await fetch(apiUrl, {
       credentials: "include",
     });
 
