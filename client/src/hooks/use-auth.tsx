@@ -49,39 +49,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
       try {
-        console.log("Forsøker innlogging med brukernavn:", credentials.username);
+        console.log("Attempting login with credentials:", { username: credentials.username, passwordLength: credentials.password?.length || 0 });
         const res = await apiRequest("POST", "/api/login", credentials);
-        
-        // Sjekk om responsen er JSON
-        const contentType = res.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const userData = await res.json();
-          console.log("Innlogging vellykket, brukerdata:", userData);
-          return userData;
-        } else {
-          console.error("Uventet respons-format (ikke JSON):", await res.text());
-          throw new Error("Uventet serverrespons");
-        }
-      } catch (error: any) {
-        // Forbedret feilhåndtering
-        console.error("Innloggingsfeil:", error);
-        
-        // Sjekk om dette er en nettverksfeil
-        if (error.message === "Failed to fetch") {
-          throw new Error("Kunne ikke koble til serveren. Sjekk internettforbindelsen din.");
-        }
-        
-        // Prøv å få detaljert feilmelding hvis tilgjengelig
-        if (error.response) {
-          try {
-            const errorData = await error.response.json();
-            throw new Error(errorData.message || "Innlogging mislyktes");
-          } catch (e) {
-            // Hvis vi ikke kan parse JSON, bruk den originale feilen
-            throw error;
-          }
-        }
-        
+        const userData = await res.json();
+        console.log("Login successful, user data:", userData);
+        return userData;
+      } catch (error) {
+        console.error("Login error:", error);
         throw error;
       }
     },

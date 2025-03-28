@@ -32,24 +32,18 @@ export function setupAuth(app: Express) {
   // Sjekk om vi er i produksjon for å endre cookie-innstillinger
   const isProduction = process.env.NODE_ENV === 'production';
   
-  // Konfigurer session dynamisk basert på miljø og request origin
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || 'krivo-session-secret', // Fallback hvis ingen miljøvariabel
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
-    proxy: true, // Viktig for proxy-miljøer som Netlify
     cookie: {
-      // I produksjon, tillat kun sikre cookies hvis vi er bak HTTPS
+      // I produksjon, tillat kun sikre cookies
       secure: isProduction,
       // Tillat cookies på tvers av domener (for Netlify)
       sameSite: isProduction ? 'none' : 'lax',
       // Max alder på 7 dager
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      // HttpOnly er false slik at klienten kan se cookies for debugging
-      httpOnly: false,
-      // La nettleseren håndtere domene automatisk
-      domain: undefined
+      maxAge: 7 * 24 * 60 * 60 * 1000
     }
   };
 
@@ -92,33 +86,8 @@ export function setupAuth(app: Express) {
     });
   });
 
-  app.post("/api/login", (req, res, next) => {
-    // Logger innloggingsforsøk
-    console.log(`Innloggingsforsøk for: ${req.body.username}`);
-    
-    passport.authenticate("local", function(err: any, user: Express.User | false, info: any) {
-      if (err) {
-        console.error("Autentiseringsfeil:", err);
-        return next(err);
-      }
-      
-      if (!user) {
-        console.log(`Innlogging mislyktes for: ${req.body.username}`);
-        return res.status(401).json({ 
-          message: "Feil brukernavn eller passord" 
-        });
-      }
-      
-      req.login(user, function(loginErr) {
-        if (loginErr) {
-          console.error("Session-feil ved innlogging:", loginErr);
-          return next(loginErr);
-        }
-        
-        console.log(`Innlogging vellykket for: ${user.username} (ID: ${user.id})`);
-        return res.status(200).json(user);
-      });
-    })(req, res, next);
+  app.post("/api/login", passport.authenticate("local"), (req, res) => {
+    res.status(200).json(req.user);
   });
 
   app.post("/api/logout", (req, res, next) => {
@@ -129,11 +98,7 @@ export function setupAuth(app: Express) {
   });
 
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) {
-      console.log("Uautorisert forsøk på å få brukerinfo");
-      return res.status(401).json({ message: "Ikke pålogget" });
-    }
-    console.log(`Brukerinfo forespurt for bruker: ${req.user?.id}`);
+    if (!req.isAuthenticated()) return res.sendStatus(401);
     res.json(req.user);
   });
 }
