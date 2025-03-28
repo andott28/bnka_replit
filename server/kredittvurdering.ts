@@ -16,7 +16,7 @@ export async function kredittvurdering(
   gjeld: number,
   betalingshistorikk: string,
   språkkunnskaper: string,
-  nettverk_i_norge: string
+  nettverk: string
 ) {
   if (!process.env.GOOGLE_API_KEY) {
     throw new Error("GOOGLE_API_KEY er ikke konfigurert i miljøvariablene");
@@ -59,7 +59,7 @@ export async function kredittvurdering(
     - Utdanningsnivå: ${utdanning}
     - Arbeidstilbud/jobbmuligheter: ${arbeidstilbud}
     - Språkkunnskaper: ${språkkunnskaper}
-    - Nettverk i Norge: ${nettverk_i_norge}
+    - Nettverk: ${nettverk}
 
     Legg vekt på:
     - Finansiell stabilitet (både innenlands og global inntekt)

@@ -51,7 +51,7 @@ export default function HomePage() {
                   <span className="font-extrabold">ALLE</span>
                 </h1>
                 <p className="text-lg md:text-xl mb-8 text-[#E0E0E0] font-light leading-relaxed">
-                  Vår innovative AI-baserte kredittvurdering gir innvandrere og studenter 
+                  Vår innovative AI-baserte kredittvurdering gir alle
                   muligheten til bedre lånetilbud gjennom våre finansielle partnere, 
                   uansett bakgrunn og livssituasjon.
                 </p>
@@ -132,7 +132,7 @@ export default function HomePage() {
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
                 Vi kombinerer markedsledende AI-teknologi med personlig service
-                for å gi innvandrere og studenter en mer rettferdig kredittvurdering
+                for å gi alle en mer rettferdig kredittvurdering
               </p>
             </div>
 
@@ -161,8 +161,8 @@ export default function HomePage() {
                     <p className="text-sm text-gray-600 dark:text-[#B0B0B0] leading-relaxed h-full">
                       {
                         [
-                          "Vår avanserte AI vurderer flere faktorer enn tradisjonelle kredittsystemer, spesielt tilpasset innvandrere og studenter",
-                          "Vi hjelper innvandrere og studenter å få bedre lånebetingelser gjennom Solarisbank og andre partnere",
+                          "Vår avanserte AI vurderer flere faktorer enn tradisjonelle kredittsystemer, for en mer rettferdig vurdering for alle",
+                          "Vi hjelper alle å få bedre lånebetingelser gjennom Solarisbank og andre partnere",
                           "Få kredittscoren din og personlige anbefalinger innen minutter, ikke dager",
                           "Din sikkerhet er vår prioritet med BankID-verifisering og moderne kryptering",
                           "Enkel tilgang til din kredittvurdering og forbedringsforslag via vår app",
@@ -216,13 +216,13 @@ export default function HomePage() {
 
               <div className="md:w-1/2">
                 <h2 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight dark:text-[#FAFAFA]">
-                  Inkluderende kredittvurdering for innvandrere og studenter
+                  Inkluderende kredittvurdering for alle
                 </h2>
                 <p className="text-base text-gray-600 dark:text-[#B0B0B0] mb-4 leading-relaxed">
                   Vi har utviklet en helt ny tilnærming til kredittvurdering
                   som tar hensyn til utdanning, språkferdigheter og nettverk – 
-                  faktorer som er særlig viktige for innvandrere og studenter
-                  som ofte overses av tradisjonelle kredittsystemer.
+                  faktorer som ofte overses av tradisjonelle kredittsystemer,
+                  men som gir et mer komplett bilde av din økonomiske situasjon.
                 </p>
 
                 <div className="space-y-3">
@@ -276,7 +276,7 @@ export default function HomePage() {
               </h2>
               <p className="text-lg md:text-xl text-[#E0E0E0] mb-10 leading-relaxed">
                 Registrer deg på under 5 minutter og få umiddelbar tilgang til
-                vår innovative kredittvurdering som gir innvandrere og studenter
+                vår innovative kredittvurdering som gir deg
                 tilgang til lån gjennom våre partnere, inkludert Solarisbank.
               </p>
 
@@ -305,7 +305,7 @@ export default function HomePage() {
 
               <div className="grid sm:grid-cols-3 gap-6 mt-16 text-left max-w-4xl mx-auto">
                 {[
-                  "Rettferdig vurdering for innvandrere og studenter",
+                  "Rettferdig kredittvurdering for alle",
                   "Lån via Solarisbank ved godkjent kredittvurdering",
                   "Personlig oppfølging for alle brukere",
                 ].map((text, index) => (

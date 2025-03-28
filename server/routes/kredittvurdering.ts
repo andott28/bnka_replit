@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * Endepunkt for forbedret kredittvurdering som tar hensyn til ytterligere faktorer
- * spesielt tilpasset innvandrere og utlendinger
+ * for en mer helhetlig vurdering
  */
 router.post('/api/kredittvurdering', async (req, res) => {
   if (!req.isAuthenticated()) return res.sendStatus(401);
@@ -26,7 +26,7 @@ router.post('/api/kredittvurdering', async (req, res) => {
       gjeld,
       betalingshistorikk,
       språkkunnskaper,
-      nettverk_i_norge
+      nettverk
     } = req.body;
 
     // Valider input-parametre
@@ -36,7 +36,7 @@ router.post('/api/kredittvurdering', async (req, res) => {
 
     if (!navn || !alder || !bosted || !jobbstatus || !norsk_inntekt || !global_inntekt ||
         !arbeidstilbud || !utdanning || oppholdstid === undefined || gjeld === undefined ||
-        !betalingshistorikk || !språkkunnskaper || !nettverk_i_norge) {
+        !betalingshistorikk || !språkkunnskaper || !nettverk) {
       return res.status(400).json({ error: "Manglende obligatoriske data for kredittvurdering" });
     }
 
@@ -57,7 +57,7 @@ router.post('/api/kredittvurdering', async (req, res) => {
         parseFloat(gjeld),
         betalingshistorikk,
         språkkunnskaper,
-        nettverk_i_norge
+        nettverk
       );
 
       console.log("Kredittvurdering fullført for lån:", loanApplicationId);

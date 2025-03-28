@@ -189,8 +189,8 @@ export function EnhancedCreditScoreResult({
     <Box>
       <Card sx={{ maxWidth: '100%', mb: 4, boxShadow: 3 }}>
         <CardHeader 
-          title="Din kredittvurdering for innvandrere" 
-          subheader="Basert på din personlige finansielle situasjon og innvandrerrelaterte faktorer"
+          title="Din Krivo kredittvurdering" 
+          subheader="Basert på din personlige finansielle situasjon og en mer helhetlig vurdering"
           sx={{ 
             backgroundColor: isDarkMode ? '#1E1E1E' : '#f8f9fa',
             borderBottom: '1px solid',
@@ -278,7 +278,7 @@ export function EnhancedCreditScoreResult({
                   {renderFaktor("Tilpasningsevne", creditScoreData.faktorer.tilpasningsevne, <TrendingUp fontSize="small" color="primary" />)}
                   {renderFaktor("Utdanningsrelevans", creditScoreData.faktorer.utdanningsrelevans, <School fontSize="small" color="primary" />)}
                   {renderFaktor("Språkferdigheter", creditScoreData.faktorer.språkferdigheter, <Language fontSize="small" color="primary" />)}
-                  {renderFaktor("Nettverk i Norge", creditScoreData.faktorer.nettverk, <People fontSize="small" color="primary" />)}
+                  {renderFaktor("Nettverk", creditScoreData.faktorer.nettverk, <People fontSize="small" color="primary" />)}
                 </Grid>
               </Box>
             </Grid>
