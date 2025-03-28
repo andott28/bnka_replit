@@ -5,12 +5,10 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
-// Konfigurer CORS med bedre støtte for ulike miljøer
+// Enkel CORS-konfigurasjon som alltid fungerer
 app.use(cors({
-  origin: true, // Tillat alle opprinnelser midlertidig for feilsøking
-  credentials: true,  // Viktig for at cookies skal sendes med forespørsler
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  origin: "*", // Tillat alle opprinnelser
+  credentials: true // Viktig for autentisering
 }));
 
 app.use(express.json());
