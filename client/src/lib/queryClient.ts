@@ -24,15 +24,23 @@ export async function apiRequest(
 ): Promise<Response> {
   const apiUrl = `${getApiBaseUrl()}${url}`;
   
-  const res = await fetch(apiUrl, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+  try {
+    console.log(`Sending ${method} request to: ${apiUrl}`);
+    
+    const res = await fetch(apiUrl, {
+      method,
+      headers: data ? { "Content-Type": "application/json" } : {},
+      body: data ? JSON.stringify(data) : undefined,
+      credentials: "include",
+    });
 
-  await throwIfResNotOk(res);
-  return res;
+    await throwIfResNotOk(res);
+    return res;
+  } catch (error) {
+    console.error(`API request failed: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(`Request details: ${method} ${apiUrl}`);
+    throw error;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
@@ -44,16 +52,25 @@ export const getQueryFn: <T>(options: {
     const url = queryKey[0] as string;
     const apiUrl = `${getApiBaseUrl()}${url}`;
     
-    const res = await fetch(apiUrl, {
-      credentials: "include",
-    });
+    try {
+      console.log(`Sending GET request to: ${apiUrl}`);
+      
+      const res = await fetch(apiUrl, {
+        credentials: "include",
+      });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        console.log("Unauthorized request (401) - returning null as configured");
+        return null;
+      }
+
+      await throwIfResNotOk(res);
+      return await res.json();
+    } catch (error) {
+      console.error(`Query request failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.error(`Request details: GET ${apiUrl}`);
+      throw error;
     }
-
-    await throwIfResNotOk(res);
-    return await res.json();
   };
 
 export const queryClient = new QueryClient({

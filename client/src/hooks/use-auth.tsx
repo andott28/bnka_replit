@@ -48,10 +48,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
-      const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
+      try {
+        console.log("Attempting login with credentials:", { username: credentials.username, passwordLength: credentials.password?.length || 0 });
+        const res = await apiRequest("POST", "/api/login", credentials);
+        const userData = await res.json();
+        console.log("Login successful, user data:", userData);
+        return userData;
+      } catch (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
     },
     onSuccess: (user: SelectUser) => {
+      console.log("Setting user data in query cache");
       queryClient.setQueryData(["/api/user"], user);
       
       // Spor innloggingsbegivenhet
@@ -61,9 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     },
     onError: (error: Error) => {
+      console.error("Login mutation error handler:", error);
       toast({
-        title: "Login failed",
-        description: error.message,
+        title: "Innlogging mislyktes",
+        description: error.message || "Kunne ikke koble til server. Vennligst prøv igjen senere.",
         variant: "destructive",
       });
       
@@ -77,10 +87,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: InsertUser) => {
-      const res = await apiRequest("POST", "/api/register", credentials);
-      return await res.json();
+      try {
+        console.log("Attempting registration with credentials:", { username: credentials.username, passwordLength: credentials.password?.length || 0 });
+        const res = await apiRequest("POST", "/api/register", credentials);
+        const userData = await res.json();
+        console.log("Registration successful, user data:", userData);
+        return userData;
+      } catch (error) {
+        console.error("Registration error:", error);
+        throw error;
+      }
     },
     onSuccess: (user: SelectUser) => {
+      console.log("Setting user data in query cache after registration");
       queryClient.setQueryData(["/api/user"], user);
       
       // Spor registreringsbegivenhet
@@ -89,9 +108,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     },
     onError: (error: Error) => {
+      console.error("Registration mutation error handler:", error);
       toast({
-        title: "Registration failed",
-        description: error.message,
+        title: "Registrering mislyktes",
+        description: error.message || "Kunne ikke koble til server. Vennligst prøv igjen senere.",
         variant: "destructive",
       });
       
@@ -105,9 +125,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest("POST", "/api/logout");
+      try {
+        console.log("Attempting logout");
+        await apiRequest("POST", "/api/logout");
+        console.log("Logout API request successful");
+      } catch (error) {
+        console.error("Logout error:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
+      console.log("Logout successful, clearing user data");
       // Spor utloggingsbegivenhet før vi fjerner brukerdata
       if (user) {
         trackEvent(AnalyticsEvents.USER_LOGOUT, {
@@ -119,9 +147,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('user_id');
     },
     onError: (error: Error) => {
+      console.error("Logout mutation error handler:", error);
       toast({
-        title: "Logout failed",
-        description: error.message,
+        title: "Utlogging mislyktes",
+        description: error.message || "Kunne ikke koble til server. Vennligst prøv igjen senere.",
         variant: "destructive",
       });
     },
