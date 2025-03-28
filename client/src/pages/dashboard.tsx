@@ -216,38 +216,41 @@ export default function Dashboard() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium">E-post</label>
+                  <label className="text-sm font-medium dark:text-gray-200">E-post</label>
                   <Input
                     value={user?.username}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-gray-50 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Fornavn</label>
+                  <label className="text-sm font-medium dark:text-gray-200">Fornavn</label>
                   <Input
                     name="firstName"
                     value={userInfo.firstName}
                     onChange={handleInputChange}
                     placeholder="Ditt fornavn"
+                    className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:placeholder:text-gray-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Etternavn</label>
+                  <label className="text-sm font-medium dark:text-gray-200">Etternavn</label>
                   <Input
                     name="lastName"
                     value={userInfo.lastName}
                     onChange={handleInputChange}
                     placeholder="Ditt etternavn"
+                    className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:placeholder:text-gray-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Telefonnummer</label>
+                  <label className="text-sm font-medium dark:text-gray-200">Telefonnummer</label>
                   <Input
                     name="phoneNumber"
                     value={userInfo.phoneNumber}
                     onChange={handleInputChange}
                     placeholder="Ditt telefonnummer"
+                    className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700 dark:placeholder:text-gray-500"
                   />
                 </div>
                 <Button 

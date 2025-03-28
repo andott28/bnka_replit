@@ -439,7 +439,11 @@ export default function CreditScoreResult() {
                   alignItems: 'center', 
                   justifyContent: 'center'
                 }}>
-                  <Typography variant="overline" color="text.secondary" sx={{ mb: 1, letterSpacing: 1.5 }}>
+                  <Typography variant="overline" sx={{ 
+                    mb: 1, 
+                    letterSpacing: 1.5,
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)' 
+                  }}>
                     KREDITTSCORE
                   </Typography>
                   
@@ -474,7 +478,10 @@ export default function CreditScoreResult() {
                     </Typography>
                   </Box>
                   
-                  <Typography variant="h6" textAlign="center" gutterBottom fontWeight="500">
+                  <Typography variant="h6" textAlign="center" gutterBottom sx={{
+                    fontWeight: 500,
+                    color: isDarkMode ? '#E0E0E0' : '#333333'
+                  }}>
                     {creditScore.numerisk_score}/100 poeng
                   </Typography>
                   
@@ -513,7 +520,8 @@ export default function CreditScoreResult() {
                   borderBottom: '2px solid',
                   borderColor: muiTheme.palette.primary.main,
                   pb: 1,
-                  display: 'inline-block'
+                  display: 'inline-block',
+                  color: isDarkMode ? '#E0E0E0' : '#333333'
                 }}>
                   Kredittanalyse
                 </Typography>
@@ -527,7 +535,10 @@ export default function CreditScoreResult() {
                 </Typography>
                 
                 <Box sx={{ mt: 4 }}>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                  <Typography variant="h6" gutterBottom sx={{ 
+                    fontWeight: 600,
+                    color: isDarkMode ? '#E0E0E0' : '#333333'
+                  }}>
                     Nøkkelfaktorer
                   </Typography>
                   

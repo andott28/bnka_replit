@@ -77,7 +77,7 @@ export async function kredittvurdering(
     {
       "score": "A-F",
       "numerisk_score": 0-100,
-      "forklaring": "Positiv og støttende forklaring av vurderingen som fokuserer på muligheter",
+      "forklaring": "Gi en strukturert, velorganisert forklaring av kredittvurderingen som bruker punktlister, korte avsnitt og tydelige overganger mellom temaer. Bruk en positiv og støttende tone som fokuserer på muligheter og styrker, samtidig som svakheter presenteres som områder for vekst. Teksten bør være lett å skanne visuelt med tydelige avsnitt og mellomrom. Unngå lange sammenhengende tekstblokker.",
       "styrker": ["Liste med finansielle styrker og personlige ressurser"],
       "svakheter": ["Liste med forbedringsområder, positivt formulert som muligheter"],
       "anbefalinger": ["Oppmuntrende og spesifikke anbefalinger"],
