@@ -1,0 +1,65 @@
+Problemet med "failed to fetch" når du deployer nettsiden din fra Replit til Netlify kan ha flere mulige årsaker. La oss gå gjennom de vanligste løsningene:
+
+1. CORS-problemer (Viktigste mistanke)
+Hvis databasen din er hostet på Replit (f.eks. en Replit-database eller ekstern tjeneste), må du sørge for at:
+
+
+Databasen godtar forespørsler fra Netlify-domenet ditt (legg til i CORS-headers).
+
+I din backend-kode (hvis du bruker Express.js eller lignende), må du konfigurere CORS riktig:
+javascript
+
+const cors = require('cors');
+app.use(cors({
+  origin: ['https://ditt-nettsted.netlify.app', 'http://localhost:3000'] // Legg til alle nødvendige domener
+}));
+
+2. Miljøvariabler mangler i Netlify
+Hvis du bruker API-nøkler eller database-tilkoblingsstrenger:
+
+
+Sjekk at disse er lagt til i Netlify under Site settings > Build & deploy > Environment variables.
+
+I Replit er disse tilgjengelige automatisk, men de må eksporteres manuelt til Netlify.
+
+3. Database-tilgang begrenset til Replit
+
+Hvis du bruker Replits egen database (replit.db eller lignende), vil den ikke være tilgjengelig utenfor Replit-miljøet. Du må:
+Flytte databasen til en ekstern tjeneste (som Firebase, Supabase, MongoDB Atlas).
+Eller sette opp en backend på Replit som håndterer forespørsler (og sørge for at den kjører 24/7 med et Always-on Repl).
+
+4. Feil i API-kall eller nettverksforespørsler
+
+Sjekk nettverkstabben i nettleseren (F12 > Network) for å se detaljer om feilen.
+
+Endre dine fetch-kall til å inkludere feilhåndtering:
+javascript
+
+fetch('https://din-api-endepunkt.com/data')
+  .then(response => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+  })
+  .catch(error => console.error('Fetch error:', error));
+
+5. Byggefeil i Netlify
+
+Sjekk Netlify-deploy-loggen (Deploys > Latest deploy) for feil under byggingen.
+
+Hvis du bruker en frontend-rammeverk som React/Vue, sørg for at byggekommandoen (npm run build) kjører uten feil.
+
+Konkrete tiltak for din repo:
+
+Jeg ser at du bruker Firebase i script.js (fra en tidligere commit). Hvis du fortsatt bruker Firebase, sørg for at:
+
+Firebase-konfigurasjonen er korrekt i Netlify-miljøvariablene.
+Firebase Security Rules tillater tilgang fra Netlify-domenet ditt.
+
+Hvis du bruker Replit Database, må du bytte til en ekstern database eller sette opp en proxy (se punkt 3 over).
+
+
+Foreslått løsning:
+
+Konfigurer CORS eksplisitt i backend-koden din (hvis du har en), og flytt databasen til en ekstern tjeneste som Firebase eller Supabase for pålitelig tilgang fra Netlify.
+
+Har du en spesifikk backend-fil (f.eks. server.js) i repoet ditt? Da kan jeg hjelpe med å finne den eksakte feilen.

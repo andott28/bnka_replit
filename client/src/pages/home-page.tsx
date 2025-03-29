@@ -55,20 +55,31 @@ export default function HomePage() {
                   muligheten til bedre lånetilbud gjennom våre finansielle partnere, 
                   uansett bakgrunn og livssituasjon.
                 </p>
-                <Link href="/auth">
-                  <Button
-                    size="lg"
-                    variant="secondary"
-                    className="group rounded-full px-8 py-6 text-[1.1rem] font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                  >
-                    Kom i gang
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                  <Link href="/auth">
+                    <Button
+                      size="lg"
+                      variant="secondary"
+                      className="group rounded-full px-8 py-6 text-[1.1rem] font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full sm:w-auto"
+                    >
+                      Kom i gang
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                  <Link href="/tjenester">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="group rounded-full px-8 py-6 text-[1.1rem] font-medium border-white text-white bg-transparent hover:bg-white/10 hover:text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 w-full sm:w-auto"
+                    >
+                      Se våre tjenester
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
               <div className="md:w-1/2 relative mt-12 md:mt-0 scale-[0.73] md:scale-90 lg:scale-100 -my-6 md:my-0">
-                <div className="relative w-full h-[350px] mx-auto max-w-[400px]">
+                <div className="relative w-full h-[350px] mx-auto max-w-[400px]" aria-hidden="true">
                   {/* Kredittkort */}
                   <div
                     className="absolute top-[20%] left-[10%] sm:left-[15%] md:left-[10%] lg:left-[15%] xl:left-[18%] w-[220px] h-[140px] 

@@ -1,0 +1,117 @@
+1. Teknisk Gjennomgang
+Struktur og Kvalitet
+
+Positivt:
+
+Ryddig layout med tydelig navigasjon.
+God bruk av semantisk HTML (header, nav, section).
+Responsivt design (fungerer bra på mobil).
+
+Forbedringer:
+
+JavaScript-bundling: Scriptene dine (script.js, firebase.js) lastes inn flere ganger på noen sider.
+Anbefaling: Slå dem sammen til én fil eller bruk defer/async for optimal lasting.
+CSS-organisering: CSS-en er splittet mellom <style>-tagger og eksterne filer.
+Anbefaling: Konsolider alt i én fil (f.eks. styles.css) for enklere vedlikehold.
+
+Ytelse
+
+Laster tid: ~3-4 sekunder (ifra Netlify).
+Anbefalinger:
+Komprimer bilder (bruk verktøy som Squoosh).
+Aktiver gzip-komprimering på Netlify.
+Bruk lazy loading for bilder (loading="lazy").
+
+2. Designforbedringer
+Brukergrensesnitt (UI)
+
+Forsiden:
+
+Hero-seksjonen mangler en klar CTA (Call-to-Action).
+Forslag: Legg til en knapp (f.eks. "Se våre tjenester") som lenker til /services.html.
+Bildet i headeren ser ut til å være et placeholder-bilde (generisk fjellandskap).
+Forslag: Bruk et mer relevant bilde som reflekterer virksomheten din.
+
+Fargevalg:
+
+Mørk blå (#0a2463) og oransje (#fb3640) kontrasterer godt, men oransjen brukes for lite.
+Forslag: Bruk den mer for å fremheve viktige elementer (knapper, overskrifter).
+
+Mobilvisning
+
+Navbar: Hamburger-menyen fungerer, men ikonet er for lite (økt tap-target til minst 48x48 px).
+
+Tekststørrelser: Noen avsnitt (f.eks. på about.html) har for liten skrift på mobil.
+
+3. Funksjonalitet
+Kontaktskjema
+
+Skjemaet på contact.html bruker FormSubmit.co, som fungerer, men har begrensninger.
+Alternativer:
+Netlify Forms (gratis med Netlify-hosting).
+Firebase-backend for å lagre meldinger.
+
+Database
+
+Du bruker Firebase (ifra firebase.js), men det er ikke tydelig hva som lagres.
+Anbefaling:
+Legg til en bekreftelsesmelding når brukere sender skjemaer.
+Beskytt databasen med Firebase Security Rules.
+
+4. SEO og Tilgjengelighet
+
+Manglende meta-tagger:
+html
+
+<meta name="description" content="BNKA - Din leverandør av [tjenester]">  
+<meta property="og:image" content="link-til-et-relevant-bilde">  
+
+Tilgjengelighet:
+Legg til alt-tekster på alle bilder.
+Sjekk kontrastforhold med Wave.
+
+5. Sikkerhet
+
+Firebase-konfigurasjon:
+API-nøklene dine i firebase.js er eksponert.
+Løsning: Flytt dem til miljøvariabler (Netlify støtter dette).
+
+Konkrete Endringer å Gjøre Nå
+
+Høy prioritet:
+
+Komprimer bilder og legg til loading="lazy".
+Fiks mobilmenyens tap-target.
+Legg til en CTA-knapp på forsiden.
+
+Medium prioritet:
+
+Konsolider CSS/JS-filer.
+Implementer Netlify Forms for kontaktskjemaet.
+
+Fremtidig arbeid:
+
+Lag en egen backend med Docker + Express.js hvis du trenger mer komplekse funksjoner.
+
+Eksempel på Kodeendring
+For å fikse CTA på forsiden, endre index.html:
+
+html
+
+<!-- Under hero-bildet -->
+<section class="hero">
+  <h1>Velkommen til BNKA</h1>
+  <p>Din pålitelige partner for [tjenester]</p>
+  <a href="/services.html" class="cta-button">Se våre tjenester</a> <!-- Ny knapp -->
+</section>
+CSS:
+
+css
+
+.cta-button {
+  background: #fb3640; /* Oransje */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  text-decoration: none;
+}

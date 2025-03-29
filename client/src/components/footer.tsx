@@ -45,24 +45,18 @@ export function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
-                <RouterLink to="/">
-                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
-                    Hjem
-                  </a>
+                <RouterLink to="/" className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                  Hjem
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/tjenester">
-                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
-                    Hvordan det fungerer
-                  </a>
+                <RouterLink to="/tjenester" className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                  Hvordan det fungerer
                 </RouterLink>
               </li>
               <li>
-                <RouterLink to="/kontakt">
-                  <a className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
-                    Kontakt oss
-                  </a>
+                <RouterLink to="/kontakt" className={`${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+                  Kontakt oss
                 </RouterLink>
               </li>
             </ul>
@@ -72,15 +66,11 @@ export function Footer() {
         <div className={`border-t ${isDarkMode ? 'border-[#2A2A2A]' : 'border-gray-200'} mt-12 pt-8 text-center`}>
           <p className={`${isDarkMode ? 'text-[#B0B0B0]' : 'text-gray-600'}`}>
             © {new Date().getFullYear()} Krivo | 
-            <RouterLink to="/brukervilkar">
-              <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+            <RouterLink to="/brukervilkar" className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                 Brukervilkår
-              </a>
             </RouterLink> | 
-            <RouterLink to="/personvern">
-              <a className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
+            <RouterLink to="/personvern" className={`mx-2 ${isDarkMode ? 'text-[#B0B0B0] hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors`}>
                 Personvernerklæring
-              </a>
             </RouterLink>
           </p>
         </div>

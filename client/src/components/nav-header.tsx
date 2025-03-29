@@ -218,12 +218,13 @@ export function NavHeader() {
           <Link href={routes.home}>
             <img 
               src="/images/logo.png" 
-              alt="Styr AS" 
+              alt="Krivo" 
               className="h-8 cursor-pointer" 
               style={{ 
                 objectFit: 'contain',
                 maxWidth: '140px'
-              }} 
+              }}
+              loading="lazy"
             />
           </Link>
         </div>
