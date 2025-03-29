@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePostHog, AnalyticsEvents } from "@/lib/posthog-provider";
+import { useAuth } from "@/hooks/use-auth";
+import { apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 
 interface BankIDDialogProps {
   open: boolean;
@@ -22,6 +25,7 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
   const [referenceId, setReferenceId] = useState<string | null>(null);
   const { toast } = useToast();
   const { trackEvent } = usePostHog();
+  const { user } = useAuth();
 
   useEffect(() => {
     let statusInterval: NodeJS.Timeout;
@@ -44,6 +48,29 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
             reference_id: referenceId,
             page: window.location.pathname
           });
+          
+          // Automatisk oppdatering av KYC-status til 'verified' uansett hvor BankID brukes
+          if (user?.id) {
+            try {
+              await apiRequest(
+                "PATCH",
+                `/api/users/${user.id}`,
+                {
+                  kycStatus: "verified",
+                }
+              );
+              // Invalider brukerdata etter oppdatering
+              queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+              console.log("KYC-status oppdatert til 'verified'");
+            } catch (error) {
+              console.error("Feil ved oppdatering av KYC-status:", error);
+              trackEvent(AnalyticsEvents.FORM_ERROR, {
+                action: "update_kyc_status",
+                error: error instanceof Error ? error.message : "Ukjent feil",
+                context: "bankid_dialog"
+              });
+            }
+          }
           
           onSuccess(data);
           toast({
@@ -78,7 +105,7 @@ export function BankIDDialog({ open, onOpenChange, onSuccess }: BankIDDialogProp
     return () => {
       if (statusInterval) clearInterval(statusInterval);
     };
-  }, [referenceId, status, onSuccess, onOpenChange, toast, trackEvent]);
+  }, [referenceId, status, onSuccess, onOpenChange, toast, trackEvent, user]);
 
   const handleInitiateBankID = async () => {
     setStatus("pending");
