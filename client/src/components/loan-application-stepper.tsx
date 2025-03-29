@@ -12,16 +12,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const steps = [
   {
+    label: 'Verifisering',
+    icon: <VerifiedUser />,
+  },
+  {
     label: 'Personlig informasjon',
     icon: <PersonOutline />,
   },
   {
     label: 'Økonomisk informasjon',
     icon: <AccountBalanceWallet />,
-  },
-  {
-    label: 'Verifisering',
-    icon: <VerifiedUser />,
   },
 ];
 
