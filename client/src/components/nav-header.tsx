@@ -217,7 +217,7 @@ export function NavHeader() {
         <div className="flex-shrink-0">
           <Link href={routes.home}>
             <img 
-              src="/images/logo.png" 
+              src={theme === 'dark' ? "/images/Krivo_White.svg" : "/images/Krivo_Black.svg"} 
               alt="Krivo" 
               className="h-8 cursor-pointer" 
               style={{ 

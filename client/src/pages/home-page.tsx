@@ -87,7 +87,13 @@ export default function HomePage() {
                     transition-all duration-300 hover:rotate-0"
                   >
                     <div className="flex justify-between">
-                      <div className="text-white font-bold">Krivo</div>
+                      <div className="text-white w-16 h-6">
+                        <img 
+                          src="/images/Krivo_White.svg" 
+                          alt="Krivo" 
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
                       <div className="w-10 h-10 rounded-full bg-white/20"></div>
                     </div>
                     <div className="absolute bottom-4 left-4">
@@ -105,9 +111,13 @@ export default function HomePage() {
                     className="absolute top-[5%] right-[5%] sm:right-[15%] md:right-[15%] lg:right-[20%] xl:right-[25%] w-[180px] h-[330px] 
                     rounded-3xl bg-white dark:bg-[#1E1E1E] shadow-xl overflow-hidden border-8 border-gray-800 z-20"
                   >
-                    <div className="h-[60px] bg-primary p-4">
-                      <div className="text-white text-sm font-medium">
-                        Krivo App
+                    <div className="h-[60px] bg-primary p-3">
+                      <div className="text-white h-full flex items-center">
+                        <img 
+                          src="/images/Krivo_White.svg" 
+                          alt="Krivo App" 
+                          className="h-5 object-contain"
+                        />
                       </div>
                     </div>
                     <div className="p-4">
