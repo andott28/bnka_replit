@@ -1354,6 +1354,12 @@ export default function LoanApplication() {
 
   const steps = [
     {
+      component: VerificationStep,
+      isValid:
+        form.getValues("hasConsented") &&
+        (isBankIDVerified || selectedFile !== null),
+    },
+    {
       component: PersonalInfoStep,
       isValid:
         !form.formState.errors.birthDate &&
@@ -1382,12 +1388,6 @@ export default function LoanApplication() {
         form.getValues("amount") &&
         form.getValues("purpose"),
     },
-    {
-      component: VerificationStep,
-      isValid:
-        form.getValues("hasConsented") &&
-        (isBankIDVerified || selectedFile !== null),
-    },
   ];
 
   return (
@@ -1410,9 +1410,9 @@ export default function LoanApplication() {
                 isLastStep={activeStep === steps.length - 1}
                 isFormValid={!!steps[activeStep].isValid}
               >
-                {activeStep === 0 && <PersonalInfoStep />}
-                {activeStep === 1 && <FinancialInfoStep />}
-                {activeStep === 2 && <VerificationStep />}
+                {activeStep === 0 && <VerificationStep />}
+                {activeStep === 1 && <PersonalInfoStep />}
+                {activeStep === 2 && <FinancialInfoStep />}
               </LoanApplicationStepper>
             </form>
           </div>
