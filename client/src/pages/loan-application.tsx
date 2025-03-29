@@ -457,7 +457,11 @@ export default function LoanApplication() {
     let valid = false;
 
     switch (step) {
-      case 0:
+      case 0: // Verifisering
+        valid = await form.trigger(["hasConsented"]);
+        valid = valid && isBankIDVerified;
+        break;
+      case 1: // Personlig informasjon
         valid = await form.trigger([
           "birthDate",
           "street",
@@ -466,7 +470,7 @@ export default function LoanApplication() {
           "employmentStatus",
         ]);
         break;
-      case 1:
+      case 2: // Økonomisk informasjon 
         const fieldsToValidate = [
           "income",
           "monthlyExpenses",
@@ -484,10 +488,6 @@ export default function LoanApplication() {
           fieldsToValidate.push("savingsAmount");
         }
         valid = await form.trigger(fieldsToValidate as any);
-        break;
-      case 2:
-        valid = await form.trigger(["hasConsented"]);
-        valid = valid && (isBankIDVerified || selectedFile !== null);
         break;
       default:
         valid = true;
@@ -1355,9 +1355,7 @@ export default function LoanApplication() {
   const steps = [
     {
       component: VerificationStep,
-      isValid:
-        form.getValues("hasConsented") &&
-        (isBankIDVerified || selectedFile !== null),
+      isValid: isBankIDVerified && form.getValues("hasConsented")
     },
     {
       component: PersonalInfoStep,
