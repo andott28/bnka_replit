@@ -457,11 +457,7 @@ export default function LoanApplication() {
     let valid = false;
 
     switch (step) {
-      case 0: // Verifisering
-        valid = await form.trigger(["hasConsented"]);
-        valid = valid && isBankIDVerified;
-        break;
-      case 1: // Personlig informasjon
+      case 0:
         valid = await form.trigger([
           "birthDate",
           "street",
@@ -470,7 +466,7 @@ export default function LoanApplication() {
           "employmentStatus",
         ]);
         break;
-      case 2: // Økonomisk informasjon 
+      case 1:
         const fieldsToValidate = [
           "income",
           "monthlyExpenses",
@@ -488,6 +484,10 @@ export default function LoanApplication() {
           fieldsToValidate.push("savingsAmount");
         }
         valid = await form.trigger(fieldsToValidate as any);
+        break;
+      case 2:
+        valid = await form.trigger(["hasConsented"]);
+        valid = valid && (isBankIDVerified || selectedFile !== null);
         break;
       default:
         valid = true;
@@ -1354,10 +1354,6 @@ export default function LoanApplication() {
 
   const steps = [
     {
-      component: VerificationStep,
-      isValid: isBankIDVerified && form.getValues("hasConsented")
-    },
-    {
       component: PersonalInfoStep,
       isValid:
         !form.formState.errors.birthDate &&
@@ -1386,6 +1382,12 @@ export default function LoanApplication() {
         form.getValues("amount") &&
         form.getValues("purpose"),
     },
+    {
+      component: VerificationStep,
+      isValid:
+        form.getValues("hasConsented") &&
+        (isBankIDVerified || selectedFile !== null),
+    },
   ];
 
   return (
@@ -1408,9 +1410,9 @@ export default function LoanApplication() {
                 isLastStep={activeStep === steps.length - 1}
                 isFormValid={!!steps[activeStep].isValid}
               >
-                {activeStep === 0 && <VerificationStep />}
-                {activeStep === 1 && <PersonalInfoStep />}
-                {activeStep === 2 && <FinancialInfoStep />}
+                {activeStep === 0 && <PersonalInfoStep />}
+                {activeStep === 1 && <FinancialInfoStep />}
+                {activeStep === 2 && <VerificationStep />}
               </LoanApplicationStepper>
             </form>
           </div>

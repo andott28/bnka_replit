@@ -121,7 +121,7 @@ export default function Dashboard() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       Du kan verifisere din identitet ved å søke om lån eller gå til kontoinnstillinger
                     </p>
-                    <Link to="/apply">
+                    <Link to="/loan-application">
                       <Button variant="outline" size="sm">
                         Verifiser nå
                       </Button>
@@ -168,7 +168,7 @@ export default function Dashboard() {
                   <p className="text-gray-500 dark:text-gray-400 text-center">
                     Du har ingen lånesøknader ennå
                   </p>
-                  <Link to="/apply">
+                  <Link to="/loan-application">
                     <Button>
                       Søk om lån
                     </Button>
@@ -283,7 +283,7 @@ export default function Dashboard() {
                   <p className="text-gray-500 dark:text-gray-400">
                     Du har ingen kredittvurdering ennå. Søk om lån for å få en analyse av din kredittverdighet.
                   </p>
-                  <Link to="/apply">
+                  <Link to="/loan-application">
                     <Button>
                       Søk om lån nå
                     </Button>
