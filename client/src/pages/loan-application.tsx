@@ -46,112 +46,129 @@ export default function LoanApplication() {
   const [showBankID, setShowBankID] = useState(false);
   const [isBankIDVerified, setIsBankIDVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [activeStep, setActiveStep] = useState(1); // Start på trinn 1 for å vise FinancialInfoStep direkte
+  const [activeStep, setActiveStep] = useState(0);
 
   // Create a MUI theme that respects our app's theme (light/dark)
-  const muiTheme = useMemo(() => 
-    createTheme({
-      palette: {
-        mode: appTheme === 'dark' ? 'dark' : 'light',
-        primary: {
-          main: '#3B82F6', // Material Design V3 primary blue
-        },
-        secondary: {
-          main: '#10B981', // Material Design V3 secondary green
-        },
-        background: {
-          default: appTheme === 'dark' ? '#1E1E1E' : '#FFFFFF',
-          paper: appTheme === 'dark' ? '#2A2A2A' : '#FFFFFF',
-        },
-        text: {
-          primary: appTheme === 'dark' ? '#FFFFFF' : '#000000',
-          secondary: appTheme === 'dark' ? '#AAAAAA' : '#666666',
-        },
-        error: {
-          main: '#EF4444', // Material Design V3 error red
-        },
-      },
-      components: {
-        MuiOutlinedInput: {
-          styleOverrides: {
-            root: {
-              borderRadius: 8,
-              backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: appTheme === 'dark' ? '#3B82F6' : '#3B82F6',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#3B82F6',
-              },
-              '& input:-webkit-autofill': {
-                WebkitBoxShadow: appTheme === 'dark' 
-                  ? '0 0 0 100px #1A365D inset' // Mørkere blå i dark mode
-                  : '0 0 0 100px #EBF8FF inset', // Lysere blå i light mode
-                WebkitTextFillColor: appTheme === 'dark' ? '#FFFFFF' : '#000000',
-              },
-              '& input:-webkit-autofill:focus': {
-                WebkitBoxShadow: appTheme === 'dark' 
-                  ? '0 0 0 100px #1E40AF inset' // Mørkere blå focus i dark mode
-                  : '0 0 0 100px #EBF8FF inset', // Lysere blå focus i light mode
-              },
-            },
-            notchedOutline: {
-              borderColor: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
-            },
+  const muiTheme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: appTheme === "dark" ? "dark" : "light",
+          primary: {
+            main: "#3B82F6", // Material Design V3 primary blue
+          },
+          secondary: {
+            main: "#10B981", // Material Design V3 secondary green
+          },
+          background: {
+            default: appTheme === "dark" ? "#1E1E1E" : "#FFFFFF",
+            paper: appTheme === "dark" ? "#2A2A2A" : "#FFFFFF",
+          },
+          text: {
+            primary: appTheme === "dark" ? "#FFFFFF" : "#000000",
+            secondary: appTheme === "dark" ? "#AAAAAA" : "#666666",
+          },
+          error: {
+            main: "#EF4444", // Material Design V3 error red
           },
         },
-        MuiFormLabel: {
-          styleOverrides: {
-            root: {
-              color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
-              '&.Mui-focused': {
-                color: '#3B82F6',
+        components: {
+          MuiOutlinedInput: {
+            styleOverrides: {
+              root: {
+                borderRadius: 8,
+                backgroundColor:
+                  appTheme === "dark" ? "rgba(0, 0, 0, 0.1)" : "transparent",
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: appTheme === "dark" ? "#3B82F6" : "#3B82F6",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "#3B82F6",
+                },
+                "& input:-webkit-autofill": {
+                  WebkitBoxShadow:
+                    appTheme === "dark"
+                      ? "0 0 0 100px #1A365D inset" // Mørkere blå i dark mode
+                      : "0 0 0 100px #EBF8FF inset", // Lysere blå i light mode
+                  WebkitTextFillColor:
+                    appTheme === "dark" ? "#FFFFFF" : "#000000",
+                },
+                "& input:-webkit-autofill:focus": {
+                  WebkitBoxShadow:
+                    appTheme === "dark"
+                      ? "0 0 0 100px #1E40AF inset" // Mørkere blå focus i dark mode
+                      : "0 0 0 100px #EBF8FF inset", // Lysere blå focus i light mode
+                },
               },
-            },
-          },
-        },
-        MuiMenuItem: {
-          styleOverrides: {
-            root: {
-              '&:hover': {
-                backgroundColor: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)',
+              notchedOutline: {
+                borderColor:
+                  appTheme === "dark"
+                    ? "rgba(255, 255, 255, 0.23)"
+                    : "rgba(0, 0, 0, 0.23)",
               },
             },
           },
-        },
-        MuiCheckbox: {
-          styleOverrides: {
-            root: {
-              color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)',
+          MuiFormLabel: {
+            styleOverrides: {
+              root: {
+                color:
+                  appTheme === "dark"
+                    ? "rgba(255, 255, 255, 0.7)"
+                    : "rgba(0, 0, 0, 0.6)",
+                "&.Mui-focused": {
+                  color: "#3B82F6",
+                },
+              },
             },
           },
-        },
-        MuiButton: {
-          styleOverrides: {
-            root: {
-              textTransform: 'none',
-              borderRadius: 8,
+          MuiMenuItem: {
+            styleOverrides: {
+              root: {
+                "&:hover": {
+                  backgroundColor:
+                    appTheme === "dark"
+                      ? "rgba(255, 255, 255, 0.08)"
+                      : "rgba(0, 0, 0, 0.04)",
+                },
+              },
             },
-            contained: {
-              boxShadow: 'none',
-              '&:hover': {
-                boxShadow: 'none',
+          },
+          MuiCheckbox: {
+            styleOverrides: {
+              root: {
+                color:
+                  appTheme === "dark"
+                    ? "rgba(255, 255, 255, 0.7)"
+                    : "rgba(0, 0, 0, 0.6)",
+              },
+            },
+          },
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: "none",
+                borderRadius: 8,
+              },
+              contained: {
+                boxShadow: "none",
+                "&:hover": {
+                  boxShadow: "none",
+                },
               },
             },
           },
         },
-      },
-      shape: {
-        borderRadius: 8,
-      },
-      typography: {
-        fontFamily: 'var(--font-sans)',
-        button: {
-          textTransform: 'none',
+        shape: {
+          borderRadius: 8,
         },
-      },
-    }),
-    [appTheme]
+        typography: {
+          fontFamily: "var(--font-sans)",
+          button: {
+            textTransform: "none",
+          },
+        },
+      }),
+    [appTheme],
   );
 
   const form = useForm({
@@ -208,15 +225,6 @@ export default function LoanApplication() {
           .transform((val) => (val ? parseInt(val.replace(/\s/g, "")) : 0))
           .pipe(
             z.number().min(0, "Studielån kan ikke være negativt").optional(),
-          )
-          .refine(
-            (val, ctx) => {
-              if (ctx.parent.hasStudentLoan && ctx.parent.isPayingStudentLoan && (!val || val === 0)) {
-                return false;
-              }
-              return true;
-            },
-            { message: "Vennligst oppgi studielånets beløp" }
           ),
         hasSavings: z.boolean().optional(),
         savingsAmount: z
@@ -225,15 +233,6 @@ export default function LoanApplication() {
           .transform((val) => (val ? parseInt(val.replace(/\s/g, "")) : 0))
           .pipe(
             z.number().min(0, "Sparepenger kan ikke være negativt").optional(),
-          )
-          .refine(
-            (val, ctx) => {
-              if (ctx.parent.hasSavings && (!val || val === 0)) {
-                return false;
-              }
-              return true;
-            },
-            { message: "Vennligst oppgi sparepengenes beløp" }
           ),
         hasAssets: z.boolean().optional(),
       }),
@@ -253,11 +252,11 @@ export default function LoanApplication() {
       additionalInfo: "",
       hasConsented: false,
       idVerified: false,
-      hasStudentLoan: true,         // Endret til true for å vise feltet
-      isPayingStudentLoan: true,    // Endret til true for å vise studentLoanAmount-feltet
-      studentLoanAmount: "",        // Tomt for å utløse valideringsfeil
-      hasSavings: true,             // Endret til true for å vise feltet
-      savingsAmount: "",            // Tomt for å utløse valideringsfeil
+      hasStudentLoan: false,
+      isPayingStudentLoan: false,
+      studentLoanAmount: "",
+      hasSavings: false,
+      savingsAmount: "",
       hasAssets: false,
     },
   });
@@ -267,10 +266,12 @@ export default function LoanApplication() {
       try {
         console.log("Sending loan application with data:", data);
 
-        if (!data.assets || data.assets.trim() === '') {
+        // Sjekk og sett standardverdier for påkrevde felt
+        if (!data.assets || data.assets.trim() === "") {
           data.assets = "Ingen eiendeler oppgitt";
         }
 
+        // Sett studentlån til 0 hvis brukeren ikke betaler det ned
         if (data.hasStudentLoan && !data.isPayingStudentLoan) {
           data.studentLoanAmount = 0;
         }
@@ -282,17 +283,9 @@ export default function LoanApplication() {
             formData.append(key, data[key]);
           }
           formData.append("idDocument", selectedFile);
-          loanRes = await apiRequest(
-            "POST",
-            "/api/loans/apply",
-            formData
-          );
+          loanRes = await apiRequest("POST", "/api/loans/apply", formData);
         } else {
-          loanRes = await apiRequest(
-            "POST",
-            "/api/loans/apply",
-            data
-          );
+          loanRes = await apiRequest("POST", "/api/loans/apply", data);
         }
 
         if (!loanRes.ok) {
@@ -305,13 +298,14 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
+        // Besørg at vi sender alle påkrevde data til kredittscoreendepunktet
         const creditData = {
           loanApplicationId: loanData.id,
           income: data.income,
           employmentStatus: data.employmentStatus,
           monthlyExpenses: data.monthlyExpenses,
-          outstandingDebt: data.outstandingDebt || 0,
-          assets: data.assets || "Ingen eiendeler oppgitt"
+          outstandingDebt: data.outstandingDebt || 0, // Sørg for at dette aldri er udefinert
+          assets: data.assets || "Ingen eiendeler oppgitt", // Sørg for at dette aldri er tomt
         };
 
         console.log("Sending credit score request with data:", creditData);
@@ -319,7 +313,7 @@ export default function LoanApplication() {
         const creditRes = await apiRequest(
           "POST",
           "/api/loans/credit-score",
-          creditData
+          creditData,
         );
 
         if (!creditRes.ok) {
@@ -439,13 +433,9 @@ export default function LoanApplication() {
 
     if (user?.id) {
       try {
-        await apiRequest(
-          "PATCH",
-          `/api/users/${user.id}`,
-          {
-            kycStatus: "verified",
-          }
-        );
+        await apiRequest("PATCH", `/api/users/${user.id}`, {
+          kycStatus: "verified",
+        });
         queryClient.invalidateQueries({ queryKey: ["/api/user"] });
       } catch (error) {
         console.error("Failed to update KYC status:", error);
@@ -499,9 +489,6 @@ export default function LoanApplication() {
           fieldsToValidate.push("savingsAmount");
         }
         valid = await form.trigger(fieldsToValidate as any);
-        if (!valid) {
-          console.log("Valideringsfeil i trinn 1:", form.formState.errors);
-        }
         break;
       case 2:
         valid = await form.trigger(["hasConsented"]);
@@ -554,17 +541,19 @@ export default function LoanApplication() {
   };
 
   const PersonalInfoStep = () => (
-    <Box sx={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      gap: 3,
-      '& p.text-gray-500': {
-        color: appTheme === 'dark' ? 'rgba(209, 213, 219, 0.8)' : '',
-      },
-      '& p.text-red-500': {
-        color: '#EF4444',
-      }
-    }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+        "& p.text-gray-500": {
+          color: appTheme === "dark" ? "rgba(209, 213, 219, 0.8)" : "",
+        },
+        "& p.text-red-500": {
+          color: "#EF4444",
+        },
+      }}
+    >
       <div style={{ position: "relative" }}>
         <DatePicker
           label="Fødselsdato *"
@@ -698,21 +687,27 @@ export default function LoanApplication() {
     const isPayingStudentLoan = form.watch("isPayingStudentLoan");
 
     return (
-      <Box sx={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        gap: 3,
-        '& .MuiBox-root': {
-          border: appTheme === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e0e0e0',
-          backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
-        },
-        '& .MuiTypography-root': {
-          color: appTheme === 'dark' ? '#fff' : 'inherit',
-        },
-        '& .MuiFormControlLabel-label': {
-          color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
-        }
-      }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          "& .MuiBox-root": {
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(255, 255, 255, 0.1)"
+                : "1px solid #e0e0e0",
+            backgroundColor:
+              appTheme === "dark" ? "rgba(0, 0, 0, 0.1)" : "transparent",
+          },
+          "& .MuiTypography-root": {
+            color: appTheme === "dark" ? "#fff" : "inherit",
+          },
+          "& .MuiFormControlLabel-label": {
+            color: appTheme === "dark" ? "rgba(255, 255, 255, 0.9)" : "inherit",
+          },
+        }}
+      >
         <FormControl fullWidth>
           <TextField
             fullWidth
@@ -782,13 +777,21 @@ export default function LoanApplication() {
           />
         </FormControl>
 
-        <Box sx={{ 
-            p: 2, 
-            borderRadius: 2, 
-            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
-            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
-            mb: 3
-          }}>
+        <Box
+          sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(90, 90, 90, 0.5)"
+                : "1px solid #e0e0e0",
+            mb: 3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -854,6 +857,8 @@ export default function LoanApplication() {
                       form.setValue("isPayingStudentLoan", e.target.checked, {
                         shouldValidate: true,
                       });
+
+                      // Sett studentlån til 0 hvis ikke betalende
                       if (!e.target.checked) {
                         form.setValue("studentLoanAmount", "0", {
                           shouldValidate: true,
@@ -905,13 +910,21 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box sx={{ 
-            p: 2, 
-            borderRadius: 2, 
-            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
-            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
-            mb: 3
-          }}>
+        <Box
+          sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(90, 90, 90, 0.5)"
+                : "1px solid #e0e0e0",
+            mb: 3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -988,13 +1001,21 @@ export default function LoanApplication() {
           </Box>
         </Box>
 
-        <Box sx={{ 
-            p: 2, 
-            borderRadius: 2, 
-            bgcolor: appTheme === 'dark' ? 'rgba(45, 45, 45, 0.5)' : 'rgba(245, 245, 245, 0.5)',
-            border: appTheme === 'dark' ? '1px solid rgba(90, 90, 90, 0.5)' : '1px solid #e0e0e0',
-            mb: 3
-          }}>
+        <Box
+          sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(90, 90, 90, 0.5)"
+                : "1px solid #e0e0e0",
+            mb: 3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -1379,7 +1400,7 @@ export default function LoanApplication() {
         !form.formState.errors.employmentStatus &&
         form.getValues("birthDate") &&
         form.getValues("street") &&
-        form.getValues("fontWeight") &&
+        form.getValues("postalCode") &&
         form.getValues("city") &&
         form.getValues("employmentStatus"),
     },
@@ -1392,8 +1413,6 @@ export default function LoanApplication() {
         !form.formState.errors.amount &&
         !form.formState.errors.purpose &&
         !form.formState.errors.assets &&
-        !form.formState.errors.studentLoanAmount &&
-        !form.formState.errors.savingsAmount &&
         form.getValues("income") &&
         form.getValues("monthlyExpenses") &&
         form.getValues("outstandingDebt") &&
@@ -1409,17 +1428,28 @@ export default function LoanApplication() {
   ];
 
   return (
-    <div className={`min-h-screen ${appTheme === 'dark' ? 'bg-gray-900' : 'bg-background'}`}>
+    <div
+      className={`min-h-screen ${appTheme === "dark" ? "bg-gray-900" : "bg-background"}`}
+    >
       <NavHeader />
       <ThemeProvider theme={muiTheme}>
         <main className="container mx-auto px-4 py-8">
           <div className="mb-6">
-            <h1 className={`text-2xl font-bold mb-2 ${appTheme === 'dark' ? 'text-white' : ''}`}>Søk om lån</h1>
-            <p className={`${appTheme === 'dark' ? 'text-gray-300' : 'text-slate-500'}`}>
-              Fyll ut skjemaet under for å søke om lån. Vi behandler søknaden så raskt som mulig.
+            <h1
+              className={`text-2xl font-bold mb-2 ${appTheme === "dark" ? "text-white" : ""}`}
+            >
+              Søk om lån
+            </h1>
+            <p
+              className={`${appTheme === "dark" ? "text-gray-300" : "text-slate-500"}`}
+            >
+              Fyll ut skjemaet under for å søke om lån. Vi behandler søknaden så
+              raskt som mulig.
             </p>
           </div>
-          <div className={`${appTheme === 'dark' ? 'bg-gray-800 border border-gray-700' : 'bg-white'} shadow-sm rounded-lg p-6`}>
+          <div
+            className={`${appTheme === "dark" ? "bg-gray-800 border border-gray-700" : "bg-white"} shadow-sm rounded-lg p-6`}
+          >
             <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))}>
               <LoanApplicationStepper
                 activeStep={activeStep}
