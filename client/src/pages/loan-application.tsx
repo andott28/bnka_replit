@@ -817,7 +817,7 @@ export default function LoanApplication() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <Typography variant="subtitle1">Studielån</Typography>
+            <Typography variant="subtitle1" sx={{ fontWeight: "normal" }}>Studielån</Typography>
           </Box>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -947,7 +947,7 @@ export default function LoanApplication() {
             <Typography
               variant="subtitle1"
               component="div"
-              sx={{ fontWeight: "medium" }}
+              sx={{ fontWeight: "normal" }}
             >
               Sparepenger
             </Typography>
@@ -1038,7 +1038,7 @@ export default function LoanApplication() {
             <Typography
               variant="subtitle1"
               component="div"
-              sx={{ fontWeight: "medium" }}
+              sx={{ fontWeight: "normal" }}
             >
               Eiendeler
             </Typography>
@@ -1189,7 +1189,7 @@ export default function LoanApplication() {
 
   const VerificationStep = () => (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: "medium", mb: 1 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: "normal", mb: 1 }}>
         Bekreft din identitet ved hjelp av en av følgende metoder:
       </Typography>
 
