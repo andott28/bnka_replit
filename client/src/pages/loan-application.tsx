@@ -692,19 +692,46 @@ export default function LoanApplication() {
           display: "flex",
           flexDirection: "column",
           gap: 3,
+          padding: "1.5rem",
+          borderRadius: "0.75rem",
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark"
+              ? "rgba(0, 0, 0, 0.2)"
+              : "rgba(255, 255, 255, 0.8)",
+          boxShadow:
+            "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
           "& .MuiBox-root": {
-            border:
-              appTheme === "dark"
-                ? "1px solid rgba(255, 255, 255, 0.1)"
-                : "1px solid #e0e0e0",
-            backgroundColor:
-              appTheme === "dark" ? "rgba(0, 0, 0, 0.1)" : "transparent",
+            border: (theme) =>
+              `1px solid ${
+                theme.palette.mode === "dark"
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "rgba(0, 0, 0, 0.1)"
+              }`,
+            borderRadius: "0.5rem",
+            padding: "1rem",
+            backgroundColor: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(0, 0, 0, 0.1)"
+                : "rgba(255, 255, 255, 0.5)",
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              borderColor: (theme) => theme.palette.primary.main,
+            },
           },
           "& .MuiTypography-root": {
-            color: appTheme === "dark" ? "#fff" : "inherit",
+            color: (theme) =>
+              theme.palette.mode === "dark" ? "#fff" : "inherit",
+            marginBottom: "0.5rem",
           },
           "& .MuiFormControlLabel-label": {
-            color: appTheme === "dark" ? "rgba(255, 255, 255, 0.9)" : "inherit",
+            color: (theme) =>
+              theme.palette.mode === "dark"
+                ? "rgba(255, 255, 255, 0.9)"
+                : "inherit",
+            fontSize: "0.875rem",
+          },
+          "& .MuiInputBase-root": {
+            borderRadius: "0.375rem",
           },
         }}
       >
@@ -785,7 +812,7 @@ export default function LoanApplication() {
               appTheme === "dark"
                 ? "rgba(45, 45, 45, 0.5)"
                 : "rgba(245, 245, 245, 0.5)",
-            border: 'none', //removed border here
+            border: "none", //removed border here
             mb: 3,
           }}
         >
@@ -973,7 +1000,8 @@ export default function LoanApplication() {
                 label="Sparepenger (NOK)"
                 error={!!form.formState.errors.savingsAmount}
                 helperText={
-                  form.formState.errors.savingsAmount?.message ||                  "Oppgi totalt beløp i sparepenger"
+                  form.formState.errors.savingsAmount?.message ||
+                  "Oppgi totalt beløp i sparepenger"
                 }
                 {...form.register("savingsAmount")}
                 inputMode="numeric"
