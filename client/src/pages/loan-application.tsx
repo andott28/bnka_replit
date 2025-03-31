@@ -707,7 +707,7 @@ export default function LoanApplication() {
           backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
         },
         '& .MuiTypography-root': {
-          color W: appTheme === 'dark' ? '#fff' : 'inherit',
+          color: appTheme === 'dark' ? '#fff' : 'inherit',
         },
         '& .MuiFormControlLabel-label': {
           color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
