@@ -835,6 +835,9 @@ export default function LoanApplication() {
             sx={{
               display: hasStudentLoan ? "block" : "none",
               mb: 2,
+              border: "none",
+              boxShadow: "none",
+              background: "transparent"
             }}
           >
             <FormControl fullWidth>
