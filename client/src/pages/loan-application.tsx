@@ -790,20 +790,7 @@ export default function LoanApplication() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <Typography 
-              variant="subtitle1" 
-              sx={{ 
-                border: 'none', 
-                boxShadow: 'none',
-                '&.MuiTypography-root': {
-                  border: 'none',
-                  boxShadow: 'none',
-                  background: 'none'
-                }
-              }}
-            >
-              Studielån
-            </Typography>
+            <Typography variant="subtitle1">Studielån</Typography>
           </Box>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -836,14 +823,9 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
-                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
-                  border: "none",
-                },
-                "& .MuiCheckbox-root": {
-                  border: "none",
                 },
               }}
             />
@@ -853,9 +835,6 @@ export default function LoanApplication() {
             sx={{
               display: hasStudentLoan ? "block" : "none",
               mb: 2,
-              border: "none",
-              boxShadow: "none",
-              background: "transparent"
             }}
           >
             <FormControl fullWidth>
@@ -890,15 +869,7 @@ export default function LoanApplication() {
                   "& .MuiFormControlLabel-label": {
                     fontWeight: "normal",
                     fontSize: "0.9rem",
-                    border: "none",
-                    boxShadow: "none",
-                    background: "none",
                   },
-                  "& .MuiFormControlLabel-root": {
-                    border: "none",
-                    boxShadow: "none",
-                    background: "none",
-                  }
                 }}
               />
             </FormControl>
@@ -982,14 +953,9 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
-                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
-                  border: "none",
-                },
-                "& .MuiCheckbox-root": {
-                  border: "none",
                 },
               }}
             />
@@ -1075,14 +1041,9 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
-                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
-                  border: "none",
-                },
-                "& .MuiCheckbox-root": {
-                  border: "none",
                 },
               }}
             />

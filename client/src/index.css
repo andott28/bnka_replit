@@ -62,22 +62,6 @@
     @apply bg-card text-text-primary shadow-md;
   }
 
-
-/* Override MUI styles */
-.MuiBox-root,
-.MuiTypography-root {
-  border: none !important;
-  box-shadow: none !important;
-  background: none !important;
-}
-
-/* Specific override for loan application Typography */
-div[data-component-name="Typography"] {
-  border: none !important;
-  box-shadow: none !important;
-  background: none !important;
-}
-
   /* Input fields */
   .input {
     @apply bg-input text-text-primary border-border;
