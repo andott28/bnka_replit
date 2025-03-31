@@ -790,7 +790,20 @@ export default function LoanApplication() {
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <Typography variant="subtitle1" sx={{ border: 'none', boxShadow: 'none' }}>Studielån</Typography>
+            <Typography 
+              variant="subtitle1" 
+              sx={{ 
+                border: 'none', 
+                boxShadow: 'none',
+                '&.MuiTypography-root': {
+                  border: 'none',
+                  boxShadow: 'none',
+                  background: 'none'
+                }
+              }}
+            >
+              Studielån
+            </Typography>
           </Box>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
