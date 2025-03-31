@@ -785,21 +785,12 @@ export default function LoanApplication() {
               appTheme === "dark"
                 ? "rgba(45, 45, 45, 0.5)"
                 : "rgba(245, 245, 245, 0.5)",
-            border:
-              appTheme === "dark"
-                ? "1px solid rgba(90, 90, 90, 0.5)"
-                : "1px solid #e0e0e0",
+            border: 'none', //removed border here
             mb: 3,
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <Typography
-              variant="subtitle1"
-              component="div"
-              sx={{ fontWeight: "medium" }}
-            >
-              Studielån
-            </Typography>
+            <Typography variant="subtitle1">Studielån</Typography>
           </Box>
 
           <FormControl fullWidth sx={{ mb: 2 }}>
@@ -982,8 +973,7 @@ export default function LoanApplication() {
                 label="Sparepenger (NOK)"
                 error={!!form.formState.errors.savingsAmount}
                 helperText={
-                  form.formState.errors.savingsAmount?.message ||
-                  "Oppgi totalt beløp i sparepenger"
+                  form.formState.errors.savingsAmount?.message ||                  "Oppgi totalt beløp i sparepenger"
                 }
                 {...form.register("savingsAmount")}
                 inputMode="numeric"
