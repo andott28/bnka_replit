@@ -298,7 +298,7 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
-        // Besørg at vi sender alle påkrevde data til kredittscoreendepunktet
+        // Besørg at vi sender alle påkrevde data til kredittscoreendepunktet, inkludert nye felter
         const creditData = {
           loanApplicationId: loanData.id,
           income: data.income,
@@ -306,6 +306,12 @@ export default function LoanApplication() {
           monthlyExpenses: data.monthlyExpenses,
           outstandingDebt: data.outstandingDebt || 0, // Sørg for at dette aldri er udefinert
           assets: data.assets || "Ingen eiendeler oppgitt", // Sørg for at dette aldri er tomt
+          hasStudentLoan: data.hasStudentLoan || false,
+          isPayingStudentLoan: data.isPayingStudentLoan || false,
+          studentLoanAmount: data.studentLoanAmount || 0,
+          hasSavings: data.hasSavings || false,
+          savingsAmount: data.savingsAmount || 0,
+          loanDuration: 12, // Standard lånetid i måneder (1 år)
         };
 
         console.log("Sending credit score request with data:", creditData);
@@ -680,6 +686,54 @@ export default function LoanApplication() {
     </Box>
   );
 
+  // Funksjon for å beregne lønnsomhet og kredittevne
+  const calculateProfitability = () => {
+    const income = parseInt(form.getValues("income") || "0");
+    const monthlyExpenses = parseInt(form.getValues("monthlyExpenses") || "0");
+    const loanAmount = parseInt(form.getValues("amount") || "0");
+    const hasStudentLoan = form.getValues("hasStudentLoan") || false;
+    const isPayingStudentLoan = form.getValues("isPayingStudentLoan") || false;
+    const studentLoanAmount = parseInt(form.getValues("studentLoanAmount") || "0");
+    const hasSavings = form.getValues("hasSavings") || false;
+    const savingsAmount = parseInt(form.getValues("savingsAmount") || "0");
+    
+    // Standard lånetid i måneder (12 måneder for 1 år)
+    const loanDuration = 12; 
+    
+    // Total inntekt over låneperioden
+    const totalIncome = income * loanDuration;
+    
+    // Totale utgifter over låneperioden
+    const totalExpenses = monthlyExpenses * loanDuration;
+    
+    // Studielån kalkulasjon
+    let studentLoanContribution = 0;
+    if (hasStudentLoan && isPayingStudentLoan && studentLoanAmount > 0) {
+      // Antar at studielånet har 20 års nedbetalingstid (240 måneder)
+      const studentLoanPaymentPeriod = 240;
+      // Beregn hvor mye av studielånet som skal betales i løpet av låneperioden
+      studentLoanContribution = (studentLoanAmount / studentLoanPaymentPeriod) * loanDuration;
+    }
+    
+    // Sparepenger kalkulasjon
+    let savingsContribution = 0;
+    if (hasSavings && savingsAmount > 0) {
+      // Del sparepenger på låneperioden for å få månedlig bidrag
+      savingsContribution = savingsAmount / loanDuration;
+    }
+    
+    // Eiendeler er ikke implementert ennå, settes til 0
+    const assetsContribution = 0;
+    
+    // Beregn profitt
+    const profit = totalIncome - totalExpenses - studentLoanContribution + savingsContribution + assetsContribution - loanAmount;
+    
+    return {
+      profit,
+      isPositive: profit > 0
+    };
+  };
+
   const FinancialInfoStep = () => {
     const hasAssets = form.watch("hasAssets");
     const hasSavings = form.watch("hasSavings");
@@ -713,7 +767,7 @@ export default function LoanApplication() {
               theme.palette.mode === "dark"
                 ? "rgba(0, 0, 0, 0.1)"
                 : "rgba(255, 255, 255, 0.5)",
-            transition: "all 0.2s ease-in-out",
+            transition: "all 0.15s ease-in-out", // Raskere overgang
             "&:hover": {
               borderColor: (theme) => theme.palette.primary.main,
             },
@@ -1143,9 +1197,24 @@ export default function LoanApplication() {
             {...form.register("purpose")}
             sx={{
               borderRadius: 2,
+              transition: "all 0.1s ease-in-out", // Raskere respons
               "&:hover .MuiOutlinedInput-notchedOutline": {
                 borderColor: "primary.main",
               },
+              ".MuiInputBase-input": {
+                padding: "13px 14px" // Litt mindre padding for raskere klikk
+              }
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  mt: 1, // Litt mindre avstand gjør det raskere
+                  boxShadow: "0px 5px 15px rgba(0,0,0,0.1)", 
+                  ".MuiMenuItem-root": {
+                    transition: "background-color 0.1s ease-in-out" // Raskere hover-effekt
+                  }
+                }
+              }
             }}
           >
             <MenuItem value="bolig">Boligkjøp</MenuItem>
@@ -1175,12 +1244,22 @@ export default function LoanApplication() {
             InputProps={{
               sx: {
                 borderRadius: 2,
+                transition: "all 0.1s ease-in-out", // Raskere respons
                 "&:hover .MuiOutlinedInput-notchedOutline": {
                   borderColor: "primary.main",
                 },
               },
             }}
-            helperText="Annen informasjon du mener er relevant for vurdering av din søknad (f.eks. planlagte endringer i inntekt/utgifter, særlige behov, osv.)"
+            helperText={
+              <span>
+                Informasjon du oppgir her vil bli gjennomgått av våre lånerådgivere. 
+                Detaljert informasjon kan være relevant for vurderingen av lånesøknaden.
+                <Box component="span" sx={{ display: "block", mt: 1, color: "text.secondary", fontSize: "0.8rem" }}>
+                  Vennligst merk at søknader med detaljert tilleggsinformasjon vil gjennomgå en manuell vurdering, 
+                  noe som kan påvirke behandlingstiden.
+                </Box>
+              </span>
+            }
           />
         </FormControl>
       </Box>

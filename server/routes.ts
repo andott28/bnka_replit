@@ -50,7 +50,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     try {
       // Validate required fields
-      const { loanApplicationId, income, employmentStatus, monthlyExpenses, outstandingDebt, assets } = req.body;
+      const { 
+        loanApplicationId, 
+        income, 
+        employmentStatus, 
+        monthlyExpenses, 
+        outstandingDebt, 
+        assets,
+        hasStudentLoan,
+        isPayingStudentLoan,
+        studentLoanAmount,
+        hasSavings,
+        savingsAmount,
+        loanDuration
+      } = req.body;
       
       if (!loanApplicationId) {
         return res.status(400).json({ error: "Manglende lånesøknad ID" });
@@ -70,23 +83,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      
+      // Beregn faktiske utgifter basert på alle faktorer
+      const actualMonthlyIncome = income / 12;
+      
+      // Standard lånetid (12 måneder) hvis ikke spesifisert
+      const actualLoanDuration = loanDuration || 12; 
+      
+      // Studielån kalkulasjon
+      let studentLoanFactor = 0;
+      if (hasStudentLoan && isPayingStudentLoan && studentLoanAmount > 0) {
+        // Antar at studielånet har 20 års nedbetalingstid (240 måneder)
+        const studentLoanPaymentPeriod = 240;
+        // Beregn hvor mye av studielånet som skal betales i løpet av låneperioden
+        studentLoanFactor = (studentLoanAmount / studentLoanPaymentPeriod) * (actualLoanDuration / 12);
+      }
+      
+      // Sparepenger kalkulasjon
+      let savingsFactor = 0;
+      if (hasSavings && savingsAmount > 0) {
+        // Del sparepenger på låneperioden for å få månedlig bidrag
+        savingsFactor = savingsAmount / actualLoanDuration;
+      }
 
-      // Calculate debt-to-income ratio
-      const monthlyIncome = income / 12;
-      const dti = (monthlyExpenses + outstandingDebt) / monthlyIncome;
+      // Calculate debt-to-income ratio with adjusted factors
+      const adjustedMonthlyExpenses = parseFloat(monthlyExpenses) + (studentLoanFactor > 0 ? (studentLoanFactor / actualLoanDuration) : 0);
+      const dti = (adjustedMonthlyExpenses + parseFloat(outstandingDebt)) / actualMonthlyIncome;
+      
+      // Beregn en finansiell buffer basert på sparepenger
+      const financialBuffer = savingsFactor > 0 ? (savingsFactor / actualMonthlyIncome) : 0;
 
       const prompt = `
         Analyser følgende finansielle data og gi en kredittscore (A, B, C, D, E, eller F) med en grundig forklaring:
 
-        Månedlig inntekt: ${monthlyIncome} NOK
+        Månedlig inntekt: ${actualMonthlyIncome.toFixed(2)} NOK
         Ansettelsesforhold: ${employmentStatus}
-        Månedlige utgifter: ${monthlyExpenses} NOK
+        Månedlige utgifter: ${adjustedMonthlyExpenses.toFixed(2)} NOK
         Utestående gjeld: ${outstandingDebt} NOK
         Gjeld-til-inntekt-forhold: ${dti.toFixed(2)}
         Eiendeler: ${assets}
+        ${hasSavings ? `Sparepenger/Buffer: ${savingsAmount} NOK (bidrar med ${financialBuffer.toFixed(2)} til inntekt/utgift-forholdet)` : 'Ingen sparepenger'}
+        ${hasStudentLoan ? `Studielån: ${studentLoanAmount} NOK${isPayingStudentLoan ? ' (aktivt nedbetalende)' : ' (ikke nedbetalende i denne perioden)'}` : 'Ingen studielån'}
 
         Gi en bokstavkarakter (A-F) basert på dataene ovenfor. Husk at en score utenfor det vanlige må begrunnes godt.
         Forklaringen bør være detaljert men ikke for spesifikk.
+        Beregne hvordan sparepenger kan fungere som en buffer mot økonomiske nedgangstider.
+        Vurder spesielt forhold som kan påvirke langsiktig betalingsevne.
 
         Vær vennlig å formatere svaret som JSON med følgende struktur:
         {
