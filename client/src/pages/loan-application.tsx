@@ -823,9 +823,14 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
+                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
+                  border: "none",
+                },
+                "& .MuiCheckbox-root": {
+                  border: "none",
                 },
               }}
             />
@@ -869,9 +874,14 @@ export default function LoanApplication() {
                 sx={{
                   width: "100%",
                   margin: 0,
+                  border: "none",
                   "& .MuiFormControlLabel-label": {
                     fontWeight: "normal",
                     fontSize: "0.9rem",
+                    border: "none",
+                  },
+                  "& .MuiCheckbox-root": {
+                    border: "none",
                   },
                 }}
               />
@@ -956,9 +966,14 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
+                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
+                  border: "none",
+                },
+                "& .MuiCheckbox-root": {
+                  border: "none",
                 },
               }}
             />
@@ -1044,9 +1059,14 @@ export default function LoanApplication() {
               sx={{
                 width: "100%",
                 margin: 0,
+                border: "none",
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
+                  border: "none",
+                },
+                "& .MuiCheckbox-root": {
+                  border: "none",
                 },
               }}
             />
