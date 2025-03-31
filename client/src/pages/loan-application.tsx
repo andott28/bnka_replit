@@ -806,6 +806,13 @@ export default function LoanApplication() {
 
         <Box
           sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border: "none", //removed border here
             mb: 3,
           }}
         >
@@ -922,10 +929,20 @@ export default function LoanApplication() {
         </Box>
 
         <Box
-            sx={{
-              mb: 3,
-            }}
-          >
+          sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(90, 90, 90, 0.5)"
+                : "1px solid #e0e0e0",
+            mb: 3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
@@ -947,7 +964,7 @@ export default function LoanApplication() {
                     form.setValue("hasSavings", e.target.checked, {
                       shouldValidate: true,
                     });
-                    if(!e.target.checked) {
+                    if (!e.target.checked) {
                       form.setValue("savingsAmount", "", {
                         shouldValidate: false,
                       });
@@ -966,7 +983,8 @@ export default function LoanApplication() {
                 "& .MuiFormControlLabel-label": {
                   fontWeight: "normal",
                   fontSize: "0.9rem",
-                },              }}
+                },
+              }}
             />
           </FormControl>
 
@@ -1002,10 +1020,20 @@ export default function LoanApplication() {
         </Box>
 
         <Box
-            sx={{
-              mb: 3,
-            }}
-          >
+          sx={{
+            p: 2,
+            borderRadius: 2,
+            bgcolor:
+              appTheme === "dark"
+                ? "rgba(45, 45, 45, 0.5)"
+                : "rgba(245, 245, 245, 0.5)",
+            border:
+              appTheme === "dark"
+                ? "1px solid rgba(90, 90, 90, 0.5)"
+                : "1px solid #e0e0e0",
+            mb: 3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
             <Typography
               variant="subtitle1"
