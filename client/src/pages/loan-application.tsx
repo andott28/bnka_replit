@@ -806,13 +806,6 @@ export default function LoanApplication() {
 
         <Box
           sx={{
-            p: 2,
-            borderRadius: 2,
-            bgcolor:
-              appTheme === "dark"
-                ? "rgba(45, 45, 45, 0.5)"
-                : "rgba(245, 245, 245, 0.5)",
-            border: "none", //removed border here
             mb: 3,
           }}
         >
@@ -964,7 +957,7 @@ export default function LoanApplication() {
                     form.setValue("hasSavings", e.target.checked, {
                       shouldValidate: true,
                     });
-                    if (!e.target.checked) {
+                    if(!e.target.checked) {
                       form.setValue("savingsAmount", "", {
                         shouldValidate: false,
                       });
