@@ -46,8 +46,8 @@ export default function LoanApplication() {
   const [showBankID, setShowBankID] = useState(false);
   const [isBankIDVerified, setIsBankIDVerified] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
-  
+  const [activeStep, setActiveStep] = useState(1); // Start på trinn 1 for å vise FinancialInfoStep direkte
+
   // Create a MUI theme that respects our app's theme (light/dark)
   const muiTheme = useMemo(() => 
     createTheme({
@@ -208,6 +208,15 @@ export default function LoanApplication() {
           .transform((val) => (val ? parseInt(val.replace(/\s/g, "")) : 0))
           .pipe(
             z.number().min(0, "Studielån kan ikke være negativt").optional(),
+          )
+          .refine(
+            (val, ctx) => {
+              if (ctx.parent.hasStudentLoan && ctx.parent.isPayingStudentLoan && (!val || val === 0)) {
+                return false;
+              }
+              return true;
+            },
+            { message: "Vennligst oppgi studielånets beløp" }
           ),
         hasSavings: z.boolean().optional(),
         savingsAmount: z
@@ -216,6 +225,15 @@ export default function LoanApplication() {
           .transform((val) => (val ? parseInt(val.replace(/\s/g, "")) : 0))
           .pipe(
             z.number().min(0, "Sparepenger kan ikke være negativt").optional(),
+          )
+          .refine(
+            (val, ctx) => {
+              if (ctx.parent.hasSavings && (!val || val === 0)) {
+                return false;
+              }
+              return true;
+            },
+            { message: "Vennligst oppgi sparepengenes beløp" }
           ),
         hasAssets: z.boolean().optional(),
       }),
@@ -235,11 +253,11 @@ export default function LoanApplication() {
       additionalInfo: "",
       hasConsented: false,
       idVerified: false,
-      hasStudentLoan: false,
-      isPayingStudentLoan: false,
-      studentLoanAmount: "",
-      hasSavings: false,
-      savingsAmount: "",
+      hasStudentLoan: true,         // Endret til true for å vise feltet
+      isPayingStudentLoan: true,    // Endret til true for å vise studentLoanAmount-feltet
+      studentLoanAmount: "",        // Tomt for å utløse valideringsfeil
+      hasSavings: true,             // Endret til true for å vise feltet
+      savingsAmount: "",            // Tomt for å utløse valideringsfeil
       hasAssets: false,
     },
   });
@@ -248,17 +266,15 @@ export default function LoanApplication() {
     mutationFn: async (data: any) => {
       try {
         console.log("Sending loan application with data:", data);
-        
-        // Sjekk og sett standardverdier for påkrevde felt
+
         if (!data.assets || data.assets.trim() === '') {
           data.assets = "Ingen eiendeler oppgitt";
         }
-        
-        // Sett studentlån til 0 hvis brukeren ikke betaler det ned
+
         if (data.hasStudentLoan && !data.isPayingStudentLoan) {
           data.studentLoanAmount = 0;
         }
-        
+
         let loanRes;
         if (selectedFile) {
           const formData = new FormData();
@@ -289,18 +305,17 @@ export default function LoanApplication() {
         const loanData = await loanRes.json();
         console.log("Loan application created with ID:", loanData.id);
 
-        // Besørg at vi sender alle påkrevde data til kredittscoreendepunktet
         const creditData = {
           loanApplicationId: loanData.id,
           income: data.income,
           employmentStatus: data.employmentStatus,
           monthlyExpenses: data.monthlyExpenses,
-          outstandingDebt: data.outstandingDebt || 0, // Sørg for at dette aldri er udefinert
-          assets: data.assets || "Ingen eiendeler oppgitt" // Sørg for at dette aldri er tomt
+          outstandingDebt: data.outstandingDebt || 0,
+          assets: data.assets || "Ingen eiendeler oppgitt"
         };
-        
+
         console.log("Sending credit score request with data:", creditData);
-        
+
         const creditRes = await apiRequest(
           "POST",
           "/api/loans/credit-score",
@@ -484,6 +499,9 @@ export default function LoanApplication() {
           fieldsToValidate.push("savingsAmount");
         }
         valid = await form.trigger(fieldsToValidate as any);
+        if (!valid) {
+          console.log("Valideringsfeil i trinn 1:", form.formState.errors);
+        }
         break;
       case 2:
         valid = await form.trigger(["hasConsented"]);
@@ -689,7 +707,7 @@ export default function LoanApplication() {
           backgroundColor: appTheme === 'dark' ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
         },
         '& .MuiTypography-root': {
-          color: appTheme === 'dark' ? '#fff' : 'inherit',
+          color W: appTheme === 'dark' ? '#fff' : 'inherit',
         },
         '& .MuiFormControlLabel-label': {
           color: appTheme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'inherit',
@@ -836,8 +854,6 @@ export default function LoanApplication() {
                       form.setValue("isPayingStudentLoan", e.target.checked, {
                         shouldValidate: true,
                       });
-                      
-                      // Sett studentlån til 0 hvis ikke betalende
                       if (!e.target.checked) {
                         form.setValue("studentLoanAmount", "0", {
                           shouldValidate: true,
@@ -1363,7 +1379,7 @@ export default function LoanApplication() {
         !form.formState.errors.employmentStatus &&
         form.getValues("birthDate") &&
         form.getValues("street") &&
-        form.getValues("postalCode") &&
+        form.getValues("fontWeight") &&
         form.getValues("city") &&
         form.getValues("employmentStatus"),
     },
@@ -1376,6 +1392,8 @@ export default function LoanApplication() {
         !form.formState.errors.amount &&
         !form.formState.errors.purpose &&
         !form.formState.errors.assets &&
+        !form.formState.errors.studentLoanAmount &&
+        !form.formState.errors.savingsAmount &&
         form.getValues("income") &&
         form.getValues("monthlyExpenses") &&
         form.getValues("outstandingDebt") &&
@@ -1418,7 +1436,7 @@ export default function LoanApplication() {
           </div>
         </main>
       </ThemeProvider>
-      
+
       <BankIDDialog
         open={showBankID}
         onOpenChange={setShowBankID}
